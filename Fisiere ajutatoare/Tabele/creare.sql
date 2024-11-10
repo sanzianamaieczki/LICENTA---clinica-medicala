@@ -1,187 +1,188 @@
-CREATE TABLE clinica (
-    id_clinica INT(11) NOT NULL AUTO_INCREMENT,
-    nume_clinica VARCHAR(100) NOT NULL,
-    telefon_clinica VARCHAR(11) NOT NULL,
-    adresa_clinica VARCHAR(250) NOT NULL,
-    PRIMARY KEY (id_clinica),
-    CONSTRAINT clinica_nume_clinica_unique UNIQUE (nume_clinica)
+CREATE TABLE clinics (
+  id_clinic INT(11) NOT NULL AUTO_INCREMENT,
+  clinic_name VARCHAR(100) NOT NULL,
+  clinic_phone VARCHAR(11) NOT NULL,
+  clinic_address VARCHAR(250) NOT NULL,
+  PRIMARY KEY (id_clinic),
+  CONSTRAINT clinic_name_UNIQUE UNIQUE (clinic_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE specializare (
-    id_specializare INT(11) NOT NULL AUTO_INCREMENT,
-    nume_specializare VARCHAR(100) NOT NULL,
-    PRIMARY KEY (id_specializare)
+CREATE TABLE specializations (
+  id_specialization INT(11) NOT NULL AUTO_INCREMENT,
+  specialization_name VARCHAR(100) NOT NULL,
+  PRIMARY KEY (id_specialization)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE utilizator (
-    id_utilizator INT(11) NOT NULL AUTO_INCREMENT,
-    email VARCHAR(100) NOT NULL,
-    parola VARCHAR(100) NOT NULL,
-    rol ENUM('pacient', 'admin', 'medic', 'asistent') NOT NULL DEFAULT 'pacient',
-    data_crearii DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    data_modificarii DATETIME DEFAULT NULL,
-    PRIMARY KEY (id_utilizator),
-    CONSTRAINT utilizator_email_unique UNIQUE (email)
+CREATE TABLE users (
+  id_user INT(11) NOT NULL AUTO_INCREMENT,
+  email VARCHAR(100) NOT NULL,
+  password VARCHAR(100) NOT NULL,
+  user_role ENUM(patient, admin, doctor, assistant) NOT NULL DEFAULT patient,
+  created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+  updated_at DATETIME DEFAULT NULL,
+  PRIMARY KEY (id_user),
+  CONSTRAINT email_UNIQUE UNIQUE (email)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
+
+CREATE TABLE assistants (
+  id_assistant INT(11) NOT NULL AUTO_INCREMENT,
+  id_user INT(11) NOT NULL,
+  last_name VARCHAR(100) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  phone VARCHAR(11) NOT NULL,
+  id_clinic INT(11) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (id_assistant),
+  CONSTRAINT assistant_email_UNIQUE UNIQUE (email),
+  CONSTRAINT assistant_phone_UNIQUE UNIQUE (phone),
+  CONSTRAINT FK_assistant_clinic FOREIGN KEY (id_clinic) REFERENCES clinics (id_clinic),
+  CONSTRAINT FK_assistant_user FOREIGN KEY (id_user) REFERENCES users (id_user)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE asistent (
-    id_asistent INT(11) NOT NULL AUTO_INCREMENT,
-    id_utilizator INT(11) NOT NULL,
-    nume VARCHAR(100) NOT NULL,
-    prenume VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    telefon VARCHAR(11) NOT NULL,
-    id_clinica INT(11) NOT NULL,
-    data_crearii DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    PRIMARY KEY (id_asistent),
-    CONSTRAINT asistent_email_unique UNIQUE (email),
-    CONSTRAINT asistent_telefon_unique UNIQUE (telefon),
-    CONSTRAINT asistent_clinica_fk FOREIGN KEY (id_clinica) REFERENCES clinica (id_clinica),
-    CONSTRAINT asistent_utilizator_fk FOREIGN KEY (id_utilizator) REFERENCES utilizator (id_utilizator)
+CREATE TABLE doctors (
+  id_doctor INT(11) NOT NULL AUTO_INCREMENT,
+  last_name VARCHAR(100) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  phone VARCHAR(11) NOT NULL,
+  id_specialization INT(11) NOT NULL,
+  id_clinic INT(11) NOT NULL,
+  id_user INT(11) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (id_doctor),
+  CONSTRAINT doctor_email_UNIQUE UNIQUE (email),
+  CONSTRAINT doctor_phone_UNIQUE UNIQUE (phone),
+  CONSTRAINT FK_doctor_clinic FOREIGN KEY (id_clinic) REFERENCES clinics (id_clinic),
+  CONSTRAINT FK_doctor_specialization FOREIGN KEY (id_specialization) REFERENCES specializations (id_specialization),
+  CONSTRAINT FK_doctor_user FOREIGN KEY (id_user) REFERENCES users (id_user)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE medic (
-    id_medic INT(11) NOT NULL AUTO_INCREMENT,
-    nume VARCHAR(100) NOT NULL,
-    prenume VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    telefon VARCHAR(11) NOT NULL,
-    id_specializare INT(11) NOT NULL,
-    id_clinica INT(11) NOT NULL,
-    id_utilizator INT(11) NOT NULL,
-    data_crearii DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    PRIMARY KEY (id_medic),
-    CONSTRAINT medic_email_unique UNIQUE (email),
-    CONSTRAINT medic_telefon_unique UNIQUE (telefon),
-    CONSTRAINT medic_clinica_fk FOREIGN KEY (id_clinica) REFERENCES clinica (id_clinica),
-    CONSTRAINT medic_specializare_fk FOREIGN KEY (id_specializare) REFERENCES specializare (id_specializare),
-    CONSTRAINT medic_utilizator_fk FOREIGN KEY (id_utilizator) REFERENCES utilizator (id_utilizator)
+CREATE TABLE medical_services (
+  id_medical_service INT(11) NOT NULL AUTO_INCREMENT,
+  id_specialization INT(11) NOT NULL,
+  service_name VARCHAR(100) NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (id_medical_service),
+  CONSTRAINT FK_service_specialization FOREIGN KEY (id_specialization) REFERENCES specializations (id_specialization)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE pacient (
-    id_pacient INT(11) NOT NULL AUTO_INCREMENT,
-    nume VARCHAR(100) NOT NULL,
-    prenume VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL,
-    telefon VARCHAR(11) NOT NULL,
-    cnp VARCHAR(13) NOT NULL,
-    data_nasterii DATE NOT NULL,
-    data_crearii DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    data_modificarii DATETIME DEFAULT NULL,
-    id_utilizator INT(11) DEFAULT NULL,
-    PRIMARY KEY (id_pacient),
-    CONSTRAINT pacient_email_unique UNIQUE (email),
-    CONSTRAINT pacient_telefon_unique UNIQUE (telefon),
-    CONSTRAINT pacient_cnp_unique UNIQUE (cnp),
-    CONSTRAINT pacient_utilizator_fk FOREIGN KEY (id_utilizator) REFERENCES utilizator (id_utilizator)
+CREATE TABLE patients (
+  id_patient INT(11) NOT NULL AUTO_INCREMENT,
+  last_name VARCHAR(100) NOT NULL,
+  first_name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  phone VARCHAR(11) NOT NULL,
+  national_id VARCHAR(13) NOT NULL,
+  birth_date DATE NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+  updated_at DATETIME DEFAULT NULL,
+  id_user INT(11) DEFAULT NULL,
+  PRIMARY KEY (id_patient),
+  CONSTRAINT patient_email_UNIQUE UNIQUE (email),
+  CONSTRAINT patient_phone_UNIQUE UNIQUE (phone),
+  CONSTRAINT patient_national_id_UNIQUE UNIQUE (national_id),
+  CONSTRAINT FK_patient_user FOREIGN KEY (id_user) REFERENCES users (id_user)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE pacient_medic (
-    id_pacient INT(11) NOT NULL,
-    id_medic INT(11) NOT NULL,
-    PRIMARY KEY (id_pacient, id_medic),
-    CONSTRAINT pacient_medic_pacient_fk FOREIGN KEY (id_pacient) REFERENCES pacient (id_pacient) ON DELETE CASCADE,
-    CONSTRAINT pacient_medic_medic_fk FOREIGN KEY (id_medic) REFERENCES medic (id_medic) ON DELETE CASCADE
+CREATE TABLE consultation_appointments (
+  id_consultation_appointment INT(11) NOT NULL AUTO_INCREMENT,
+  id_patient INT(11) NOT NULL,
+  id_doctor INT(11) NOT NULL,
+  id_medical_service INT(11) NOT NULL,
+  appointment_date DATE NOT NULL,
+  appointment_time TIME NOT NULL,
+  appointment_status ENUM(pending, confirmed, canceled) NOT NULL DEFAULT pending,
+  PRIMARY KEY (id_consultation_appointment),
+  CONSTRAINT FK_appointment_patient FOREIGN KEY (id_patient) REFERENCES patients (id_patient),
+  CONSTRAINT FK_appointment_doctor FOREIGN KEY (id_doctor) REFERENCES doctors (id_doctor),
+  CONSTRAINT FK_appointment_service FOREIGN KEY (id_medical_service) REFERENCES medical_services (id_medical_service)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE program_doctor (
-    id_program_medic INT(11) NOT NULL AUTO_INCREMENT,
-    id_medic INT(11) NOT NULL,
-    ziua_saptamanii ENUM('luni', 'marti', 'miercuri', 'joi', 'vineri', 'sambata', 'duminica') NOT NULL DEFAULT 'luni',
-    ora_inceput TIME NOT NULL,
-    ora_sfarsit TIME NOT NULL,
-    PRIMARY KEY (id_program_medic),
-    CONSTRAINT program_doctor_medic_fk FOREIGN KEY (id_medic) REFERENCES medic (id_medic)
+CREATE TABLE doctor_schedule (
+  id_doctor_schedule INT(11) NOT NULL AUTO_INCREMENT,
+  id_doctor INT(11) NOT NULL,
+  day_of_week ENUM(monday, tuesday, wednesday, thursday, friday, saturday, sunday) NOT NULL DEFAULT monday,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  PRIMARY KEY (id_doctor_schedule),
+  CONSTRAINT FK_schedule_doctor FOREIGN KEY (id_doctor) REFERENCES doctors (id_doctor)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE serviciu_medical (
-    id_serviciu_medical INT(11) NOT NULL AUTO_INCREMENT,
-    id_specializare INT(11) NOT NULL,
-    nume VARCHAR(100) NOT NULL,
-    pret DECIMAL(10, 2) NOT NULL,
-    PRIMARY KEY (id_serviciu_medical),
-    CONSTRAINT serviciu_medical_specializare_fk FOREIGN KEY (id_specializare) REFERENCES specializare (id_specializare)
+CREATE TABLE medical_analysis (
+  id_analysis INT(11) NOT NULL AUTO_INCREMENT,
+  id_patient INT(11) NOT NULL,
+  id_specialization INT(11) NOT NULL,
+  access_code VARCHAR(20) NOT NULL,
+  analysis_date DATETIME NOT NULL DEFAULT current_timestamp(),
+  result_received_at DATETIME DEFAULT NULL,
+  analysis_status ENUM(in_progress, completed) NOT NULL DEFAULT in_progress,
+  PRIMARY KEY (id_analysis),
+  CONSTRAINT access_code_UNIQUE UNIQUE (access_code),
+  CONSTRAINT FK_analysis_patient FOREIGN KEY (id_patient) REFERENCES patients (id_patient),
+  CONSTRAINT FK_analysis_specialization FOREIGN KEY (id_specialization) REFERENCES specializations (id_specialization)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE analize (
-    id_analiza INT(11) NOT NULL AUTO_INCREMENT,
-    id_pacient INT(11) NOT NULL,
-    id_specializare INT(11) NOT NULL,
-    cod_acces VARCHAR(20) NOT NULL,
-    data_analiza DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    data_primire_analiza DATETIME DEFAULT NULL,
-    status ENUM('in curs', 'finalizata') NOT NULL DEFAULT 'in curs',
-    PRIMARY KEY (id_analiza),
-    CONSTRAINT analize_cod_acces_unique UNIQUE (cod_acces),
-    CONSTRAINT analize_pacient_fk FOREIGN KEY (id_pacient) REFERENCES pacient (id_pacient),
-    CONSTRAINT analize_specializare_fk FOREIGN KEY (id_specializare) REFERENCES specializare (id_specializare)
+CREATE TABLE medical_letters (
+  id_medical_letter INT(11) NOT NULL AUTO_INCREMENT,
+  id_patient INT(11) DEFAULT NULL,
+  id_doctor INT(11) NOT NULL,
+  id_consultation_appointment INT(11) NOT NULL,
+  id_medical_service INT(11) NOT NULL,
+  id_specialization INT(11) NOT NULL,
+  diagnosis VARCHAR(200) NOT NULL,
+  content VARCHAR(500) NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT current_timestamp(),
+  updated_at DATETIME DEFAULT NULL,
+  PRIMARY KEY (id_medical_letter),
+  CONSTRAINT FK_letter_patient FOREIGN KEY (id_patient) REFERENCES patients (id_patient),
+  CONSTRAINT FK_letter_doctor FOREIGN KEY (id_doctor) REFERENCES doctors (id_doctor),
+  CONSTRAINT FK_letter_appointment FOREIGN KEY (id_consultation_appointment) REFERENCES consultation_appointments (id_consultation_appointment),
+  CONSTRAINT FK_letter_service FOREIGN KEY (id_medical_service) REFERENCES medical_services (id_medical_service),
+  CONSTRAINT FK_letter_specialization FOREIGN KEY (id_specialization) REFERENCES specializations (id_specialization)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE detalii_analiza (
-    id_detalii_analiza INT(11) NOT NULL AUTO_INCREMENT,
-    id_analiza INT(11) NOT NULL,
-    nume_test VARCHAR(100) NOT NULL,
-    valoare_obtinuta DECIMAL(10, 2) NOT NULL,
-    interval_referinta DECIMAL(10, 2) NOT NULL,
-    unitate_masura VARCHAR(10) NOT NULL,
-    PRIMARY KEY (id_detalii_analiza),
-    CONSTRAINT detalii_analiza_analize_fk FOREIGN KEY (id_analiza) REFERENCES analize (id_analiza)
+CREATE TABLE patient_doctor (
+  id_patient INT(11) NOT NULL,
+  id_doctor INT(11) NOT NULL,
+  PRIMARY KEY (id_patient, id_doctor),
+  CONSTRAINT FK_patient_doctor_patient FOREIGN KEY (id_patient) REFERENCES patients (id_patient) ON DELETE CASCADE,
+  CONSTRAINT FK_patient_doctor_doctor FOREIGN KEY (id_doctor) REFERENCES doctors (id_doctor) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE programare_analiza (
-    id_programare_analiza INT(11) NOT NULL AUTO_INCREMENT,
-    id_pacient INT(11) NOT NULL,
-    id_analiza INT(11) NOT NULL,
-    data_programarii DATE NOT NULL,
-    ora_programarii TIME NOT NULL,
-    status_programare ENUM('in asteptare', 'confirmata', 'anulata') DEFAULT 'in asteptare',
-    PRIMARY KEY (id_programare_analiza),
-    CONSTRAINT programare_analiza_analize_fk FOREIGN KEY (id_analiza) REFERENCES analize (id_analiza),
-    CONSTRAINT programare_analiza_pacient_fk FOREIGN KEY (id_pacient) REFERENCES pacient (id_pacient)
+CREATE TABLE analysis_appointments (
+  id_analysis_appointment INT(11) NOT NULL AUTO_INCREMENT,
+  id_patient INT(11) NOT NULL,
+  id_analysis INT(11) NOT NULL,
+  appointment_date DATE NOT NULL,
+  appointment_time TIME NOT NULL,
+  appointment_status ENUM(pending, confirmed, canceled) DEFAULT pending,
+  PRIMARY KEY (id_analysis_appointment),
+  CONSTRAINT FK_analysis_appointment_analysis FOREIGN KEY (id_analysis) REFERENCES medical_analysis (id_analysis),
+  CONSTRAINT FK_analysis_appointment_patient FOREIGN KEY (id_patient) REFERENCES patients (id_patient)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE programare_consultatie (
-    id_programare_consultatie INT(11) NOT NULL AUTO_INCREMENT,
-    id_pacient INT(11) NOT NULL,
-    id_medic INT(11) NOT NULL,
-    id_serviciu_medical INT(11) NOT NULL,
-    data_programarii DATE NOT NULL,
-    ora_programarii TIME NOT NULL,
-    status_programare ENUM('in asteptare', 'confirmata', 'anulata') NOT NULL DEFAULT 'in asteptare',
-    PRIMARY KEY (id_programare_consultatie),
-    CONSTRAINT programare_consultatie_pacient_fk FOREIGN KEY (id_pacient) REFERENCES pacient (id_pacient),
-    CONSTRAINT     programare_consultatie_medic_fk FOREIGN KEY (id_medic) REFERENCES medic (id_medic),
-    CONSTRAINT programare_consultatie_serviciu_medical_fk FOREIGN KEY (id_serviciu_medical) REFERENCES serviciu_medical (id_serviciu_medical)
+CREATE TABLE analysis_details (
+  id_analysis_detail INT(11) NOT NULL AUTO_INCREMENT,
+  id_analysis INT(11) NOT NULL,
+  test_name VARCHAR(100) NOT NULL,
+  obtained_value DECIMAL(10,2) NOT NULL,
+  unit VARCHAR(10) NOT NULL,
+  min_range DECIMAL(10,2) NOT NULL,
+  max_range DECIMAL(10,2) NOT NULL,
+  PRIMARY KEY (id_analysis_detail),
+  CONSTRAINT FK_analysis_detail_analysis FOREIGN KEY (id_analysis) REFERENCES medical_analysis (id_analysis)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
 
-CREATE TABLE scrisoare_medicala (
-    id_scrisoare_medicala INT(11) NOT NULL AUTO_INCREMENT,
-    id_pacient INT(11) DEFAULT NULL,
-    id_medic INT(11) NOT NULL,
-    id_programare_consultatie INT(11) NOT NULL,
-    id_serviciu_medical INT(11) NOT NULL,
-    id_specializare INT(11) NOT NULL,
-    diagnostic VARCHAR(200) NOT NULL,
-    continut VARCHAR(500) NOT NULL,
-    data_crearii DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    data_modificarii DATETIME DEFAULT NULL,
-    PRIMARY KEY (id_scrisoare_medicala),
-    CONSTRAINT scrisoare_medicala_pacient_fk FOREIGN KEY (id_pacient) REFERENCES pacient (id_pacient),
-    CONSTRAINT scrisoare_medicala_medic_fk FOREIGN KEY (id_medic) REFERENCES medic (id_medic),
-    CONSTRAINT scrisoare_medicala_programare_consultatie_fk FOREIGN KEY (id_programare_consultatie) REFERENCES programare_consultatie (id_programare_consultatie),
-    CONSTRAINT scrisoare_medicala_specializare_fk FOREIGN KEY (id_specializare) REFERENCES specializare (id_specializare),
-    CONSTRAINT scrisoare_medicala_serviciu_medical_fk FOREIGN KEY (id_serviciu_medical) REFERENCES serviciu_medical (id_serviciu_medical)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
-
-CREATE TABLE notificare (
-    id_notificare INT(11) NOT NULL AUTO_INCREMENT,
-    id_programare_consultatie INT(11) DEFAULT NULL,
-    id_programare_analiza INT(11) DEFAULT NULL,
-    id_pacient INT(11) NOT NULL,
-    data_notificare DATETIME NOT NULL,
-    tip_notificare ENUM('reamintire', 'confirmare', 'anulata') NOT NULL DEFAULT 'reamintire',
-    PRIMARY KEY (id_notificare),
-    CONSTRAINT notificare_programare_analiza_fk FOREIGN KEY (id_programare_analiza) REFERENCES programare_analiza (id_programare_analiza),
-    CONSTRAINT notificare_programare_consultatie_fk FOREIGN KEY (id_programare_consultatie) REFERENCES programare_consultatie (id_programare_consultatie),
-    CONSTRAINT notificare_pacient_fk FOREIGN KEY (id_pacient) REFERENCES pacient (id_pacient)
+CREATE TABLE notifications (
+  id_notification INT(11) NOT NULL AUTO_INCREMENT,
+  id_consultation_appointment INT(11) DEFAULT NULL,
+  id_analysis_appointment INT(11) DEFAULT NULL,
+  id_patient INT(11) NOT NULL,
+  notification_date DATETIME NOT NULL,
+  notification_type ENUM(reminder, confirmation, canceled) NOT NULL DEFAULT reminder,
+  PRIMARY KEY (id_notification),
+  CONSTRAINT FK_notification_patient FOREIGN KEY (id_patient) REFERENCES patients (id_patient),
+  CONSTRAINT FK_notification_analysis_appointment FOREIGN KEY (id_analysis_appointment) REFERENCES analysis_appointments (id_analysis_appointment),
+  CONSTRAINT FK_notification_consultation_appointment FOREIGN KEY (id_consultation_appointment) REFERENCES consultation_appointments (id_consultation_appointment)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_uca1400_ai_ci;
