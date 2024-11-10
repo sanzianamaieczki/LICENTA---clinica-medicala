@@ -1,0 +1,19 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+TRUNCATE TABLE Notificare;
+TRUNCATE TABLE ScrisoareMedicala;
+TRUNCATE TABLE ProgramareConsultatie;
+TRUNCATE TABLE ProgramareAnaliza;
+TRUNCATE TABLE DetaliiAnaliza;
+TRUNCATE TABLE Analize;
+TRUNCATE TABLE PacientMedic;  
+TRUNCATE TABLE ProgramDoctor;
+TRUNCATE TABLE ServiciuMedical;
+TRUNCATE TABLE Asistent;
+TRUNCATE TABLE Medic;
+TRUNCATE TABLE Pacient;
+TRUNCATE TABLE Utilizator;
+TRUNCATE TABLE Specializare;
+TRUNCATE TABLE Clinica;
+
+SET FOREIGN_KEY_CHECKS = 1;
