@@ -6,17 +6,21 @@ import { AppComponent } from './app.component';
 import { ClinicsComponent } from './components/clinics/clinics.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './components/home/home.component';
+import { AddClinicComponent } from './components/add-clinic/add-clinic.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     ClinicsComponent,
-    HomeComponent
+    HomeComponent,
+    AddClinicComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

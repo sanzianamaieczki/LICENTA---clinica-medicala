@@ -13,4 +13,9 @@ export class ClinicService {
   getClinics(): Observable<any> {
     return this.http.get<any>(this.apiUrl);
   }
+
+  addClinic(clinic: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}`, clinic);
+  }
+  
 }

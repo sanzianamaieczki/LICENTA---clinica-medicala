@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface ClinicRepository extends JpaRepository<Clinic, Integer> {
     List<Clinic> findAll();
+
+//    Clinic sa(Clinic clinic);
+//    boolean existsByClinicName(String clinicName);
 }
