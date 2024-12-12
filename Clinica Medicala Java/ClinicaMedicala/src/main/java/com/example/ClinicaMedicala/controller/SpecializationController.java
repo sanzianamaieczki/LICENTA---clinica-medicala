@@ -1,7 +1,8 @@
 package com.example.ClinicaMedicala.controller;
 
 import com.example.ClinicaMedicala.dto.ClinicDTO;
-import com.example.ClinicaMedicala.service.ClinicService;
+import com.example.ClinicaMedicala.dto.SpecializationDTO;
+import com.example.ClinicaMedicala.service.SpecializationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,55 +16,31 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/clinica-medicala/clinics")
-public class ClinicController {
+@RequestMapping("/api/clinica-medicala/specialization")
+public class SpecializationController {
 
     @Autowired
-    private ClinicService clinicService;
+    private SpecializationService specializationService;
 
-    // GET - pentru a afisa toate clinicile
-    // Daca dorim sa vedem si clinicile care au fost sterse, adaugam un parametru "is_deleted"
+    // GET - pentru a afisa toate specializarile
     @GetMapping
-    public ResponseEntity<?> getAllClinics(
+    public ResponseEntity<?> getAllSpecialization(
             @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
-            @RequestParam(value = "clinic_name", required = false) String clinic_name,
-            @RequestParam(value = "clinic_address", required = false) String clinic_address
+            @RequestParam(value = "specialization_name", required = false) String specialization_name
     ) {
-        try {
-            if (is_deleted) {
-                List<ClinicDTO> clinics = clinicService.getAllDeletedClinics();
-                return ResponseEntity.status(HttpStatus.OK).body(clinics);
-            }
-
-            if(clinic_name != null && !clinic_name.isEmpty()){
-                List<ClinicDTO> clinics = clinicService.getClinicByName(clinic_name);
-                return ResponseEntity.status(HttpStatus.OK).body(clinics);
-            }
-
-            if(clinic_address != null && !clinic_address.isEmpty()){
-                List<ClinicDTO> clinics = clinicService.getClinicByAddress(clinic_address);
-                return ResponseEntity.status(HttpStatus.OK).body(clinics);
-            }
-
-            List<ClinicDTO> clinics = clinicService.getAllClinics();
-            return ResponseEntity.status(HttpStatus.OK).body(clinics);
-
-        } catch (HttpClientErrorException.UnprocessableEntity e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/{id_clinic}")
-    public ResponseEntity<?> getClinicById(@PathVariable Integer id_clinic) {
         try{
-            Optional<ClinicDTO> clinicDTO = clinicService.getClinicById(id_clinic);
-            return ResponseEntity.status(HttpStatus.OK).body(clinicDTO);
+            if(is_deleted){
+                List<SpecializationDTO> deletedSpecializations = specializationService.getAllDeletedSpecializations();
+                return ResponseEntity.status(HttpStatus.OK).body(deletedSpecializations);
+            }
+
+            if(specialization_name!=null && !specialization_name.isEmpty()){
+                List<SpecializationDTO> specializations = specializationService.getSpecializationByName(specialization_name);
+                return ResponseEntity.status(HttpStatus.OK).body(specializations);
+            }
+
+            List<SpecializationDTO> specialization = specializationService.getAllSpecializations();
+            return ResponseEntity.status(HttpStatus.OK).body(specialization);
         } catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){
@@ -75,11 +52,27 @@ public class ClinicController {
         }
     }
 
+    @GetMapping("/{id_specialization}")
+    public ResponseEntity<?> getSpecializationById(@PathVariable Integer id_specialization) {
+        try{
+            Optional<SpecializationDTO> specialization = specializationService.getSpecializationById(id_specialization);
+            return ResponseEntity.status(HttpStatus.OK).body(specialization);
+        }catch (HttpClientErrorException.UnprocessableEntity e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @PostMapping
-    public ResponseEntity<?> addClinic(@RequestBody ClinicDTO clinicDTO) {
+    public ResponseEntity<?> addSpecialization(@RequestBody SpecializationDTO specializationDTO) {
         try{
-        ClinicDTO newClinicDTO = clinicService.addClinic(clinicDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newClinicDTO);
+            SpecializationDTO newSpecializationDTO = specializationService.addSpecialization(specializationDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newSpecializationDTO);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -91,11 +84,11 @@ public class ClinicController {
         }
     }
 
-    @PatchMapping("/{id_clinic}")
-    public ResponseEntity<?> partialUpdateClinic(@PathVariable Integer id_clinic, @RequestBody Map<String, Object> updates) {
+    @PatchMapping("/{id_specialization}")
+    public ResponseEntity<?> updateSpecialization(@PathVariable Integer id_specialization, @RequestBody Map<String, Object> updates) {
         try{
-           ClinicDTO updatedClinicDTO = clinicService.partialUpdateClinic(id_clinic, updates);
-           return ResponseEntity.status(HttpStatus.CREATED).body(updatedClinicDTO);
+            SpecializationDTO updatedSpecializationDTO = specializationService.updateSpecialization(id_specialization, updates);
+            return ResponseEntity.status(HttpStatus.CREATED).body(updatedSpecializationDTO);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -107,11 +100,11 @@ public class ClinicController {
         }
     }
 
-    @DeleteMapping("/{id_clinic}")
-    public ResponseEntity<?> deleteClinic(@PathVariable Integer id_clinic) {
+    @DeleteMapping("/{id_specialization}")
+    public ResponseEntity<?> deleteSpecialization(@PathVariable Integer id_specialization) {
         try{
-            clinicService.deleteClinic(id_clinic);
-            return ResponseEntity.status(HttpStatus.OK).body("Clinica cu id-ul : " + id_clinic + " a fost stearsa");
+            specializationService.deleteSpecialization(id_specialization);
+            return ResponseEntity.status(HttpStatus.OK).body("Specializarea cu id-ul : " + id_specialization + " a fost stearsa");
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){

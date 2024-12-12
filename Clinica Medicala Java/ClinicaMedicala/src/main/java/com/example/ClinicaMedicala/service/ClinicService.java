@@ -6,7 +6,10 @@ import com.example.ClinicaMedicala.repository.ClinicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,15 +23,81 @@ public class ClinicService {
                 .map(ClinicDTO::new)
                 .collect(Collectors.toList());
     }
+
+    public List<ClinicDTO> getAllDeletedClinics(){
+        return clinicRepository.findAllDeletedClinics().stream()
+                .map(ClinicDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<ClinicDTO> getClinicById(int id_clinic) {
+        return clinicRepository.findClinicById(id_clinic)
+                .map(ClinicDTO::new);
+    }
+
+    public List<ClinicDTO> getClinicByName(String clinic_name) {
+        return clinicRepository.findClinicByName(clinic_name).stream()
+                .map(ClinicDTO::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<ClinicDTO> getClinicByAddress(String clinic_address) {
+        return clinicRepository.findClinicByAddress(clinic_address).stream()
+                .map(ClinicDTO::new)
+                .collect(Collectors.toList());
+    }
+
     public ClinicDTO addClinic(ClinicDTO clinicDTO) {
-
-//        boolean exists = clinicRepository.existsByClinicName(clinicDTO.getClinic_name());
-//        if (exists) {
-//            throw new IllegalArgumentException("Clinica cu acest nume deja exista!");
-//        }
         Clinic clinic = new Clinic(clinicDTO);
-        Clinic savedClinic = clinicRepository.save(clinic);
+        clinic.setCreated_at(new Date());
+        clinic.setUpdated_at(null);
+        clinic.setIs_deleted(false);
 
+        Clinic savedClinic = clinicRepository.save(clinic);
         return new ClinicDTO(savedClinic);
+    }
+
+    public ClinicDTO partialUpdateClinic(Integer id_clinic, Map<String, Object> updates) {
+        Clinic clinic = clinicRepository.findClinicById(id_clinic)
+                .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasita clinica cu id-ul: "+id_clinic));
+
+        updates.forEach((field, value)->{
+            switch (field) {
+                case "clinic_name":
+                    clinic.setClinic_name((String) value);
+                    break;
+                case "clinic_address":
+                    clinic.setClinic_address((String) value);
+                    break;
+                case "clinic_phone":
+                    clinic.setClinic_phone((String) value);
+                    break;
+                case "id_clinic":
+                case "created_at":
+                case "updated_at":
+                case "is_deleted":
+                    throw new IllegalArgumentException("Acest camp nu poate fi modificat: " + field);
+                default:
+                    throw new IllegalArgumentException("Acest camp nu exista: " + field);
+            }
+        });
+
+        clinic.setUpdated_at(new Date());
+
+        Clinic updatedClinic = clinicRepository.save(clinic);
+        return new ClinicDTO(updatedClinic);
+    }
+
+    public void deleteClinic(Integer id_clinic) {
+        Clinic clinic = clinicRepository.findClinicById(id_clinic)
+                .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasita clinica cu id-ul: "+id_clinic));
+
+        if(clinic.getIs_deleted()) {
+            throw new IllegalArgumentException("Acesta clinica a fost deja stearsa: " + id_clinic);
+        }
+
+        clinic.setIs_deleted(true);
+        clinic.setUpdated_at(new Date());
+        clinicRepository.save(clinic);
     }
 }

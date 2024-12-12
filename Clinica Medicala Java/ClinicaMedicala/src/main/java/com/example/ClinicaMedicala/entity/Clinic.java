@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.boot.context.properties.bind.DefaultValue;
+
+import javax.swing.text.StyledEditorKit;
+import java.util.Date;
 
 @Entity
 @Table(name = "clinics")
@@ -28,9 +32,23 @@ public class Clinic {
     @Column(nullable = false)
     private String clinic_address;
 
+    @Column(nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created_at;
+
+    @Column(nullable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updated_at;
+
+    @Column(nullable = false)
+    private Boolean is_deleted = false;
+
     public Clinic(ClinicDTO clinicDTO) {
         this.clinic_name = clinicDTO.getClinic_name();
         this.clinic_phone = clinicDTO.getClinic_phone();
         this.clinic_address = clinicDTO.getClinic_address();
+        this.created_at = clinicDTO.getCreated_at();
+        this.updated_at = clinicDTO.getUpdated_at();
+        this.is_deleted = clinicDTO.getIs_deleted();
     }
 }
