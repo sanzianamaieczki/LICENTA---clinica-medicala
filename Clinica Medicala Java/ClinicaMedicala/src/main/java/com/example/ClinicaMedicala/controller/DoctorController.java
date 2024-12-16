@@ -1,8 +1,6 @@
 package com.example.ClinicaMedicala.controller;
 
-import com.example.ClinicaMedicala.dto.ClinicDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTO;
-import com.example.ClinicaMedicala.service.ClinicService;
 import com.example.ClinicaMedicala.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,27 +15,22 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/clinica-medicala/clinics")
-public class ClinicController {
+@RequestMapping("/api/clinica-medicala/doctors")
+public class DoctorController {
 
     @Autowired
-    private ClinicService clinicService;
+    DoctorService doctorService;
 
-    @Autowired
-    private DoctorService doctorService;
-
-    // GET - pentru a afisa toate clinicile
-    // Daca dorim sa vedem si clinicile care au fost sterse, adaugam un parametru "is_deleted"
     @GetMapping
-    public ResponseEntity<?> getAllClinics(
+    public ResponseEntity<?> getAllDoctors(
             @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
-            @RequestParam(value = "clinic_name", required = false) String clinic_name,
-            @RequestParam(value = "clinic_address", required = false) String clinic_address
+            @RequestParam(value = "first_name", required = false) String first_name,
+            @RequestParam(value = "last_name", required = false) String last_name,
+            @RequestParam(value = "email", required = false) String email
     ) {
-        try {
-            List<ClinicDTO> clinics = clinicService.getClinicsByFilters(is_deleted, clinic_name, clinic_address);
-            return ResponseEntity.status(HttpStatus.OK).body(clinics);
-
+        try{
+            List<DoctorDTO> doctors = doctorService.getDoctorsByFilters(is_deleted, first_name, last_name, email);
+            return ResponseEntity.status(HttpStatus.OK).body(doctors);
         } catch (HttpClientErrorException.UnprocessableEntity e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -49,11 +42,11 @@ public class ClinicController {
         }
     }
 
-    @GetMapping("/{id_clinic}")
-    public ResponseEntity<?> getClinicById(@PathVariable Integer id_clinic) {
+    @GetMapping("/{id_doctor}")
+    public ResponseEntity<?> getClinicById(@PathVariable Integer id_doctor) {
         try{
-            Optional<ClinicDTO> clinicDTO = clinicService.getClinicById(id_clinic);
-            return ResponseEntity.status(HttpStatus.OK).body(clinicDTO);
+            Optional<DoctorDTO> doctorDTO = doctorService.getDoctorById(id_doctor);
+            return ResponseEntity.status(HttpStatus.OK).body(doctorDTO);
         } catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){
@@ -65,27 +58,11 @@ public class ClinicController {
         }
     }
 
-    @GetMapping("/{id_clinic}/doctors")
-    public ResponseEntity<?> getDoctorsByClinic(@PathVariable Integer id_clinic) {
-        try{
-            List<DoctorDTO> doctors = doctorService.getDoctorsByClinic(id_clinic);
-            return ResponseEntity.status(HttpStatus.OK).body(doctors);
-        }catch (HttpClientErrorException.UnprocessableEntity e){
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
     @PostMapping
-    public ResponseEntity<?> addClinic(@RequestBody ClinicDTO clinicDTO) {
+    public ResponseEntity<?> addDoctor(@RequestBody DoctorDTO doctorDTO) {
         try{
-        ClinicDTO newClinicDTO = clinicService.addClinic(clinicDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newClinicDTO);
+            DoctorDTO doctor = doctorService.addDoctor(doctorDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(doctor);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -97,11 +74,11 @@ public class ClinicController {
         }
     }
 
-    @PatchMapping("/{id_clinic}")
-    public ResponseEntity<?> partialUpdateClinic(@PathVariable Integer id_clinic, @RequestBody Map<String, Object> updates) {
+    @PatchMapping("/{id_doctor}")
+    public ResponseEntity<?> updateDoctor(@PathVariable Integer id_doctor, @RequestBody Map<String, Object> updates) {
         try{
-           ClinicDTO updatedClinicDTO = clinicService.partialUpdateClinic(id_clinic, updates);
-           return ResponseEntity.status(HttpStatus.CREATED).body(updatedClinicDTO);
+            DoctorDTO doctorDTO = doctorService.updateDoctor(id_doctor, updates);
+            return ResponseEntity.status(HttpStatus.OK).body(doctorDTO);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -113,11 +90,11 @@ public class ClinicController {
         }
     }
 
-    @DeleteMapping("/{id_clinic}")
-    public ResponseEntity<?> deleteClinic(@PathVariable Integer id_clinic) {
+    @DeleteMapping("/{id_doctor}")
+    public ResponseEntity<?> deleteDoctor(@PathVariable Integer id_doctor) {
         try{
-            clinicService.deleteClinic(id_clinic);
-            return ResponseEntity.status(HttpStatus.OK).body("Clinica cu id-ul : " + id_clinic + " a fost stearsa");
+            doctorService.deleteDoctor(id_doctor);
+            return ResponseEntity.status(HttpStatus.OK).body("Doctorul cu id-ul: " + id_doctor + " a fost sters.");
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){

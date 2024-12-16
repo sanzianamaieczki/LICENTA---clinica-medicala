@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.boot.context.properties.bind.DefaultValue;
-
-import javax.swing.text.StyledEditorKit;
 import java.util.Date;
 
 @Entity

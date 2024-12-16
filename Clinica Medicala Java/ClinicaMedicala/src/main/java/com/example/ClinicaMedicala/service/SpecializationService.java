@@ -1,6 +1,5 @@
 package com.example.ClinicaMedicala.service;
 
-import com.example.ClinicaMedicala.dto.ClinicDTO;
 import com.example.ClinicaMedicala.dto.SpecializationDTO;
 import com.example.ClinicaMedicala.entity.Specialization;
 import com.example.ClinicaMedicala.repository.SpecializationRepository;
@@ -19,14 +18,10 @@ public class SpecializationService {
     @Autowired
     private SpecializationRepository specializationRepository;
 
-    public List<SpecializationDTO> getAllSpecializations() {
-        return specializationRepository.findAll().stream()
-                .map(SpecializationDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<SpecializationDTO> getAllDeletedSpecializations() {
-        return specializationRepository.findAllDeletedSpecializations().stream()
+    public List<SpecializationDTO> getSpecializationsByFilters(
+            Boolean is_deleted,
+            String specialization_name){
+        return specializationRepository.findSpecializationsByFilters(is_deleted, specialization_name).stream()
                 .map(SpecializationDTO::new)
                 .collect(Collectors.toList());
     }
@@ -34,12 +29,6 @@ public class SpecializationService {
     public Optional<SpecializationDTO> getSpecializationById(int id_specialization) {
         return specializationRepository.findSpecializationById(id_specialization)
                 .map(SpecializationDTO::new);
-    }
-
-    public List<SpecializationDTO> getSpecializationByName(String specialization_name) {
-        return specializationRepository.findSpecializationByName(specialization_name).stream()
-                .map(SpecializationDTO::new)
-                .collect(Collectors.toList());
     }
 
     public SpecializationDTO addSpecialization(SpecializationDTO specializationDTO) {

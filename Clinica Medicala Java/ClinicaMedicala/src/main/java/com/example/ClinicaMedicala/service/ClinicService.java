@@ -18,14 +18,12 @@ public class ClinicService {
     @Autowired
     private ClinicRepository clinicRepository;
 
-    public List<ClinicDTO> getAllClinics() {
-        return clinicRepository.findAll().stream()
-                .map(ClinicDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<ClinicDTO> getAllDeletedClinics(){
-        return clinicRepository.findAllDeletedClinics().stream()
+    public List<ClinicDTO> getClinicsByFilters(
+            Boolean is_deleted,
+            String clinic_name,
+            String clinic_address
+    ){
+        return clinicRepository.findClinicsByFilters(is_deleted, clinic_name, clinic_address).stream()
                 .map(ClinicDTO::new)
                 .collect(Collectors.toList());
     }
@@ -33,18 +31,6 @@ public class ClinicService {
     public Optional<ClinicDTO> getClinicById(int id_clinic) {
         return clinicRepository.findClinicById(id_clinic)
                 .map(ClinicDTO::new);
-    }
-
-    public List<ClinicDTO> getClinicByName(String clinic_name) {
-        return clinicRepository.findClinicByName(clinic_name).stream()
-                .map(ClinicDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<ClinicDTO> getClinicByAddress(String clinic_address) {
-        return clinicRepository.findClinicByAddress(clinic_address).stream()
-                .map(ClinicDTO::new)
-                .collect(Collectors.toList());
     }
 
     public ClinicDTO addClinic(ClinicDTO clinicDTO) {

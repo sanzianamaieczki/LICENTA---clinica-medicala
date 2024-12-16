@@ -10,18 +10,17 @@ import java.util.Optional;
 
 public interface ClinicRepository extends JpaRepository<Clinic, Integer> {
 
-    @Query("SELECT c FROM Clinic c WHERE c.is_deleted = false")
-    List<Clinic> findAll();
-
-    @Query("SELECT c FROM Clinic c WHERE c.is_deleted = true")
-    List<Clinic> findAllDeletedClinics();
+    @Query("SELECT c FROM Clinic c "+
+            "WHERE (:is_deleted IS NULL OR c.is_deleted = :is_deleted) " +
+            "AND (:clinic_name IS NULL OR LOWER(c.clinic_name) LIKE LOWER(CONCAT('%', :clinic_name, '%')))" +
+            "AND (:clinic_address IS NULL OR LOWER(c.clinic_address) LIKE LOWER(CONCAT('%', :clinic_address, '%')))"
+    )
+    List<Clinic> findClinicsByFilters(
+            @Param("is_deleted") Boolean is_deleted,
+            @Param("clinic_name") String clinic_name,
+            @Param("clinic_address") String clinic_address
+    );
 
     @Query("SELECT c FROM Clinic c WHERE c.id_clinic = :id_clinic")
     Optional<Clinic> findClinicById(int id_clinic);
-
-    @Query("SELECT c FROM Clinic c where LOWER(c.clinic_name) LIKE LOWER(CONCAT('%', :clinic_name, '%'))")
-    List<Clinic> findClinicByName(@Param("clinic_name") String clinic_name);
-
-    @Query("SELECT c FROM Clinic c where LOWER(c.clinic_address) LIKE LOWER(CONCAT('%', :clinic_address, '%'))")
-    List<Clinic> findClinicByAddress(@Param("clinic_address") String clinic_address);
 }

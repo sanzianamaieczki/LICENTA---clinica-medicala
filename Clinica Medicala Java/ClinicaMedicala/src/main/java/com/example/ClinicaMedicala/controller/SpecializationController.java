@@ -1,7 +1,8 @@
 package com.example.ClinicaMedicala.controller;
 
-import com.example.ClinicaMedicala.dto.ClinicDTO;
+import com.example.ClinicaMedicala.dto.DoctorDTO;
 import com.example.ClinicaMedicala.dto.SpecializationDTO;
+import com.example.ClinicaMedicala.service.DoctorService;
 import com.example.ClinicaMedicala.service.SpecializationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,26 +23,18 @@ public class SpecializationController {
     @Autowired
     private SpecializationService specializationService;
 
-    // GET - pentru a afisa toate specializarile
+    @Autowired
+    private DoctorService doctorService;
+
     @GetMapping
-    public ResponseEntity<?> getAllSpecialization(
+    public ResponseEntity<?> getSpecializationsByFilters(
             @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
             @RequestParam(value = "specialization_name", required = false) String specialization_name
     ) {
         try{
-            if(is_deleted){
-                List<SpecializationDTO> deletedSpecializations = specializationService.getAllDeletedSpecializations();
-                return ResponseEntity.status(HttpStatus.OK).body(deletedSpecializations);
-            }
-
-            if(specialization_name!=null && !specialization_name.isEmpty()){
-                List<SpecializationDTO> specializations = specializationService.getSpecializationByName(specialization_name);
-                return ResponseEntity.status(HttpStatus.OK).body(specializations);
-            }
-
-            List<SpecializationDTO> specialization = specializationService.getAllSpecializations();
-            return ResponseEntity.status(HttpStatus.OK).body(specialization);
-        } catch (HttpClientErrorException.UnprocessableEntity e){
+            List<SpecializationDTO> specializations = specializationService.getSpecializationsByFilters(is_deleted, specialization_name);
+            return new ResponseEntity<>(specializations, HttpStatus.OK);
+        }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -57,6 +50,22 @@ public class SpecializationController {
         try{
             Optional<SpecializationDTO> specialization = specializationService.getSpecializationById(id_specialization);
             return ResponseEntity.status(HttpStatus.OK).body(specialization);
+        }catch (HttpClientErrorException.UnprocessableEntity e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id_specialization}/doctors")
+    public ResponseEntity<?> getDoctorsBySpecialization(@PathVariable Integer id_specialization) {
+        try {
+            List<DoctorDTO> doctors = doctorService.getDoctorsBySpecialization(id_specialization);
+            return ResponseEntity.status(HttpStatus.OK).body(doctors);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){
