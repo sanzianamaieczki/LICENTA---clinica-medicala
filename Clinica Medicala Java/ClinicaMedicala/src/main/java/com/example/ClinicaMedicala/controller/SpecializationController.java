@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/clinica-medicala/specialization")
+@RequestMapping("/api/clinica-medicala/specializations")
 public class SpecializationController {
 
     @Autowired

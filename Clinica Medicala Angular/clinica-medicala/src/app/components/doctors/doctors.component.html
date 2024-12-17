@@ -1,0 +1,14 @@
+<div class="doctor-list">
+    <h1>Lista Medicilor</h1>
+    <div *ngIf="doctors.length === 0">
+      <p>Se încarcă datele...</p>
+    </div>
+    <ul *ngIf="doctors.length > 0">
+      <li *ngFor="let doctor of doctors">
+        <h2>{{ doctor.first_name }} {{ doctor.last_name }}</h2>
+        <p><strong>Email:</strong> {{ doctor.email }}</p>
+        <p><strong>Telefon:</strong> {{ doctor.phone }}</p>
+      </li>
+    </ul>
+  </div>
+  

@@ -1,0 +1,12 @@
+<div class="specialization-list">
+    <h1>Lista Specializărilor</h1>
+    <div *ngIf="specializations.length === 0">
+      <p>Se încarcă datele...</p>
+    </div>
+    <ul *ngIf="specializations.length > 0">
+      <li *ngFor="let specialization of specializations">
+        <h2>{{ specialization.specialization_name }}</h2>
+      </li>
+    </ul>
+  </div>
+  

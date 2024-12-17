@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, retry } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +10,23 @@ export class ClinicService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getClinics(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+  getClinics(filters? : any): Observable<any> {
+    return this.http.get<any>(this.apiUrl, {params: filters});
+  }
+
+  getClinicById(id: number): Observable<any>{
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
   addClinic(clinic: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}`, clinic);
   }
+
+  updateClinic(id: number, updates: any): Observable<any>{
+    return this.http.patch<any>(`${this.apiUrl}/${id}`, updates);
+  }
   
+  deleteClinic(id:number): Observable<any>{
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
+  }
 }
