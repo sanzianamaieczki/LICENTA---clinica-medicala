@@ -32,6 +32,7 @@ public class SpecializationService {
     }
 
     public SpecializationDTO addSpecialization(SpecializationDTO specializationDTO) {
+        //to do: verificari daca sunt nule sau exista deja
 
         Specialization specialization = new Specialization(specializationDTO);
         specialization.setCreated_at(new Date());
@@ -43,6 +44,8 @@ public class SpecializationService {
     }
 
     public SpecializationDTO updateSpecialization(Integer id_specialization , Map<String, Object> updates) {
+        //to do: verificari daca sunt nule sau exista deja
+
         Specialization specialization = specializationRepository.findSpecializationById(id_specialization)
                 .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasita specializarea cu id-ul: " + id_specialization));
 

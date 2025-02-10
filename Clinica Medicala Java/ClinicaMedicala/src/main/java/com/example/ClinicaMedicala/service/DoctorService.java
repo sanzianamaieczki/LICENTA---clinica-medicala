@@ -32,9 +32,10 @@ public class DoctorService {
             Boolean is_deleted,
             String first_name,
             String last_name,
-            String email
+            String email,
+            String phone
     ){
-        return doctorRepository.findDoctorsByFilters(is_deleted,first_name, last_name,email).stream()
+        return doctorRepository.findDoctorsByFilters(is_deleted,first_name, last_name,email, phone).stream()
                 .map(DoctorDTO::new)
                 .collect(Collectors.toList());
     }
@@ -57,6 +58,8 @@ public class DoctorService {
     }
 
     public DoctorDTO addDoctor(DoctorDTO doctorDTO) {
+
+        //to do: verificari daca sunt nule sau exista deja
         Doctor doctor = new Doctor(doctorDTO);
 
         Clinic clinic = clinicRepository.findById(doctorDTO.getId_clinic())
@@ -76,6 +79,8 @@ public class DoctorService {
     }
 
     public DoctorDTO updateDoctor(Integer id_doctor, Map<String, Object> updates) {
+        //to do: verificari daca sunt nule sau exista deja
+
         Doctor doctor = doctorRepository.findDoctorById(id_doctor)
                 .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasit doctorul cu id-ul: " + id_doctor));
 

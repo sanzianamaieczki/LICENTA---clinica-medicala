@@ -1,37 +1,42 @@
 package com.example.ClinicaMedicala.controller;
 
-import com.example.ClinicaMedicala.dto.DoctorDTO;
-import com.example.ClinicaMedicala.service.DoctorService;
+import com.example.ClinicaMedicala.dto.PatientDTO;
+import com.example.ClinicaMedicala.service.PatientService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/clinica-medicala/doctors")
-public class DoctorController {
+@RequestMapping("/api/clinica-medicala/patients")
+public class PatientController {
 
     @Autowired
-    DoctorService doctorService;
+    PatientService patientService;
 
     @GetMapping
-    public ResponseEntity<?> getAllDoctors(
+    public ResponseEntity<?> getAllPatients(
             @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
             @RequestParam(value = "first_name", required = false) String first_name,
             @RequestParam(value = "last_name", required = false) String last_name,
             @RequestParam(value = "email", required = false) String email,
-            @RequestParam(value = "phone", required = false) String phone
+            @RequestParam(value = "phone", required = false) String phone,
+            @RequestParam(value = "national_id", required = false) String national_id,
+            @RequestParam(value = "birth_date_start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date birth_date_start,
+            @RequestParam(value = "birth_date_end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date birth_date_end
     ) {
         try{
-            List<DoctorDTO> doctors = doctorService.getDoctorsByFilters(is_deleted, first_name, last_name, email, phone);
-            return ResponseEntity.status(HttpStatus.OK).body(doctors);
+            List<PatientDTO> patients = patientService.getPatientsByFilters(is_deleted, first_name, last_name, email,phone,national_id,birth_date_start,birth_date_end);
+            return ResponseEntity.status(HttpStatus.OK).body(patients);
         } catch (HttpClientErrorException.UnprocessableEntity e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -43,11 +48,11 @@ public class DoctorController {
         }
     }
 
-    @GetMapping("/{id_doctor}")
-    public ResponseEntity<?> getDoctorById(@PathVariable Integer id_doctor) {
+    @GetMapping("/{id_patient}")
+    public ResponseEntity<?> getPatientById(@PathVariable Integer id_patient) {
         try{
-            Optional<DoctorDTO> doctorDTO = doctorService.getDoctorById(id_doctor);
-            return ResponseEntity.status(HttpStatus.OK).body(doctorDTO);
+            Optional<PatientDTO> patientDTO = patientService.getPatientById(id_patient);
+            return ResponseEntity.status(HttpStatus.OK).body(patientDTO);
         } catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){
@@ -60,10 +65,10 @@ public class DoctorController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addDoctor(@RequestBody DoctorDTO doctorDTO) {
+    public ResponseEntity<?> addPatient(@RequestBody PatientDTO patientDTO) {
         try{
-            DoctorDTO doctor = doctorService.addDoctor(doctorDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(doctor);
+            PatientDTO patient = patientService.addPatient(patientDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(patient);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -75,11 +80,11 @@ public class DoctorController {
         }
     }
 
-    @PatchMapping("/{id_doctor}")
-    public ResponseEntity<?> updateDoctor(@PathVariable Integer id_doctor, @RequestBody Map<String, Object> updates) {
+    @PatchMapping("/{id_patient}")
+    public ResponseEntity<?> updatePatient(@PathVariable Integer id_patient, @RequestBody Map<String, Object> updates) {
         try{
-            DoctorDTO doctorDTO = doctorService.updateDoctor(id_doctor, updates);
-            return ResponseEntity.status(HttpStatus.OK).body(doctorDTO);
+            PatientDTO patientDTO = patientService.updatePatient(id_patient, updates);
+            return ResponseEntity.status(HttpStatus.OK).body(patientDTO);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -91,11 +96,11 @@ public class DoctorController {
         }
     }
 
-    @DeleteMapping("/{id_doctor}")
-    public ResponseEntity<?> deleteDoctor(@PathVariable Integer id_doctor) {
+    @DeleteMapping("/{id_patient}")
+    public ResponseEntity<?> deletePatient(@PathVariable Integer id_patient) {
         try{
-            doctorService.deleteDoctor(id_doctor);
-            return ResponseEntity.status(HttpStatus.OK).body("Doctorul cu id-ul: " + id_doctor + " a fost sters.");
+            patientService.deletePatient(id_patient);
+            return ResponseEntity.status(HttpStatus.OK).body("Pacientul cu id-ul: " + id_patient + " a fost sters.");
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){

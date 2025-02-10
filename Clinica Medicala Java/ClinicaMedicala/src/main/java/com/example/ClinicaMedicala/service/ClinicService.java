@@ -34,6 +34,26 @@ public class ClinicService {
     }
 
     public ClinicDTO addClinic(ClinicDTO clinicDTO) {
+
+        //verificari pentru a nu introduce date nule pentru clinici
+        if(clinicDTO.getClinic_name() == null || clinicDTO.getClinic_name().isEmpty()){
+            throw new IllegalArgumentException("Clinica trebuie sa aiba un nume nenul.");
+        }
+        if(clinicDTO.getClinic_address() == null || clinicDTO.getClinic_address().isEmpty()){
+            throw new IllegalArgumentException("Clinica trebuie sa aiba o adresa nenula.");
+        }
+        if(clinicDTO.getClinic_phone() == null || clinicDTO.getClinic_phone().isEmpty()){
+            throw new IllegalArgumentException("Clinica trebuie sa aiba un numar de telefon nenul.");
+        }
+
+        //verificari pentru a nu adauga clinici deja existente
+        List<Clinic> existingClinic = clinicRepository.findClinicsByFilters(false, clinicDTO.getClinic_name(), null)
+                .stream()
+                .collect(Collectors.toList());
+        if(!existingClinic.isEmpty()){
+            throw new IllegalArgumentException("Clinica cu acest nume: "+ clinicDTO.getClinic_name() + " exista deja.");
+        }
+
         Clinic clinic = new Clinic(clinicDTO);
         clinic.setCreated_at(new Date());
         clinic.setUpdated_at(null);
@@ -47,15 +67,27 @@ public class ClinicService {
         Clinic clinic = clinicRepository.findClinicById(id_clinic)
                 .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasita clinica cu id-ul: "+id_clinic));
 
+
+
         updates.forEach((field, value)->{
             switch (field) {
                 case "clinic_name":
+                    if(value == null){
+                        throw new IllegalArgumentException("Clinica trebuie sa aiba un nume nenul.");
+                    }
+                     // to do: verificare daca exista deja
                     clinic.setClinic_name((String) value);
                     break;
                 case "clinic_address":
+                    if(value == null){
+                        throw new IllegalArgumentException("Clinica trebuie sa aiba o adresa nenula.");
+                    }
                     clinic.setClinic_address((String) value);
                     break;
                 case "clinic_phone":
+                    if(value == null){
+                        throw new IllegalArgumentException("Clinica trebuie sa aiba un numar de telefon nenul.");
+                    }
                     clinic.setClinic_phone((String) value);
                     break;
                 case "id_clinic":
