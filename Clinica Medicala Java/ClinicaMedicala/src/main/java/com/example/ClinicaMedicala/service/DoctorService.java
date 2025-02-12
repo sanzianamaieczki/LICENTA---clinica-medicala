@@ -8,15 +8,23 @@ import com.example.ClinicaMedicala.entity.Specialization;
 import com.example.ClinicaMedicala.repository.ClinicRepository;
 import com.example.ClinicaMedicala.repository.DoctorRepository;
 import com.example.ClinicaMedicala.repository.SpecializationRepository;
+import com.example.ClinicaMedicala.utils.CheckFields;
+import com.example.ClinicaMedicala.utils.DTOConverter;
+import com.fasterxml.jackson.databind.util.BeanUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.Set;
+
 
 @Service
 public class DoctorService {
@@ -27,6 +35,7 @@ public class DoctorService {
     @Autowired
     private SpecializationRepository specializationRepository;
 
+//    private CheckFields checkFields = new CheckFields();
 
     public List<DoctorDTO> getDoctorsByFilters(
             Boolean is_deleted,
@@ -59,7 +68,27 @@ public class DoctorService {
 
     public DoctorDTO addDoctor(DoctorDTO doctorDTO) {
 
-        //to do: verificari daca sunt nule sau exista deja
+        //verificari necesare
+        StringBuilder errors = new StringBuilder();
+
+        //verificare daca datele introduse sunt nule
+        Map<String, Object> doctorFields = DTOConverter.convertToMap(doctorDTO);
+        errors.append(CheckFields.checkEmptyFields(doctorFields,Set.of("id_doctor")));
+
+        //verificare daca datele introduse nu exista deja
+        List<Doctor> existingDoctors = doctorRepository.findDoctorsByFilters(null, null,null,null,null);
+        if(existingDoctors.stream().anyMatch(d -> d.getEmail().equals(doctorDTO.getEmail()))) {
+            errors.append("Exista deja acest email: ").append(doctorDTO.getEmail()).append(System.lineSeparator());
+        }
+        if(existingDoctors.stream().anyMatch(d -> d.getPhone().equals(doctorDTO.getPhone()))) {
+            errors.append("Exista deja acest numar de telefon: ").append(doctorDTO.getPhone()).append(System.lineSeparator());
+        }
+
+        //afisarea erorilor
+        if(!errors.isEmpty()) {
+            throw new IllegalArgumentException(errors.toString().trim());
+        }
+
         Doctor doctor = new Doctor(doctorDTO);
 
         Clinic clinic = clinicRepository.findById(doctorDTO.getId_clinic())
@@ -79,10 +108,23 @@ public class DoctorService {
     }
 
     public DoctorDTO updateDoctor(Integer id_doctor, Map<String, Object> updates) {
-        //to do: verificari daca sunt nule sau exista deja
 
+        //verificari necesare
+        StringBuilder errors = new StringBuilder();
+
+        //verificare daca exista doctorul mentionat
         Doctor doctor = doctorRepository.findDoctorById(id_doctor)
                 .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasit doctorul cu id-ul: " + id_doctor));
+
+        //verificare daca nu se introduc date nule
+        errors.append(CheckFields.checkEmptyFields(updates, Set.of("id_doctor")));
+
+        //afisarea erorilor
+        if(!errors.isEmpty()) {
+            throw new IllegalArgumentException(errors.toString().trim());
+        }
+
+        //to do: verificare daca nu cumva exista acel nume
 
         updates.forEach((field,value) ->{
             switch (field){
@@ -104,7 +146,8 @@ public class DoctorService {
                 case "id_specialization":
                     Integer id_specialization = (Integer) value;
                     Specialization specialization = specializationRepository.findSpecializationById(id_specialization)
-                            .orElseThrow(()->new IllegalArgumentException("Nu a fost gasita specializarea cu is-ul: " + id_specialization));
+//                            .orElse(errors.append("Nu a fost gasita specializarea cu id-ul: ").append(id_specializati)
+                            .orElseThrow(()->new IllegalArgumentException("Nu a fost gasita specializarea cu id-ul: " + id_specialization));
                     doctor.setSpecialization(specialization);
                     break;
                 case "id_doctor":

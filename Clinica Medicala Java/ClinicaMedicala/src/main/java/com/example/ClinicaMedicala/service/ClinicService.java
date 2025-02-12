@@ -47,11 +47,17 @@ public class ClinicService {
         }
 
         //verificari pentru a nu adauga clinici deja existente
-        List<Clinic> existingClinic = clinicRepository.findClinicsByFilters(false, clinicDTO.getClinic_name(), null)
-                .stream()
-                .collect(Collectors.toList());
-        if(!existingClinic.isEmpty()){
-            throw new IllegalArgumentException("Clinica cu acest nume: "+ clinicDTO.getClinic_name() + " exista deja.");
+        List<Clinic> existingClinic = clinicRepository.findClinicsByFilters(null, null, null);
+
+        StringBuilder errorMessage = new StringBuilder();
+
+        boolean clinicNameExists = existingClinic.stream().anyMatch(c -> c.getClinic_name().equals(clinicDTO.getClinic_name()));
+        if(clinicNameExists){
+            errorMessage.append("Exista deja o clinica cu acest nume.").append(System.lineSeparator());
+        }
+
+        if(!errorMessage.isEmpty()){
+            throw new IllegalArgumentException(errorMessage.toString().trim());
         }
 
         Clinic clinic = new Clinic(clinicDTO);
@@ -67,7 +73,7 @@ public class ClinicService {
         Clinic clinic = clinicRepository.findClinicById(id_clinic)
                 .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasita clinica cu id-ul: "+id_clinic));
 
-
+        List<Clinic> existingClinic = clinicRepository.findClinicsByFilters(null, null, null);
 
         updates.forEach((field, value)->{
             switch (field) {
@@ -75,7 +81,9 @@ public class ClinicService {
                     if(value == null){
                         throw new IllegalArgumentException("Clinica trebuie sa aiba un nume nenul.");
                     }
-                     // to do: verificare daca exista deja
+                    if(existingClinic.stream().anyMatch(c -> c.getClinic_name().equals(value))){
+                        throw new IllegalArgumentException("Exista deja o clinica cu acest nume.");
+                    }
                     clinic.setClinic_name((String) value);
                     break;
                 case "clinic_address":
