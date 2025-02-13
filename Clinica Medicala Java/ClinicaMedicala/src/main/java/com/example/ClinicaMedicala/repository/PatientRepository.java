@@ -18,7 +18,9 @@ public interface PatientRepository extends JpaRepository<Patient, Integer> {
             "AND (:email IS NULL OR LOWER(p.email) LIKE LOWER(CONCAT('%', :email, '%')))" +
             "AND (:phone IS NULL OR LOWER(p.phone) LIKE LOWER(CONCAT('%', :phone, '%')))" +
             "AND (:national_id IS NULL OR LOWER(p.national_id) LIKE LOWER(CONCAT('%', :national_id, '%')))" +
-            "AND (:birth_date_start IS NULL OR :birth_date_end IS NULL OR p.birth_date between :birth_date_start and :birth_date_end)"
+            "AND (:birth_date_start IS NULL AND :birth_date_end IS NULL)" +
+            "    OR (:birth_date_start IS NOT NULL AND p.birth_date >= :birth_date_start)" +
+            "    OR (:birth_date_end IS NOT NULL AND p.birth_date <= :birth_date_end)"
     )
     List<Patient> findPatientsByFilters(
             @Param("is_deleted") Boolean is_deleted,

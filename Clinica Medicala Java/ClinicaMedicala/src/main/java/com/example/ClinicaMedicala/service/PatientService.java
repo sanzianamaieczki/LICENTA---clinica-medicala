@@ -1,8 +1,11 @@
 package com.example.ClinicaMedicala.service;
 
+import com.example.ClinicaMedicala.dto.DoctorDTO;
 import com.example.ClinicaMedicala.dto.PatientDTO;
 import com.example.ClinicaMedicala.entity.Patient;
 import com.example.ClinicaMedicala.repository.PatientRepository;
+import com.example.ClinicaMedicala.utils.CheckFields;
+import com.example.ClinicaMedicala.utils.DTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,7 +65,40 @@ public class PatientService {
     }
 
     public PatientDTO addPatient(PatientDTO patientDTO) {
-        //to do: verificari daca sunt nule sau exista deja
+
+        //verificari necesare
+        StringBuilder errors = new StringBuilder();
+
+        //verificare daca datele introduse sunt nule
+        String emptyFieldsError = CheckFields.checkEmptyFields(
+                DTOConverter.convertToMap(patientDTO),
+                Set.of("id_patient", "birth_date"));
+        if (emptyFieldsError != null) {
+            errors.append(emptyFieldsError)
+                    .append(System.lineSeparator());
+        }
+
+        //lista pacientilor existenti
+        List<PatientDTO> existingPatients = getPatientsByFilters(null, null,null,null,null, null, null, null);
+
+        //verificare daca datele introduse nu exista deja
+        if(existingPatients.stream().anyMatch(p->p.getEmail().equals(patientDTO.getEmail()))){
+            errors.append("Exista deja acest email: ").append(patientDTO.getEmail())
+                    .append(System.lineSeparator());
+        }
+        if(existingPatients.stream().anyMatch(p->p.getPhone().equals(patientDTO.getPhone()))){
+            errors.append("Exista deja acest numar de telefon: ").append(patientDTO.getPhone())
+                    .append(System.lineSeparator());
+        }
+        if(existingPatients.stream().anyMatch(p->p.getNational_id().equals(patientDTO.getNational_id()))){
+            errors.append("Exista deja acest CNP: ").append(patientDTO.getNational_id())
+                    .append(System.lineSeparator());
+        }
+
+        //afisarea erorilor
+        if(!errors.isEmpty()) {
+            throw new IllegalArgumentException(errors.toString().trim());
+        }
 
         Patient patient = new Patient(patientDTO);
 
@@ -76,10 +112,24 @@ public class PatientService {
     }
 
     public PatientDTO updatePatient(Integer id_patient, Map<String, Object> updates) {
-        //to do: verificari daca sunt nule sau exista deja
+
+        //verificari necesare
+        StringBuilder errors = new StringBuilder();
+
+        //verificare daca datele introduse sunt nule
+        String emptyFieldsError = CheckFields.checkEmptyFields(
+                DTOConverter.convertToMap(updates),
+                Set.of("id_patient", "birth_date"));
+        if (emptyFieldsError != null) {
+            errors.append(emptyFieldsError)
+                    .append(System.lineSeparator());
+        }
+
+        //lista pacientilor existenti
+        List<PatientDTO> existingPatients = getPatientsByFilters(null, null,null,null,null, null, null, null);
 
         Patient patient = patientRepository.findPatientById(id_patient)
-                .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasit patientul cu id-ul: " + id_patient));
+                .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasit pacientul cu id-ul: " + id_patient));
 
         updates.forEach((field,value) ->{
             switch (field){
@@ -90,22 +140,44 @@ public class PatientService {
                     patient.setLast_name((String) value);
                     break;
                 case "email":
+                    if(existingPatients.stream().anyMatch(p->p.getEmail().equals(value))){
+                        errors.append("Exista deja acest email: ").append(value)
+                                .append(System.lineSeparator());
+                    }
                     patient.setEmail((String) value);
                     break;
                 case "national_id":
+                    if(existingPatients.stream().anyMatch(p->p.getNational_id().equals(value))){
+                        errors.append("Exista deja acest CNP: ").append(value)
+                                .append(System.lineSeparator());
+                    }
                     patient.setNational_id((String)value);
                     patient.setBirth_date(extractBirthDateFromNationalId((String) value));
                     break;
+                case "phone":
+                    if(existingPatients.stream().anyMatch(p->p.getPhone().equals(value))){
+                        errors.append("Exista deja acest numar de telefon: ").append(value)
+                                .append(System.lineSeparator());
+                    }
+                    patient.setPhone((String) value);
                 case "birth_date":
                 case "id_patient":
                 case "created_at":
                 case "updated_at":
                 case "is_deleted":
-                    throw new IllegalArgumentException("Acest camp nu poate fi modificat: " + field);
+                    errors.append("Acest camp nu poate fi modificat: ").append(field);
+                    break;
                 default:
-                    throw new IllegalArgumentException("Acest camp nu exista: " + field);
+                    errors.append("Acest camp nu exista: ").append(field);
+                    break;
             }
         });
+
+        //afisarea erorilor
+        if(!errors.isEmpty()) {
+            throw new IllegalArgumentException(errors.toString().trim());
+        }
+
         patient.setUpdated_at(new Date());
         Patient savedPatient = patientRepository.save(patient);
         return new PatientDTO(savedPatient);
