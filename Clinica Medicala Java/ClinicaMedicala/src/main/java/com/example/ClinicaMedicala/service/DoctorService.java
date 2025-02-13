@@ -1,7 +1,6 @@
 package com.example.ClinicaMedicala.service;
 
 import com.example.ClinicaMedicala.dto.DoctorDTO;
-import com.example.ClinicaMedicala.dto.SpecializationDTO;
 import com.example.ClinicaMedicala.entity.Clinic;
 import com.example.ClinicaMedicala.entity.Doctor;
 import com.example.ClinicaMedicala.entity.Specialization;
@@ -10,18 +9,13 @@ import com.example.ClinicaMedicala.repository.DoctorRepository;
 import com.example.ClinicaMedicala.repository.SpecializationRepository;
 import com.example.ClinicaMedicala.utils.CheckFields;
 import com.example.ClinicaMedicala.utils.DTOConverter;
-import com.fasterxml.jackson.databind.util.BeanUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.Set;
 
@@ -35,8 +29,6 @@ public class DoctorService {
     @Autowired
     private SpecializationRepository specializationRepository;
 
-    //lista doctorilor existenti
-    List<Doctor> existingDoctors = doctorRepository.findDoctorsByFilters(null, null,null,null,null);
 
     public List<DoctorDTO> getDoctorsByFilters(
             Boolean is_deleted,
@@ -92,6 +84,9 @@ public class DoctorService {
                     .append(System.lineSeparator());
         }
 
+        //lista doctorilor existenti
+        List<DoctorDTO> existingDoctors = getDoctorsByFilters(null, null,null,null,null);
+
         //verificare daca datele introduse nu exista deja
         if(existingDoctors.stream().anyMatch(d -> d.getEmail().equals(doctorDTO.getEmail()))) {
             errors.append("Exista deja acest email: ").append(doctorDTO.getEmail())
@@ -130,6 +125,9 @@ public class DoctorService {
         //verificare daca nu se introduc date nule
         errors.append(CheckFields.checkEmptyFields(updates, Set.of("id_doctor")));
 
+        //lista doctorilor existenti
+        List<DoctorDTO> existingDoctors = getDoctorsByFilters(null, null,null,null,null);
+
         updates.forEach((field,value) ->{
             switch (field){
                 case "first_name":
@@ -140,41 +138,51 @@ public class DoctorService {
                     break;
                 case "email":
                     if(existingDoctors.stream().anyMatch(d -> d.getEmail().equals(value))) {
-                        errors.append("Exista deja acest email: ").append(value).append(System.lineSeparator());
+                        errors.append("Exista deja acest email: ").append(value)
+                                .append(System.lineSeparator());
                     }
                     doctor.setEmail((String) value);
                     break;
                 case "phone":
                     if(existingDoctors.stream().anyMatch(d -> d.getPhone().equals(value))) {
-                        errors.append("Exista deja acest numar de telefon: ").append(value).append(System.lineSeparator());
+                        errors.append("Exista deja acest numar de telefon: ").append(value)
+                                .append(System.lineSeparator());
                     }
                     doctor.setPhone((String) value);
+                    break;
                 case "id_clinic":
-                    Integer id_clinic = (Integer) value;
-                    Clinic clinic = clinicRepository.findClinicById(id_clinic).orElse(null);
-                    if(clinic == null) {
-                        errors.append("Nu a fost gasita clinica cu id-ul: ").append(id_clinic)
+                    try {
+                        Integer id_clinic = Integer.parseInt(value.toString());
+                        Clinic clinic = clinicRepository.findClinicById(id_clinic).orElse(null);
+                        if (clinic == null) {
+                            errors.append(" Nu a fost gasita clinica cu id-ul: ").append(id_clinic)
+                                    .append(System.lineSeparator());
+                        }
+                        doctor.setClinic(clinic);
+                    } catch (NumberFormatException e) {
+                        errors.append("ID-ul clinicii trebuie sa fie un numar valid.")
                                 .append(System.lineSeparator());
                     }
-                    doctor.setClinic(clinic);
                     break;
                 case "id_specialization":
-                    Integer id_specialization = (Integer) value;
-                    Specialization specialization = specializationRepository.findSpecializationById(id_specialization).orElse(null);
-                    if(specialization == null) {
-                        errors.append("Nu a fost gasita specializarea cu id-ul: ").append(id_specialization)
+                    try {
+                        Integer id_specialization = Integer.parseInt(value.toString());
+                        Specialization specialization = specializationRepository.findSpecializationById(id_specialization).orElse(null);
+                        if(specialization == null) {
+                            errors.append("Nu a fost gasita specializarea cu id-ul: ").append(id_specialization)
+                                    .append(System.lineSeparator());
+                        }
+                        doctor.setSpecialization(specialization);
+                    } catch (NumberFormatException e) {
+                        errors.append("ID-ul specializarii trebuie sa fie un numar valid.")
                                 .append(System.lineSeparator());
                     }
-                    doctor.setSpecialization(specialization);
                     break;
                 case "id_doctor":
                 case "created_at":
                 case "updated_at":
                 case "is_deleted":
-                    errors.append("Acest camp nu poate fi modificat").append(field)
-                            .append(System.lineSeparator());
-                default:
-                    errors.append("Acest camp nu exista: ").append(field)
+                    errors.append("Acest camp nu poate fi modificat: ").append(field)
                             .append(System.lineSeparator());
             }
         });
