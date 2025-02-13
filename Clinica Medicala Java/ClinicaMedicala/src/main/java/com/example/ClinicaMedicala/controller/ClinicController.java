@@ -32,10 +32,11 @@ public class ClinicController {
     public ResponseEntity<?> getAllClinics(
             @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
             @RequestParam(value = "clinic_name", required = false) String clinic_name,
-            @RequestParam(value = "clinic_address", required = false) String clinic_address
+            @RequestParam(value = "clinic_address", required = false) String clinic_address,
+            @RequestParam(value = "clinic_phone", required = false) String clinic_phone
     ) {
         try {
-            List<ClinicDTO> clinics = clinicService.getClinicsByFilters(is_deleted, clinic_name, clinic_address);
+            List<ClinicDTO> clinics = clinicService.getClinicsByFilters(is_deleted, clinic_name, clinic_address, clinic_phone);
             return ResponseEntity.status(HttpStatus.OK).body(clinics);
 
         } catch (HttpClientErrorException.UnprocessableEntity e) {

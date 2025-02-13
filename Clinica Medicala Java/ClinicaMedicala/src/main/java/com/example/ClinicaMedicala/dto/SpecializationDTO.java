@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class SpecializationDTO {
 
-    private int id_specialization;
+    private Integer id_specialization;
     private String specialization_name;
     private Date created_at;
     private Date updated_at;

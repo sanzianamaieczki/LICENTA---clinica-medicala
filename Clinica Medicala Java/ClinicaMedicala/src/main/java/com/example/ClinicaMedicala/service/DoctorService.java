@@ -65,10 +65,13 @@ public class DoctorService {
         StringBuilder errors = new StringBuilder();
 
         //verificare daca datele introduse sunt nule
-        errors.append(CheckFields.checkEmptyFields(
+        String emptyFieldsError = CheckFields.checkEmptyFields(
                 DTOConverter.convertToMap(doctorDTO),
-                Set.of("id_doctor")))
-                .append(System.lineSeparator());
+                Set.of("id_doctor"));
+        if (emptyFieldsError != null) {
+            errors.append(emptyFieldsError)
+                    .append(System.lineSeparator());
+        }
 
         //verificare daca exista clinica cu id-ul primit
         Clinic clinic = clinicRepository.findById(doctorDTO.getId_clinic()).orElse(null);
@@ -123,7 +126,13 @@ public class DoctorService {
                 .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasit doctorul cu id-ul: " + id_doctor));
 
         //verificare daca nu se introduc date nule
-        errors.append(CheckFields.checkEmptyFields(updates, Set.of("id_doctor")));
+        String emptyFieldsError = CheckFields.checkEmptyFields(
+                DTOConverter.convertToMap(updates),
+                Set.of("id_doctor"));
+        if (emptyFieldsError != null) {
+            errors.append(emptyFieldsError)
+                    .append(System.lineSeparator());
+        }
 
         //lista doctorilor existenti
         List<DoctorDTO> existingDoctors = getDoctorsByFilters(null, null,null,null,null);
@@ -184,6 +193,11 @@ public class DoctorService {
                 case "is_deleted":
                     errors.append("Acest camp nu poate fi modificat: ").append(field)
                             .append(System.lineSeparator());
+                    break;
+                default:
+                    errors.append("Acest camp nu exista: ").append(field)
+                            .append(System.lineSeparator());
+                    break;
             }
         });
 

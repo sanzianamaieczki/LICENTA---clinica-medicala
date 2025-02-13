@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class PatientDTO {
 
-    private int id_patient;
+    private Integer id_patient;
     private String last_name;
     private String first_name;
     private String email;

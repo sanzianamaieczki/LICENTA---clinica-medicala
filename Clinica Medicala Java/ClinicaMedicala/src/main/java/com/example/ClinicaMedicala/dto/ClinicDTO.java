@@ -14,7 +14,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class ClinicDTO {
 
-    private int id_clinic;
+    private Integer id_clinic;
     private String clinic_name;
     private String clinic_phone;
     private String clinic_address;

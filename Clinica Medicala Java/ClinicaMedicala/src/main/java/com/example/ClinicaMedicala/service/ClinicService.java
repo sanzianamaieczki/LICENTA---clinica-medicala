@@ -3,13 +3,12 @@ package com.example.ClinicaMedicala.service;
 import com.example.ClinicaMedicala.dto.ClinicDTO;
 import com.example.ClinicaMedicala.entity.Clinic;
 import com.example.ClinicaMedicala.repository.ClinicRepository;
+import com.example.ClinicaMedicala.utils.CheckFields;
+import com.example.ClinicaMedicala.utils.DTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,9 +20,11 @@ public class ClinicService {
     public List<ClinicDTO> getClinicsByFilters(
             Boolean is_deleted,
             String clinic_name,
-            String clinic_address
+            String clinic_address,
+            String clinic_phone
+
     ){
-        return clinicRepository.findClinicsByFilters(is_deleted, clinic_name, clinic_address).stream()
+        return clinicRepository.findClinicsByFilters(is_deleted, clinic_name, clinic_address, clinic_phone).stream()
                 .map(ClinicDTO::new)
                 .collect(Collectors.toList());
     }
@@ -35,29 +36,30 @@ public class ClinicService {
 
     public ClinicDTO addClinic(ClinicDTO clinicDTO) {
 
-        //verificari pentru a nu introduce date nule pentru clinici
-        if(clinicDTO.getClinic_name() == null || clinicDTO.getClinic_name().isEmpty()){
-            throw new IllegalArgumentException("Clinica trebuie sa aiba un nume nenul.");
+        //verificari necesare
+        StringBuilder errors = new StringBuilder();
+
+        //verificare daca datele introduse sunt nule
+        String emptyFieldError = CheckFields.checkEmptyFields(
+                DTOConverter.convertToMap(clinicDTO),
+                Set.of("id_clinic"));
+        if(emptyFieldError != null) {
+            errors.append(emptyFieldError)
+                    .append(System.lineSeparator());
         }
-        if(clinicDTO.getClinic_address() == null || clinicDTO.getClinic_address().isEmpty()){
-            throw new IllegalArgumentException("Clinica trebuie sa aiba o adresa nenula.");
-        }
-        if(clinicDTO.getClinic_phone() == null || clinicDTO.getClinic_phone().isEmpty()){
-            throw new IllegalArgumentException("Clinica trebuie sa aiba un numar de telefon nenul.");
-        }
+
+        //lista clinicilor existente
+        List<ClinicDTO> existingClinic = getClinicsByFilters(null, null,null, null);
 
         //verificari pentru a nu adauga clinici deja existente
-        List<Clinic> existingClinic = clinicRepository.findClinicsByFilters(null, null, null);
-
-        StringBuilder errorMessage = new StringBuilder();
-
-        boolean clinicNameExists = existingClinic.stream().anyMatch(c -> c.getClinic_name().equals(clinicDTO.getClinic_name()));
-        if(clinicNameExists){
-            errorMessage.append("Exista deja o clinica cu acest nume.").append(System.lineSeparator());
+        if(existingClinic.stream().anyMatch(c -> c.getClinic_name().equals(clinicDTO.getClinic_name()))){
+            errors.append("Exista deja o clinica cu acest nume: ").append(clinicDTO.getClinic_name())
+                    .append(System.lineSeparator());
         }
 
-        if(!errorMessage.isEmpty()){
-            throw new IllegalArgumentException(errorMessage.toString().trim());
+        //afisarea erorilor
+        if(!errors.isEmpty()){
+            throw new IllegalArgumentException(errors.toString().trim());
         }
 
         Clinic clinic = new Clinic(clinicDTO);
@@ -70,46 +72,60 @@ public class ClinicService {
     }
 
     public ClinicDTO partialUpdateClinic(Integer id_clinic, Map<String, Object> updates) {
+
+        //verificari necesare
+        StringBuilder errors = new StringBuilder();
+
+        //verificare daca exista clinica mentionata - daca nu exista, nu mai continuam
         Clinic clinic = clinicRepository.findClinicById(id_clinic)
                 .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasita clinica cu id-ul: "+id_clinic));
 
-        List<Clinic> existingClinic = clinicRepository.findClinicsByFilters(null, null, null);
+        //verificare daca nu se introduc date nule
+        String emptyFieldError = CheckFields.checkEmptyFields(
+                DTOConverter.convertToMap(updates),
+                Set.of("id_clinic"));
+        if(emptyFieldError !=null) {
+            errors.append(emptyFieldError)
+                    .append(System.lineSeparator());
+        }
+        //lista clinicilor existente
+        List<Clinic> existingClinic = clinicRepository.findClinicsByFilters(null, null, null, null);
 
         updates.forEach((field, value)->{
             switch (field) {
                 case "clinic_name":
-                    if(value == null){
-                        throw new IllegalArgumentException("Clinica trebuie sa aiba un nume nenul.");
-                    }
                     if(existingClinic.stream().anyMatch(c -> c.getClinic_name().equals(value))){
-                        throw new IllegalArgumentException("Exista deja o clinica cu acest nume.");
+                        errors.append("Exista deja o clinica cu acest nume: ").append(value)
+                                .append(System.lineSeparator());
                     }
                     clinic.setClinic_name((String) value);
                     break;
                 case "clinic_address":
-                    if(value == null){
-                        throw new IllegalArgumentException("Clinica trebuie sa aiba o adresa nenula.");
-                    }
                     clinic.setClinic_address((String) value);
                     break;
                 case "clinic_phone":
-                    if(value == null){
-                        throw new IllegalArgumentException("Clinica trebuie sa aiba un numar de telefon nenul.");
-                    }
                     clinic.setClinic_phone((String) value);
                     break;
                 case "id_clinic":
                 case "created_at":
                 case "updated_at":
                 case "is_deleted":
-                    throw new IllegalArgumentException("Acest camp nu poate fi modificat: " + field);
+                    errors.append("Acest camp nu poate fi modificat: ").append(field)
+                            .append(System.lineSeparator());
+                    break;
                 default:
-                    throw new IllegalArgumentException("Acest camp nu exista: " + field);
+                    errors.append("Acest camp nu exista: ").append(field)
+                            .append(System.lineSeparator());
+                    break;
             }
         });
 
-        clinic.setUpdated_at(new Date());
+        //afisarea erorilor
+        if(!errors.isEmpty()) {
+            throw new IllegalArgumentException(errors.toString().trim());
+        }
 
+        clinic.setUpdated_at(new Date());
         Clinic updatedClinic = clinicRepository.save(clinic);
         return new ClinicDTO(updatedClinic);
     }

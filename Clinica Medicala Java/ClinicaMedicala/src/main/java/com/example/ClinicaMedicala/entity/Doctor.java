@@ -18,7 +18,7 @@ import java.util.Date;
 public class Doctor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_doctor;
+    private Integer id_doctor;
 
     @Column(nullable = false)
     private String last_name;
