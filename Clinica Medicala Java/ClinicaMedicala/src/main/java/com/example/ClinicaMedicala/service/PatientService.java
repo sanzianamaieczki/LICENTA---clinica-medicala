@@ -86,12 +86,12 @@ public class PatientService {
             errors.append("Exista deja acest email: ").append(patientDTO.getEmail())
                     .append(System.lineSeparator());
         }
-        if(existingPatients.stream().anyMatch(p->p.getPhone().equals(patientDTO.getPhone()))){
-            errors.append("Exista deja acest numar de telefon: ").append(patientDTO.getPhone())
-                    .append(System.lineSeparator());
-        }
         if(existingPatients.stream().anyMatch(p->p.getNational_id().equals(patientDTO.getNational_id()))){
             errors.append("Exista deja acest CNP: ").append(patientDTO.getNational_id())
+                    .append(System.lineSeparator());
+        }
+        if(existingPatients.stream().anyMatch(p->p.getPhone().equals(patientDTO.getPhone()))){
+            errors.append("Exista deja acest numar de telefon: ").append(patientDTO.getPhone())
                     .append(System.lineSeparator());
         }
 

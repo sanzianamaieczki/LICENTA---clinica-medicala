@@ -21,7 +21,7 @@ public class Specialization {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_specialization;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String specialization_name;
 
     @Column(nullable = false)
