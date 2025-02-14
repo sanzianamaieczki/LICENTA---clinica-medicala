@@ -52,7 +52,7 @@ public class ClinicService {
         List<ClinicDTO> existingClinic = getClinicsByFilters(null, null,null, null);
 
         //verificari pentru a nu adauga clinici deja existente
-        if(existingClinic.stream().anyMatch(c -> c.getClinic_name().equals(clinicDTO.getClinic_name()))){
+        if(existingClinic.stream().anyMatch(c -> c.getClinic_name().equalsIgnoreCase(clinicDTO.getClinic_name()))){
             errors.append("Exista deja o clinica cu acest nume: ").append(clinicDTO.getClinic_name())
                     .append(System.lineSeparator());
         }
@@ -94,7 +94,7 @@ public class ClinicService {
         updates.forEach((field, value)->{
             switch (field) {
                 case "clinic_name":
-                    if(existingClinic.stream().anyMatch(c -> c.getClinic_name().equals(value))){
+                    if(existingClinic.stream().anyMatch(c -> c.getClinic_name().equalsIgnoreCase((String) value))){
                         errors.append("Exista deja o clinica cu acest nume: ").append(value)
                                 .append(System.lineSeparator());
                     }

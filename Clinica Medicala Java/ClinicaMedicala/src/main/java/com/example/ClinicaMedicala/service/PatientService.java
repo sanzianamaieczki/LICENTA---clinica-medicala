@@ -82,15 +82,15 @@ public class PatientService {
         List<PatientDTO> existingPatients = getPatientsByFilters(null, null,null,null,null, null, null, null);
 
         //verificare daca datele introduse nu exista deja
-        if(existingPatients.stream().anyMatch(p->p.getEmail().equals(patientDTO.getEmail()))){
+        if(existingPatients.stream().anyMatch(p->p.getEmail().equalsIgnoreCase(patientDTO.getEmail()))){
             errors.append("Exista deja acest email: ").append(patientDTO.getEmail())
                     .append(System.lineSeparator());
         }
-        if(existingPatients.stream().anyMatch(p->p.getNational_id().equals(patientDTO.getNational_id()))){
+        if(existingPatients.stream().anyMatch(p->p.getNational_id().equalsIgnoreCase(patientDTO.getNational_id()))){
             errors.append("Exista deja acest CNP: ").append(patientDTO.getNational_id())
                     .append(System.lineSeparator());
         }
-        if(existingPatients.stream().anyMatch(p->p.getPhone().equals(patientDTO.getPhone()))){
+        if(existingPatients.stream().anyMatch(p->p.getPhone().equalsIgnoreCase(patientDTO.getPhone()))){
             errors.append("Exista deja acest numar de telefon: ").append(patientDTO.getPhone())
                     .append(System.lineSeparator());
         }
@@ -140,14 +140,14 @@ public class PatientService {
                     patient.setLast_name((String) value);
                     break;
                 case "email":
-                    if(existingPatients.stream().anyMatch(p->p.getEmail().equals(value))){
+                    if(existingPatients.stream().anyMatch(p->p.getEmail().equalsIgnoreCase((String) value))){
                         errors.append("Exista deja acest email: ").append(value)
                                 .append(System.lineSeparator());
                     }
                     patient.setEmail((String) value);
                     break;
                 case "national_id":
-                    if(existingPatients.stream().anyMatch(p->p.getNational_id().equals(value))){
+                    if(existingPatients.stream().anyMatch(p->p.getNational_id().equalsIgnoreCase((String) value))){
                         errors.append("Exista deja acest CNP: ").append(value)
                                 .append(System.lineSeparator());
                     }
@@ -155,7 +155,7 @@ public class PatientService {
                     patient.setBirth_date(extractBirthDateFromNationalId((String) value));
                     break;
                 case "phone":
-                    if(existingPatients.stream().anyMatch(p->p.getPhone().equals(value))){
+                    if(existingPatients.stream().anyMatch(p->p.getPhone().equalsIgnoreCase((String) value))){
                         errors.append("Exista deja acest numar de telefon: ").append(value)
                                 .append(System.lineSeparator());
                     }

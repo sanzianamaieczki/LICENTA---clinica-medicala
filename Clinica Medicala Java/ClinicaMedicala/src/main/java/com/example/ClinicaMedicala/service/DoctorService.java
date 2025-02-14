@@ -91,11 +91,11 @@ public class DoctorService {
         List<DoctorDTO> existingDoctors = getDoctorsByFilters(null, null,null,null,null);
 
         //verificare daca datele introduse nu exista deja
-        if(existingDoctors.stream().anyMatch(d -> d.getEmail().equals(doctorDTO.getEmail()))) {
+        if(existingDoctors.stream().anyMatch(d -> d.getEmail().equalsIgnoreCase(doctorDTO.getEmail()))) {
             errors.append("Exista deja acest email: ").append(doctorDTO.getEmail())
                     .append(System.lineSeparator());
         }
-        if(existingDoctors.stream().anyMatch(d -> d.getPhone().equals(doctorDTO.getPhone()))) {
+        if(existingDoctors.stream().anyMatch(d -> d.getPhone().equalsIgnoreCase(doctorDTO.getPhone()))) {
             errors.append("Exista deja acest numar de telefon: ").append(doctorDTO.getPhone())
                     .append(System.lineSeparator());
         }
@@ -146,14 +146,14 @@ public class DoctorService {
                     doctor.setLast_name((String) value);
                     break;
                 case "email":
-                    if(existingDoctors.stream().anyMatch(d -> d.getEmail().equals(value))) {
+                    if(existingDoctors.stream().anyMatch(d -> d.getEmail().equalsIgnoreCase((String) value))) {
                         errors.append("Exista deja acest email: ").append(value)
                                 .append(System.lineSeparator());
                     }
                     doctor.setEmail((String) value);
                     break;
                 case "phone":
-                    if(existingDoctors.stream().anyMatch(d -> d.getPhone().equals(value))) {
+                    if(existingDoctors.stream().anyMatch(d -> d.getPhone().equalsIgnoreCase((String) value))) {
                         errors.append("Exista deja acest numar de telefon: ").append(value)
                                 .append(System.lineSeparator());
                     }
