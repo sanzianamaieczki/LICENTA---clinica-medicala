@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -27,9 +28,10 @@ public class MedicalServicesService {
             Boolean is_deleted,
             String medical_service_name,
             Double price,
-            String medical_service_type
+            String medical_service_type,
+            Integer duration
     ){
-        return medicalServicesRepository.findMedicalServicesByFilters(is_deleted, medical_service_name , price, medical_service_type).stream()
+        return medicalServicesRepository.findMedicalServicesByFilters(is_deleted, medical_service_name , price, medical_service_type, duration).stream()
                 .map(MedicalServicesDTO::new)
                 .collect(Collectors.toList());
     }
@@ -45,14 +47,6 @@ public class MedicalServicesService {
                 .collect(Collectors.toList());
     }
 
-    private boolean isValidMedicalServiceType(String type) {
-        for (MedicalServicesType validType : MedicalServicesType.values()) {
-            if (validType.name().equalsIgnoreCase(type)) {
-                return true;
-            }
-        }
-        return false;
-    }
     public MedicalServicesDTO addMedicalService(MedicalServicesDTO medicalServicesDTO) {
 
         //verificari necesare
@@ -75,13 +69,13 @@ public class MedicalServicesService {
         }
 
         //lista serviciilor medicale existente
-        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null, null,null, null);
+        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null, null,null, null,null);
 
         //verificare daca datele introduse nu exista deja (daca are acelasi nume, acelasi tip si acelasi medic asignat)
         if(existingMedicalServices.stream().anyMatch(ms ->
                 ms.getMedical_service_name().equalsIgnoreCase(medicalServicesDTO.getMedical_service_name()) &&
                 ms.getMedical_service_type().equalsIgnoreCase(medicalServicesDTO.getMedical_service_type()) &&
-                ms.getId_doctor() == medicalServicesDTO.getId_doctor()
+                Objects.equals(ms.getId_doctor(), medicalServicesDTO.getId_doctor()) && !ms.getIs_deleted()
         )) {
             errors.append("Exista deja acest serviciu medical: ").append(medicalServicesDTO.getMedical_service_name())
                     .append(", de acest tip: ").append(medicalServicesDTO.getMedical_service_type())
@@ -90,10 +84,18 @@ public class MedicalServicesService {
         }
 
         //verificare daca tipul serviciului medical este corect
-        if (!isValidMedicalServiceType(medicalServicesDTO.getMedical_service_type())) {
+        if (CheckFields.isValidEnumValue(
+                Stream.of(MedicalServicesType.values()).map(Enum::name).toList(),
+                medicalServicesDTO.getMedical_service_type())) {
             errors.append("Tipul serviciului medical: ")
                     .append(medicalServicesDTO.getMedical_service_type())
                     .append(" este invalid")
+                    .append(System.lineSeparator());
+        }
+
+        //verificare daca introducem o durata mai mica decat 0
+        if(medicalServicesDTO.getDuration()!= null && medicalServicesDTO.getDuration() < 1){
+            errors.append("Durata unui serviciu medical trebuie sa aiba mai mult de 1 minut")
                     .append(System.lineSeparator());
         }
 
@@ -131,7 +133,7 @@ public class MedicalServicesService {
         }
 
         //lista serviciilor medicale existenti
-        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null, null,null,null);
+        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null, null,null,null,null);
 
         updates.forEach((field,value) ->{
             switch (field){
@@ -142,13 +144,24 @@ public class MedicalServicesService {
                     medicalServices.setPrice((Double) value);
                     break;
                 case "medical_service_type":
-                    if (!isValidMedicalServiceType((String) value)) {
+                    if (CheckFields.isValidEnumValue(
+                            Stream.of(MedicalServicesType.values()).map(Enum::name).toList(),
+                            (String) value)) {
                         errors.append("Tipul serviciului medical: ")
                                 .append(value)
                                 .append(" este invalid")
                                 .append(System.lineSeparator());
                     }
                     medicalServices.setMedical_service_type(MedicalServicesType.valueOf((String) value));
+                    break;
+                case "duration":
+                    if(Integer.parseInt(value.toString()) < 1) {
+                        errors.append("Durata unui serviciu medical trebuie sa aiba mai mult de 1 minut")
+                                .append(System.lineSeparator());
+
+                    }
+                    medicalServices.setDuration(Integer.parseInt(value.toString()));
+
                     break;
                 case "id_doctor":
                     try {
@@ -182,7 +195,7 @@ public class MedicalServicesService {
         if(existingMedicalServices.stream().anyMatch(ms ->
                 ms.getMedical_service_name().equalsIgnoreCase(medicalServices.getMedical_service_name()) &&
                         ms.getMedical_service_type().equalsIgnoreCase(String.valueOf(medicalServices.getMedical_service_type())) &&
-                        ms.getId_doctor() == medicalServices.getDoctor().getId_doctor()
+                        Objects.equals(ms.getId_doctor(), medicalServices.getDoctor().getId_doctor()) && !ms.getIs_deleted()
         )) {
             errors.append("Exista deja acest serviciu medical: ").append(medicalServices.getMedical_service_name())
                     .append(", de acest tip: ").append(medicalServices.getMedical_service_type())

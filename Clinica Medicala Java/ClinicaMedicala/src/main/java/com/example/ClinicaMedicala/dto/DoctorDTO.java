@@ -19,8 +19,8 @@ public class DoctorDTO {
     private String first_name;
     private String email;
     private String phone;
-    private int id_specialization;
-    private int id_clinic;
+    private Integer id_specialization;
+    private Integer id_clinic;
     private Date created_at;
     private Date updated_at;
     private Boolean is_deleted;

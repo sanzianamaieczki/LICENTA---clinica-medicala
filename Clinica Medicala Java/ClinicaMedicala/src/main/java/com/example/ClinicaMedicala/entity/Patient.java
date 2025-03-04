@@ -36,13 +36,13 @@ public class Patient {
     private String national_id;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
     private Date birth_date;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date created_at;
 
-    @Column(nullable = true)
     @Temporal(TemporalType.TIMESTAMP)
     private Date updated_at;
 

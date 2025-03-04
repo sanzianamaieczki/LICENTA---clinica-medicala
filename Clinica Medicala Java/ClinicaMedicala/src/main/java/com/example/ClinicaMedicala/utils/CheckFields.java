@@ -1,5 +1,7 @@
 package com.example.ClinicaMedicala.utils;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,5 +34,9 @@ public class CheckFields {
 
     private static boolean isFieldEmpty(Object value) {
         return value == null || (value instanceof String && ((String) value).isBlank());
+    }
+
+    public static boolean isValidEnumValue(List<String> validValues, String value) {
+        return validValues.contains(value.toUpperCase());
     }
 }
