@@ -68,6 +68,9 @@ public class PatientService {
 
         //verificari necesare
         StringBuilder errors = new StringBuilder();
+        //pentru aceste warning-uri vreau sa implemntez in interfata o alerta
+        // pentru a da consimsamantul sa adaug aceste date
+        StringBuilder warnings = new StringBuilder();
 
         //verificare daca datele introduse sunt nule
         String emptyFieldsError = CheckFields.checkEmptyFields(
@@ -83,7 +86,7 @@ public class PatientService {
 
         //verificare daca datele introduse nu exista deja
         if(existingPatients.stream().anyMatch(p->p.getEmail().equalsIgnoreCase(patientDTO.getEmail()))){
-            errors.append("Exista deja acest email: ").append(patientDTO.getEmail())
+            warnings.append("Exista deja acest email: ").append(patientDTO.getEmail())
                     .append(System.lineSeparator());
         }
         if(existingPatients.stream().anyMatch(p->p.getNational_id().equalsIgnoreCase(patientDTO.getNational_id()))){
@@ -91,7 +94,7 @@ public class PatientService {
                     .append(System.lineSeparator());
         }
         if(existingPatients.stream().anyMatch(p->p.getPhone().equalsIgnoreCase(patientDTO.getPhone()))){
-            errors.append("Exista deja acest numar de telefon: ").append(patientDTO.getPhone())
+            warnings.append("Exista deja acest numar de telefon: ").append(patientDTO.getPhone())
                     .append(System.lineSeparator());
         }
 
@@ -115,6 +118,10 @@ public class PatientService {
 
         //verificari necesare
         StringBuilder errors = new StringBuilder();
+
+        //pentru aceste warning-uri vreau sa implemntez in interfata o alerta
+        // pentru a da consimsamantul sa adaug aceste date
+        StringBuilder warnings = new StringBuilder();
 
         //verificare daca datele introduse sunt nule
         String emptyFieldsError = CheckFields.checkEmptyFields(
@@ -141,7 +148,7 @@ public class PatientService {
                     break;
                 case "email":
                     if(existingPatients.stream().anyMatch(p->p.getEmail().equalsIgnoreCase((String) value))){
-                        errors.append("Exista deja acest email: ").append(value)
+                        warnings.append("Exista deja acest email: ").append(value)
                                 .append(System.lineSeparator());
                     }
                     patient.setEmail((String) value);
@@ -156,7 +163,7 @@ public class PatientService {
                     break;
                 case "phone":
                     if(existingPatients.stream().anyMatch(p->p.getPhone().equalsIgnoreCase((String) value))){
-                        errors.append("Exista deja acest numar de telefon: ").append(value)
+                        warnings.append("Exista deja acest numar de telefon: ").append(value)
                                 .append(System.lineSeparator());
                     }
                     patient.setPhone((String) value);
