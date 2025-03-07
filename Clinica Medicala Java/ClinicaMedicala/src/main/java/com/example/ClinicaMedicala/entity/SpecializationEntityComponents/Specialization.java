@@ -1,6 +1,6 @@
-package com.example.ClinicaMedicala.entity;
+package com.example.ClinicaMedicala.entity.SpecializationEntityComponents;
 
-import com.example.ClinicaMedicala.dto.SpecializationDTO;
+import com.example.ClinicaMedicala.dto.SpecializationDTOComponent.SpecializationDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package com.example.ClinicaMedicala.entity;
+package com.example.ClinicaMedicala.entity.DoctorEntityComponents;
 
-import com.example.ClinicaMedicala.dto.DoctorScheduleDTO;
-import com.example.ClinicaMedicala.enums.DayOfWeek;
+import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorScheduleDTO;
+import com.example.ClinicaMedicala.enums.DoctorEnumComponents.DayOfWeek;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

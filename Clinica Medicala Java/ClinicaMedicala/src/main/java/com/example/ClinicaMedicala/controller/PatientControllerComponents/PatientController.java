@@ -1,6 +1,6 @@
 package com.example.ClinicaMedicala.controller.PatientControllerComponents;
 
-import com.example.ClinicaMedicala.dto.PatientDTO;
+import com.example.ClinicaMedicala.dto.PatientDTOComponents.PatientDTO;
 import com.example.ClinicaMedicala.service.PatientService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;

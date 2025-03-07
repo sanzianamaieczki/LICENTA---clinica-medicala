@@ -1,12 +1,11 @@
-package com.example.ClinicaMedicala.dto;
+package com.example.ClinicaMedicala.dto.DoctorDTOComponents;
 
-import com.example.ClinicaMedicala.entity.MedicalServices;
+import com.example.ClinicaMedicala.entity.DoctorEntityComponents.MedicalServices;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Time;
 import java.util.Date;
 
 @Getter

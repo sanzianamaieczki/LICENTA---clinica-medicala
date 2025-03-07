@@ -1,6 +1,6 @@
 package com.example.ClinicaMedicala.service;
 
-import com.example.ClinicaMedicala.dto.PatientDTO;
+import com.example.ClinicaMedicala.dto.PatientDTOComponents.PatientDTO;
 import com.example.ClinicaMedicala.service.PatientServiceComponents.PatientComponents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

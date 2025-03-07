@@ -1,7 +1,7 @@
-package com.example.ClinicaMedicala.controller;
+package com.example.ClinicaMedicala.controller.ClinicControllerComponents;
 
-import com.example.ClinicaMedicala.dto.ClinicDTO;
-import com.example.ClinicaMedicala.dto.DoctorDTO;
+import com.example.ClinicaMedicala.dto.ClinicDTOComponents.ClinicDTO;
+import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
 import com.example.ClinicaMedicala.service.ClinicService;
 import com.example.ClinicaMedicala.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;

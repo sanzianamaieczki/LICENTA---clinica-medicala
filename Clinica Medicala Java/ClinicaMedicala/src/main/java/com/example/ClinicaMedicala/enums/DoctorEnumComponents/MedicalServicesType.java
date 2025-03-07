@@ -1,4 +1,4 @@
-package com.example.ClinicaMedicala.enums;
+package com.example.ClinicaMedicala.enums.DoctorEnumComponents;
 
 public enum MedicalServicesType {
     consultation,

@@ -1,6 +1,6 @@
-package com.example.ClinicaMedicala.repository;
+package com.example.ClinicaMedicala.repository.ClinicRepositoryComponents;
 
-import com.example.ClinicaMedicala.entity.Clinic;
+import com.example.ClinicaMedicala.entity.ClinicEntityComponents.Clinic;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

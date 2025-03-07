@@ -1,11 +1,11 @@
 package com.example.ClinicaMedicala.service.DoctorServiceComponents;
 
-import com.example.ClinicaMedicala.dto.MedicalServicesDTO;
-import com.example.ClinicaMedicala.entity.Doctor;
-import com.example.ClinicaMedicala.entity.MedicalServices;
-import com.example.ClinicaMedicala.enums.MedicalServicesType;
-import com.example.ClinicaMedicala.repository.DoctorRepository;
-import com.example.ClinicaMedicala.repository.MedicalServicesRepository;
+import com.example.ClinicaMedicala.dto.DoctorDTOComponents.MedicalServicesDTO;
+import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
+import com.example.ClinicaMedicala.entity.DoctorEntityComponents.MedicalServices;
+import com.example.ClinicaMedicala.enums.DoctorEnumComponents.MedicalServicesType;
+import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.DoctorRepository;
+import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.MedicalServicesRepository;
 import com.example.ClinicaMedicala.utils.CheckFields;
 import com.example.ClinicaMedicala.utils.DTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,8 +1,8 @@
 package com.example.ClinicaMedicala.service;
 
-import com.example.ClinicaMedicala.dto.SpecializationDTO;
-import com.example.ClinicaMedicala.entity.Specialization;
-import com.example.ClinicaMedicala.repository.SpecializationRepository;
+import com.example.ClinicaMedicala.dto.SpecializationDTOComponent.SpecializationDTO;
+import com.example.ClinicaMedicala.entity.SpecializationEntityComponents.Specialization;
+import com.example.ClinicaMedicala.repository.SpecializationRepositoryComponents.SpecializationRepository;
 import com.example.ClinicaMedicala.utils.CheckFields;
 import com.example.ClinicaMedicala.utils.DTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;

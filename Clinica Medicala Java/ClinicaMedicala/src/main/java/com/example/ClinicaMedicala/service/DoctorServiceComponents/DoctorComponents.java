@@ -1,12 +1,12 @@
 package com.example.ClinicaMedicala.service.DoctorServiceComponents;
 
-import com.example.ClinicaMedicala.dto.DoctorDTO;
-import com.example.ClinicaMedicala.entity.Clinic;
-import com.example.ClinicaMedicala.entity.Doctor;
-import com.example.ClinicaMedicala.entity.Specialization;
-import com.example.ClinicaMedicala.repository.ClinicRepository;
-import com.example.ClinicaMedicala.repository.DoctorRepository;
-import com.example.ClinicaMedicala.repository.SpecializationRepository;
+import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
+import com.example.ClinicaMedicala.entity.ClinicEntityComponents.Clinic;
+import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
+import com.example.ClinicaMedicala.entity.SpecializationEntityComponents.Specialization;
+import com.example.ClinicaMedicala.repository.ClinicRepositoryComponents.ClinicRepository;
+import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.DoctorRepository;
+import com.example.ClinicaMedicala.repository.SpecializationRepositoryComponents.SpecializationRepository;
 import com.example.ClinicaMedicala.utils.CheckFields;
 import com.example.ClinicaMedicala.utils.DTOConverter;
 import com.example.ClinicaMedicala.utils.ValidationUtils;
