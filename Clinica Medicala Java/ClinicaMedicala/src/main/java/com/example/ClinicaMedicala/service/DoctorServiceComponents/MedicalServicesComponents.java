@@ -1,4 +1,4 @@
-package com.example.ClinicaMedicala.service;
+package com.example.ClinicaMedicala.service.DoctorServiceComponents;
 
 import com.example.ClinicaMedicala.dto.MedicalServicesDTO;
 import com.example.ClinicaMedicala.entity.Doctor;
@@ -15,9 +15,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 @Service
-public class MedicalServicesService {
+public class MedicalServicesComponents {
     @Autowired
     private MedicalServicesRepository medicalServicesRepository;
 
@@ -74,8 +73,8 @@ public class MedicalServicesService {
         //verificare daca datele introduse nu exista deja (daca are acelasi nume, acelasi tip si acelasi medic asignat)
         if(existingMedicalServices.stream().anyMatch(ms ->
                 ms.getMedical_service_name().equalsIgnoreCase(medicalServicesDTO.getMedical_service_name()) &&
-                ms.getMedical_service_type().equalsIgnoreCase(medicalServicesDTO.getMedical_service_type()) &&
-                Objects.equals(ms.getId_doctor(), medicalServicesDTO.getId_doctor()) && !ms.getIs_deleted()
+                        ms.getMedical_service_type().equalsIgnoreCase(medicalServicesDTO.getMedical_service_type()) &&
+                        Objects.equals(ms.getId_doctor(), medicalServicesDTO.getId_doctor()) && !ms.getIs_deleted()
         )) {
             errors.append("Exista deja acest serviciu medical: ").append(medicalServicesDTO.getMedical_service_name())
                     .append(", de acest tip: ").append(medicalServicesDTO.getMedical_service_type())

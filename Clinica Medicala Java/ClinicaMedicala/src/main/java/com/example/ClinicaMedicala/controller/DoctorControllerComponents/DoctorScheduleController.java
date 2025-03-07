@@ -1,8 +1,7 @@
-package com.example.ClinicaMedicala.controller;
+package com.example.ClinicaMedicala.controller.DoctorControllerComponents;
 
-import com.example.ClinicaMedicala.dto.MedicalServicesDTO;
-import com.example.ClinicaMedicala.enums.MedicalServicesType;
-import com.example.ClinicaMedicala.service.MedicalServicesService;
+import com.example.ClinicaMedicala.dto.DoctorScheduleDTO;
+import com.example.ClinicaMedicala.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,29 +9,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.sql.Time;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/clinica-medicala/medical-services")
-public class MedicalServicesController {
+@RequestMapping("/api/clinica-medicala/doctors/doctor-schedule")
+public class DoctorScheduleController {
 
     @Autowired
-    MedicalServicesService medicalServicesService;
+    DoctorService doctorService;
 
     @GetMapping
-    public ResponseEntity<?> getAllMedicalServices(
+    public ResponseEntity<?> getAllDoctorSchedule(
             @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
-            @RequestParam(value = "medical_service_name", required = false) String medicalServiceName,
-            @RequestParam(value = "price", required = false) Double price,
-            @RequestParam(value = "medical_service_type", required = false) String medical_service_type,
-            @RequestParam(value = "duration", required = false) Integer duration
+            @RequestParam(value = "day_of_week", required = false) String day_of_week,
+            @RequestParam(value = "start_time", required = false) Time start_time,
+            @RequestParam(value = "end_time", required = false) Time end_time
     ) {
         try{
-            List<MedicalServicesDTO> medicalServices = medicalServicesService.getMedicalServicesByFilters(is_deleted,medicalServiceName, price,medical_service_type, duration);
-            return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
+            List<DoctorScheduleDTO> doctorSchedule = doctorService.getDoctorScheduleByFilters(is_deleted,day_of_week, start_time, end_time);
+            return ResponseEntity.status(HttpStatus.OK).body(doctorSchedule);
         } catch (HttpClientErrorException.UnprocessableEntity e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         } catch (EntityNotFoundException e) {
@@ -44,11 +43,11 @@ public class MedicalServicesController {
         }
     }
 
-    @GetMapping("/{id_medical_service}")
-    public ResponseEntity<?> getMedicalServiceById(@PathVariable Integer id_medical_service) {
+    @GetMapping("/{id_doctor_schedule}")
+    public ResponseEntity<?> getDoctorScheduleById(@PathVariable Integer id_doctor_schedule) {
         try{
-            Optional<MedicalServicesDTO> medicalServicesDTO = medicalServicesService.getMedicalServicesById(id_medical_service);
-            return ResponseEntity.status(HttpStatus.OK).body(medicalServicesDTO);
+            Optional<DoctorScheduleDTO> doctorScheduleDTO = doctorService.getDoctorScheduleById(id_doctor_schedule);
+            return ResponseEntity.status(HttpStatus.OK).body(doctorScheduleDTO);
         } catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){
@@ -61,10 +60,10 @@ public class MedicalServicesController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addMedicalService(@RequestBody MedicalServicesDTO medicalServicesDTO) {
+    public ResponseEntity<?> addDoctorSchedule(@RequestBody DoctorScheduleDTO doctorScheduleDTO) {
         try{
-            MedicalServicesDTO medicalService = medicalServicesService.addMedicalService(medicalServicesDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(medicalService);
+            DoctorScheduleDTO doctorSchedule = doctorService.addDoctorSchedule(doctorScheduleDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(doctorSchedule);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -76,11 +75,11 @@ public class MedicalServicesController {
         }
     }
 
-    @PatchMapping("/{id_medical_service}")
-    public ResponseEntity<?> updateMedicalService(@PathVariable Integer id_medical_service, @RequestBody Map<String, Object> updates) {
+    @PatchMapping("/{id_doctor_schedule}")
+    public ResponseEntity<?> updateDoctorSchedule(@PathVariable Integer id_doctor_schedule, @RequestBody Map<String, Object> updates) {
         try{
-            MedicalServicesDTO medicalServicesDTO = medicalServicesService.updateMedicalService(id_medical_service, updates);
-            return ResponseEntity.status(HttpStatus.OK).body(medicalServicesDTO);
+            DoctorScheduleDTO doctorScheduleDTO = doctorService.updateDoctorSchedule(id_doctor_schedule, updates);
+            return ResponseEntity.status(HttpStatus.OK).body(doctorScheduleDTO);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -92,11 +91,11 @@ public class MedicalServicesController {
         }
     }
 
-    @DeleteMapping("/{id_medical_service}")
-    public ResponseEntity<?> deleteMedicalService(@PathVariable Integer id_medical_service) {
+    @DeleteMapping("/{id_doctor_schedule}")
+    public ResponseEntity<?> deleteDoctorSchedule(@PathVariable Integer id_doctor_schedule) {
         try{
-            medicalServicesService.deleteMedicalService(id_medical_service);
-            return ResponseEntity.status(HttpStatus.OK).body("Serviciul cu id-ul: " + id_medical_service + " a fost sters.");
+            doctorService.deleteDoctorSchedule(id_doctor_schedule);
+            return ResponseEntity.status(HttpStatus.OK).body("Serviciul cu id-ul: " + id_doctor_schedule + " a fost sters.");
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){

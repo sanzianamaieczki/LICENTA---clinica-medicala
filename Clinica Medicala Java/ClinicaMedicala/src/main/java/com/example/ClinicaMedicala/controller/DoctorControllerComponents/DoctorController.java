@@ -1,11 +1,9 @@
-package com.example.ClinicaMedicala.controller;
+package com.example.ClinicaMedicala.controller.DoctorControllerComponents;
 
 import com.example.ClinicaMedicala.dto.DoctorDTO;
 import com.example.ClinicaMedicala.dto.DoctorScheduleDTO;
 import com.example.ClinicaMedicala.dto.MedicalServicesDTO;
-import com.example.ClinicaMedicala.service.DoctorScheduleService;
 import com.example.ClinicaMedicala.service.DoctorService;
-import com.example.ClinicaMedicala.service.MedicalServicesService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,11 +22,6 @@ public class DoctorController {
 
     @Autowired
     DoctorService doctorService;
-
-    @Autowired
-    MedicalServicesService medicalServicesService;
-    @Autowired
-    private DoctorScheduleService doctorScheduleService;
 
     @GetMapping
     public ResponseEntity<?> getAllDoctors(
@@ -71,7 +64,7 @@ public class DoctorController {
     @GetMapping("/{id_doctor}/medical-services")
     public ResponseEntity<?> getMedicalServicesByDoctor(@PathVariable Integer id_doctor) {
         try{
-            List<MedicalServicesDTO> medicalServices = medicalServicesService.getMedicalServicesByDoctor(id_doctor);
+            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByDoctor(id_doctor);
             return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
@@ -87,7 +80,7 @@ public class DoctorController {
     @GetMapping("/{id_doctor}/doctor-schedule")
     public ResponseEntity<?> getDoctorScheduleByDoctor(@PathVariable Integer id_doctor) {
         try{
-            List<DoctorScheduleDTO> doctorSchedule = doctorScheduleService.getDoctorScheduleByDoctor(id_doctor);
+            List<DoctorScheduleDTO> doctorSchedule = doctorService.getDoctorScheduleByDoctor(id_doctor);
             return ResponseEntity.status(HttpStatus.OK).body(doctorSchedule);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());

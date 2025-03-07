@@ -1,12 +1,9 @@
-package com.example.ClinicaMedicala.service;
+package com.example.ClinicaMedicala.service.DoctorServiceComponents;
 
 import com.example.ClinicaMedicala.dto.DoctorScheduleDTO;
-import com.example.ClinicaMedicala.dto.MedicalServicesDTO;
 import com.example.ClinicaMedicala.entity.Doctor;
 import com.example.ClinicaMedicala.entity.DoctorSchedule;
-import com.example.ClinicaMedicala.entity.MedicalServices;
 import com.example.ClinicaMedicala.enums.DayOfWeek;
-import com.example.ClinicaMedicala.enums.MedicalServicesType;
 import com.example.ClinicaMedicala.repository.DoctorRepository;
 import com.example.ClinicaMedicala.repository.DoctorScheduleRepository;
 import com.example.ClinicaMedicala.utils.CheckFields;
@@ -19,9 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-
 @Service
-public class DoctorScheduleService {
+public class DoctorScheduleComponents {
     @Autowired
     private DoctorScheduleRepository doctorScheduleRepository;
 
@@ -84,7 +80,7 @@ public class DoctorScheduleService {
         //verificare daca datele introduse nu exista deja (medicul trebuie sa aiba maxim 7 inregistrari, cate una pentru fiecare zi a saptamanii)
         if(existingDoctorSchedule.stream().anyMatch(ds ->
                 ds.getDay_of_week().equalsIgnoreCase(doctorScheduleDTO.getDay_of_week()) &&
-                Objects.equals(ds.getId_doctor(), doctorScheduleDTO.getId_doctor()) && !ds.getIs_deleted()
+                        Objects.equals(ds.getId_doctor(), doctorScheduleDTO.getId_doctor()) && !ds.getIs_deleted()
         )) {
             errors.append("Doctorul cu acest id: ").append(doctorScheduleDTO.getId_doctor())
                     .append(" are deja program pentru ziua: ").append(doctorScheduleDTO.getDay_of_week())
