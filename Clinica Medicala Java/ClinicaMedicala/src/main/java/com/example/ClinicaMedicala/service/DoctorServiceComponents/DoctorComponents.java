@@ -9,6 +9,7 @@ import com.example.ClinicaMedicala.repository.DoctorRepository;
 import com.example.ClinicaMedicala.repository.SpecializationRepository;
 import com.example.ClinicaMedicala.utils.CheckFields;
 import com.example.ClinicaMedicala.utils.DTOConverter;
+import com.example.ClinicaMedicala.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,6 +82,17 @@ public class DoctorComponents {
                     .append(System.lineSeparator());
         }
 
+        if(ValidationUtils.validatePhoneNumber(doctorDTO.getPhone())) {
+            errors.append("Numarul de telefon: ").append(doctorDTO.getPhone())
+                    .append(" nu este formatat corect.")
+                    .append(System.lineSeparator());
+        }
+        if(ValidationUtils.validateEmail(doctorDTO.getEmail())) {
+            errors.append("Email-ul: ").append(doctorDTO.getEmail())
+                    .append(" nu este formatat corect.")
+                    .append(System.lineSeparator());
+        }
+
         //lista doctorilor existenti
         List<DoctorDTO> existingDoctors = getDoctorsByFilters(null, null,null,null,null);
 
@@ -140,6 +152,11 @@ public class DoctorComponents {
                     doctor.setLast_name((String) value);
                     break;
                 case "email":
+                    if(ValidationUtils.validateEmail((String) value)) {
+                        errors.append("Email-ul: ").append((String) value)
+                                .append(" nu este formatat corect.")
+                                .append(System.lineSeparator());
+                    }
                     if(existingDoctors.stream().anyMatch(d -> d.getEmail().equalsIgnoreCase((String) value))) {
                         errors.append("Exista deja acest email: ").append(value)
                                 .append(System.lineSeparator());
@@ -147,6 +164,11 @@ public class DoctorComponents {
                     doctor.setEmail((String) value);
                     break;
                 case "phone":
+                    if(ValidationUtils.validatePhoneNumber((String) value)) {
+                        errors.append("Numarul de telefon: ").append((String) value)
+                                .append(" nu este formatat corect.")
+                                .append(System.lineSeparator());
+                    }
                     if(existingDoctors.stream().anyMatch(d -> d.getPhone().equalsIgnoreCase((String) value))) {
                         errors.append("Exista deja acest numar de telefon: ").append(value)
                                 .append(System.lineSeparator());

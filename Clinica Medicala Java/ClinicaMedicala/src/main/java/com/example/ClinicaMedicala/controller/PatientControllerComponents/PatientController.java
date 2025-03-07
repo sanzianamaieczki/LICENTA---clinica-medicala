@@ -1,4 +1,4 @@
-package com.example.ClinicaMedicala.controller;
+package com.example.ClinicaMedicala.controller.PatientControllerComponents;
 
 import com.example.ClinicaMedicala.dto.PatientDTO;
 import com.example.ClinicaMedicala.service.PatientService;

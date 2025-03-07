@@ -5,6 +5,7 @@ import com.example.ClinicaMedicala.entity.Clinic;
 import com.example.ClinicaMedicala.repository.ClinicRepository;
 import com.example.ClinicaMedicala.utils.CheckFields;
 import com.example.ClinicaMedicala.utils.DTOConverter;
+import com.example.ClinicaMedicala.utils.ValidationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,12 @@ public class ClinicService {
                 Set.of("id_clinic"));
         if(emptyFieldError != null) {
             errors.append(emptyFieldError)
+                    .append(System.lineSeparator());
+        }
+
+        if(ValidationUtils.validatePhoneNumber(clinicDTO.getClinic_phone())) {
+            errors.append("Numarul de telefon: ").append(clinicDTO.getClinic_phone())
+                    .append(" nu este formatat corect.")
                     .append(System.lineSeparator());
         }
 
@@ -104,6 +111,11 @@ public class ClinicService {
                     clinic.setClinic_address((String) value);
                     break;
                 case "clinic_phone":
+                    if(ValidationUtils.validatePhoneNumber((String) value)) {
+                        errors.append("Numarul de telefon: ").append((String) value)
+                                .append(" nu este formatat corect.")
+                                .append(System.lineSeparator());
+                    }
                     clinic.setClinic_phone((String) value);
                     break;
                 case "id_clinic":
