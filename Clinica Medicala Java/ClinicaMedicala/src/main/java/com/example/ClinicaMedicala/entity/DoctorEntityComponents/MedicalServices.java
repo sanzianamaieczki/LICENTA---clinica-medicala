@@ -21,22 +21,22 @@ public class MedicalServices {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_medical_service;
-
-    @ManyToOne
-    @JoinColumn(name = "id_doctor", nullable = false)
-    private Doctor doctor;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "id_doctor", nullable = false)
+//    private Doctor doctor;
 
     @Column(nullable = false)
     private String medical_service_name;
 
-    @Column(nullable = false)
-    private Double price;
+//    @Column(nullable = false)
+//    private Double price;
 
     @Enumerated(EnumType.STRING)
     private MedicalServicesType medical_service_type;
-
-    @Column(nullable = false)
-    private Integer duration;
+//
+//    @Column(nullable = false)
+//    private Integer duration;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -50,9 +50,7 @@ public class MedicalServices {
 
     public MedicalServices(MedicalServicesDTO medicalServicesDTO){
         this.medical_service_name = medicalServicesDTO.getMedical_service_name();
-        this.price = medicalServicesDTO.getPrice();
         this.medical_service_type = MedicalServicesType.valueOf(medicalServicesDTO.getMedical_service_type());
-        this.duration = medicalServicesDTO.getDuration();
         this.created_at = medicalServicesDTO.getCreated_at();
         this.updated_at = medicalServicesDTO.getUpdated_at();
         this.is_deleted = medicalServicesDTO.getIs_deleted();

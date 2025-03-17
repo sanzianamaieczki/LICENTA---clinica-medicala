@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "doctors")
@@ -52,6 +54,17 @@ public class Doctor {
 
     @Column(nullable = false)
     private Boolean is_deleted = false;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "doctor_medical_services",
+            joinColumns = @JoinColumn(name = "id_doctor"),
+            inverseJoinColumns = @JoinColumn(name = "id_medical_service")
+    )
+    private Set<MedicalServices> medicalServices = new HashSet<>();
+
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<DoctorSchedule> doctorSchedules = new HashSet<>();
 
     public Doctor(DoctorDTO doctorDTO){
         this.last_name = doctorDTO.getLast_name();

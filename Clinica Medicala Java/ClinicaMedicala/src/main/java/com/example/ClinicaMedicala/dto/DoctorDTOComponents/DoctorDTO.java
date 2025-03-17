@@ -6,7 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -25,6 +28,9 @@ public class DoctorDTO {
     private Date updated_at;
     private Boolean is_deleted;
 
+    private List<MedicalServicesDTO> medicalServices;
+    private List<DoctorScheduleDTO> doctorSchedules;
+
     public DoctorDTO(Doctor doctor) {
         this.id_doctor = doctor.getId_doctor();
         this.last_name = doctor.getLast_name();
@@ -36,5 +42,21 @@ public class DoctorDTO {
         this.created_at = doctor.getCreated_at();
         this.updated_at = doctor.getUpdated_at();
         this.is_deleted = doctor.getIs_deleted();
+
+        if (doctor.getMedicalServices() != null) {
+            this.medicalServices = doctor.getMedicalServices().stream()
+                    .map(MedicalServicesDTO::new)
+                    .collect(Collectors.toList());
+        } else {
+            this.medicalServices = new ArrayList<>();
+        }
+
+        if(doctor.getDoctorSchedules() != null) {
+            this.doctorSchedules = doctor.getDoctorSchedules().stream()
+                    .map(DoctorScheduleDTO::new)
+                    .collect(Collectors.toList());
+        } else {
+            this.doctorSchedules = new ArrayList<>();
+        }
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.print.Doc;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,11 +62,38 @@ public class DoctorController {
         }
     }
 
+    @GetMapping("/medical-services")
+    public ResponseEntity<?> getAllMedicalServices(
+            @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
+            @RequestParam(value = "medical_service_name", required = false) String medicalServiceName,
+            @RequestParam(value = "medical_service_type", required = false) String medical_service_type
+    ) {
+        try{
+            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByFilters(is_deleted,medicalServiceName,medical_service_type);
+            return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
+        } catch (HttpClientErrorException.UnprocessableEntity e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/{id_doctor}/medical-services")
     public ResponseEntity<?> getMedicalServicesByDoctor(@PathVariable Integer id_doctor) {
         try{
-            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByDoctor(id_doctor);
-            return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
+            Optional<DoctorDTO> doctorDTO = doctorService.getDoctorById(id_doctor);
+            if(doctorDTO.isPresent()){
+                List<MedicalServicesDTO> medicalServicesDTO = doctorDTO.get().getMedicalServices();
+                return ResponseEntity.status(HttpStatus.OK).body(medicalServicesDTO);
+            }
+            else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctorul cu id-ul: " + id_doctor + " nu a fost gasit");
+
+//            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByDoctor(id_doctor);
+//            return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){

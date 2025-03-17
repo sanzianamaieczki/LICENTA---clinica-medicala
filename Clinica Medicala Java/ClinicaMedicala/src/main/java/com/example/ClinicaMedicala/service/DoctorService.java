@@ -63,20 +63,18 @@ public class DoctorService {
     public List<MedicalServicesDTO> getMedicalServicesByFilters(
             Boolean is_deleted,
             String medical_service_name,
-            Double price,
-            String medical_service_type,
-            Integer duration
+            String medical_service_type
     ){
-        return medicalServicesComponents.getMedicalServicesByFilters(is_deleted, medical_service_name, price, medical_service_type, duration);
+        return medicalServicesComponents.getMedicalServicesByFilters(is_deleted, medical_service_name, medical_service_type);
     }
 
     public Optional<MedicalServicesDTO> getMedicalServicesById(int id_medical_service) {
         return medicalServicesComponents.getMedicalServicesById(id_medical_service);
     }
 
-    public List<MedicalServicesDTO> getMedicalServicesByDoctor(int id_doctor) {
-        return medicalServicesComponents.getMedicalServicesByDoctor(id_doctor);
-    }
+//    public List<MedicalServicesDTO> getMedicalServicesByDoctor(int id_doctor) {
+//        return medicalServicesComponents.getMedicalServicesByDoctor(id_doctor);
+//    }
 
     public MedicalServicesDTO addMedicalService(MedicalServicesDTO medicalServicesDTO) {
         return medicalServicesComponents.addMedicalService(medicalServicesDTO);

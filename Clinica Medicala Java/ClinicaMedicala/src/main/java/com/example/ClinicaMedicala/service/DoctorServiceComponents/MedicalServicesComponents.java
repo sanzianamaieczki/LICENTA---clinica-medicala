@@ -26,11 +26,9 @@ public class MedicalServicesComponents {
     public List<MedicalServicesDTO> getMedicalServicesByFilters(
             Boolean is_deleted,
             String medical_service_name,
-            Double price,
-            String medical_service_type,
-            Integer duration
+            String medical_service_type
     ){
-        return medicalServicesRepository.findMedicalServicesByFilters(is_deleted, medical_service_name , price, medical_service_type, duration).stream()
+        return medicalServicesRepository.findMedicalServicesByFilters(is_deleted, medical_service_name , medical_service_type).stream()
                 .map(MedicalServicesDTO::new)
                 .collect(Collectors.toList());
     }
@@ -40,11 +38,11 @@ public class MedicalServicesComponents {
                 .map(MedicalServicesDTO::new);
     }
 
-    public List<MedicalServicesDTO> getMedicalServicesByDoctor(int id_doctor) {
-        return medicalServicesRepository.findMedicalServicesByDoctorId(id_doctor).stream()
-                .map(MedicalServicesDTO::new)
-                .collect(Collectors.toList());
-    }
+//    public List<MedicalServicesDTO> getMedicalServicesByDoctor(int id_doctor) {
+//        return medicalServicesRepository.findMedicalServicesByDoctorId(id_doctor).stream()
+//                .map(MedicalServicesDTO::new)
+//                .collect(Collectors.toList());
+//    }
 
     public MedicalServicesDTO addMedicalService(MedicalServicesDTO medicalServicesDTO) {
 
@@ -60,25 +58,16 @@ public class MedicalServicesComponents {
                     .append(System.lineSeparator());
         }
 
-        //verificare daca exista doctor cu id-ul primit
-        Doctor doctor = doctorRepository.findDoctorById(medicalServicesDTO.getId_doctor()).orElse(null);
-        if(doctor == null) {
-            errors.append("Doctorul cu id-ul: ").append(medicalServicesDTO.getId_doctor()).append(" nu exista.")
-                    .append(System.lineSeparator());
-        }
-
         //lista serviciilor medicale existente
-        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null, null,null, null,null);
+        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null, null,null);
 
         //verificare daca datele introduse nu exista deja (daca are acelasi nume, acelasi tip si acelasi medic asignat)
         if(existingMedicalServices.stream().anyMatch(ms ->
                 ms.getMedical_service_name().equalsIgnoreCase(medicalServicesDTO.getMedical_service_name()) &&
-                        ms.getMedical_service_type().equalsIgnoreCase(medicalServicesDTO.getMedical_service_type()) &&
-                        Objects.equals(ms.getId_doctor(), medicalServicesDTO.getId_doctor()) && !ms.getIs_deleted()
+                        ms.getMedical_service_type().equalsIgnoreCase(medicalServicesDTO.getMedical_service_type()) && !ms.getIs_deleted()
         )) {
             errors.append("Exista deja acest serviciu medical: ").append(medicalServicesDTO.getMedical_service_name())
                     .append(", de acest tip: ").append(medicalServicesDTO.getMedical_service_type())
-                    .append(", asignat doctorului cu id-ul: ").append(medicalServicesDTO.getId_doctor())
                     .append(System.lineSeparator());
         }
 
@@ -91,12 +80,12 @@ public class MedicalServicesComponents {
                     .append(" este invalid")
                     .append(System.lineSeparator());
         }
-
-        //verificare daca introducem o durata mai mica decat 0
-        if(medicalServicesDTO.getDuration()!= null && medicalServicesDTO.getDuration() < 1){
-            errors.append("Durata unui serviciu medical trebuie sa aiba mai mult de 1 minut")
-                    .append(System.lineSeparator());
-        }
+//
+//        //verificare daca introducem o durata mai mica decat 0
+//        if(medicalServicesDTO.getDuration()!= null && medicalServicesDTO.getDuration() < 1){
+//            errors.append("Durata unui serviciu medical trebuie sa aiba mai mult de 1 minut")
+//                    .append(System.lineSeparator());
+//        }
 
         //afisarea erorilor
         if(!errors.isEmpty()) {
@@ -104,7 +93,6 @@ public class MedicalServicesComponents {
         }
 
         MedicalServices medicalService = new MedicalServices(medicalServicesDTO);
-        medicalService.setDoctor(doctor);
         medicalService.setCreated_at(new Date());
         medicalService.setUpdated_at(null);
         medicalService.setIs_deleted(false);
@@ -132,15 +120,12 @@ public class MedicalServicesComponents {
         }
 
         //lista serviciilor medicale existenti
-        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null, null,null,null,null);
+        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null,null,null);
 
         updates.forEach((field,value) ->{
             switch (field){
                 case "medical_service_name":
                     medicalServices.setMedical_service_name((String) value);
-                    break;
-                case "price":
-                    medicalServices.setPrice((Double) value);
                     break;
                 case "medical_service_type":
                     if (CheckFields.isValidEnumValue(
@@ -153,29 +138,20 @@ public class MedicalServicesComponents {
                     }
                     medicalServices.setMedical_service_type(MedicalServicesType.valueOf((String) value));
                     break;
-                case "duration":
-                    if(Integer.parseInt(value.toString()) < 1) {
-                        errors.append("Durata unui serviciu medical trebuie sa aiba mai mult de 1 minut")
-                                .append(System.lineSeparator());
-
-                    }
-                    medicalServices.setDuration(Integer.parseInt(value.toString()));
-
-                    break;
-                case "id_doctor":
-                    try {
-                        Integer id_doctor = Integer.parseInt(value.toString());
-                        Doctor doctor = doctorRepository.findDoctorById(id_doctor).orElse(null);
-                        if (doctor == null) {
-                            errors.append("Nu a fost gasit doctorul cu id-ul: ").append(id_doctor)
-                                    .append(System.lineSeparator());
-                        }
-                        medicalServices.setDoctor(doctor);
-                    } catch (NumberFormatException e) {
-                        errors.append("ID-ul doctorului trebuie sa fie un numar valid.")
-                                .append(System.lineSeparator());
-                    }
-                    break;
+//                case "id_doctor":
+//                    try {
+//                        Integer id_doctor = Integer.parseInt(value.toString());
+//                        Doctor doctor = doctorRepository.findDoctorById(id_doctor).orElse(null);
+//                        if (doctor == null) {
+//                            errors.append("Nu a fost gasit doctorul cu id-ul: ").append(id_doctor)
+//                                    .append(System.lineSeparator());
+//                        }
+//                        medicalServices.setDoctor(doctor);
+//                    } catch (NumberFormatException e) {
+//                        errors.append("ID-ul doctorului trebuie sa fie un numar valid.")
+//                                .append(System.lineSeparator());
+//                    }
+//                    break;
                 case "id_medical_service":
                 case "created_at":
                 case "updated_at":
@@ -194,11 +170,10 @@ public class MedicalServicesComponents {
         if(existingMedicalServices.stream().anyMatch(ms ->
                 ms.getMedical_service_name().equalsIgnoreCase(medicalServices.getMedical_service_name()) &&
                         ms.getMedical_service_type().equalsIgnoreCase(String.valueOf(medicalServices.getMedical_service_type())) &&
-                        Objects.equals(ms.getId_doctor(), medicalServices.getDoctor().getId_doctor()) && !ms.getIs_deleted()
+                        !ms.getIs_deleted()
         )) {
             errors.append("Exista deja acest serviciu medical: ").append(medicalServices.getMedical_service_name())
                     .append(", de acest tip: ").append(medicalServices.getMedical_service_type())
-                    .append(", asignat doctorului cu id-ul: ").append(medicalServices.getDoctor().getId_doctor())
                     .append(System.lineSeparator());
         }
 
