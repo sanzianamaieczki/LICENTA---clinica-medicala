@@ -1,11 +1,25 @@
-<div class="specialization-list">
+<div class="list">
     <h1>Lista Specializărilor</h1>
     <div *ngIf="specializations.length === 0">
       <p>Se încarcă datele...</p>
     </div>
     <ul *ngIf="specializations.length > 0">
       <li *ngFor="let specialization of specializations">
-        <h2>{{ specialization.specialization_name }}</h2>
+        <h2>{{specialization.specialization_name}}</h2>
+
+        <div class="doctors">
+          <h3>Doctori: </h3>
+          <div *ngIf="specialization.doctors && specialization.doctors.length>0 ; else noDoctors">
+            <ul>
+              <li *ngFor="let doctor of specialization.doctors">
+                <p>{{doctor.first_name}} {{doctor.last_name}}</p>
+              </li>
+            </ul>
+          </div>
+          <ng-template #noDoctors>
+            <p>Nu exista doctori pe aceasta specializare.</p>
+          </ng-template>
+        </div>
       </li>
     </ul>
   </div>

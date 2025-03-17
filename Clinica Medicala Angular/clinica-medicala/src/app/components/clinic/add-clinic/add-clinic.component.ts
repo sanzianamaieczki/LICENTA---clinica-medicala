@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ClinicService } from '../../services/clinic.service';
+import { ClinicService } from '../../../services/clinic.service';
 
 @Component({
   selector: 'app-add-clinic',

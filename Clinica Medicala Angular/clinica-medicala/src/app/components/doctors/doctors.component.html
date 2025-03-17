@@ -1,4 +1,4 @@
-<div class="doctor-list">
+<div class="list">
     <h1>Lista Medicilor</h1>
     <div *ngIf="doctors.length === 0">
       <p>Se încarcă datele...</p>
@@ -6,9 +6,26 @@
     <ul *ngIf="doctors.length > 0">
       <li *ngFor="let doctor of doctors">
         <h2>{{ doctor.first_name }} {{ doctor.last_name }}</h2>
+        <h3>Specializare: {{doctor.specialization_name}}</h3>
+        <h3>Clinica: {{doctor.clinic_name}}</h3>
         <p><strong>Email:</strong> {{ doctor.email }}</p>
         <p><strong>Telefon:</strong> {{ doctor.phone }}</p>
+
+        <div class="schedule">
+          <h3>Program: </h3>
+          <div *ngIf="doctor.schedule && doctor.schedule.length > 0; else noSchedule">
+            <ul>
+              <li *ngFor="let schedule of doctor.schedule">
+                <p>{{dayMapping[schedule.day_of_week]}}: {{schedule.start_time}}-{{schedule.end_time}}</p>
+              </li>
+            </ul>
+          </div>
+          <ng-template #noSchedule>
+            <p>Nu exista program disponibil.</p>
+          </ng-template>
+        </div>
       </li>
+
     </ul>
   </div>
   

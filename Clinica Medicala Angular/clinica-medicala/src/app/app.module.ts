@@ -3,15 +3,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { ClinicsComponent } from './components/clinics/clinics.component';
+import { ClinicsComponent } from './components/clinic/clinics.component';
 import { HttpClientModule } from '@angular/common/http';
 import { HomeComponent } from './components/home/home.component';
-import { AddClinicComponent } from './components/add-clinic/add-clinic.component';
+import { AddClinicComponent } from './components/clinic/add-clinic/add-clinic.component';
 import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { SpecializationsComponent } from './components/specializations/specializations.component';
 import { DoctorsComponent } from './components/doctors/doctors.component';
+import { PatientsComponent } from './components/patients/patients.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { DoctorsComponent } from './components/doctors/doctors.component';
     HeaderComponent,
     FooterComponent,
     SpecializationsComponent,
-    DoctorsComponent
+    DoctorsComponent,
+    PatientsComponent,
   ],
   imports: [
     BrowserModule,
