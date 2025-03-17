@@ -18,6 +18,17 @@ export class DoctorService {
     getDoctorById(id: number): Observable<any>{
       return this.http.get<any>(`${this.apiUrl}/${id}`);
     }
+<<<<<<< HEAD
+=======
+
+    getMedicalServices(): Observable<any>{
+      return this.http.get<any>(`${this.apiUrl}/medical-services`);    
+    }
+
+    getDoctorMedicalServices(id: number): Observable<any>{
+      return this.http.get<any>(`${this.apiUrl}/${id}/medical-services`);
+    }
+>>>>>>> ac6fd5c77964ebac69c618981232966f8798795d
     
     getDoctorSchedule(id: number): Observable<any>
     {

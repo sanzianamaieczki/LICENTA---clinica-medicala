@@ -6,16 +6,26 @@
     <ul *ngIf="doctors.length > 0">
       <li *ngFor="let doctor of doctors">
         <h2>{{ doctor.first_name }} {{ doctor.last_name }}</h2>
+<<<<<<< HEAD
         <h3>Specializare: {{doctor.specialization_name}}</h3>
         <h3>Clinica: {{doctor.clinic_name}}</h3>
+=======
+        
+>>>>>>> ac6fd5c77964ebac69c618981232966f8798795d
         <p><strong>Email:</strong> {{ doctor.email }}</p>
         <p><strong>Telefon:</strong> {{ doctor.phone }}</p>
 
         <div class="schedule">
           <h3>Program: </h3>
+<<<<<<< HEAD
           <div *ngIf="doctor.schedule && doctor.schedule.length > 0; else noSchedule">
             <ul>
               <li *ngFor="let schedule of doctor.schedule">
+=======
+          <div *ngIf="doctor.doctorSchedules && doctor.doctorSchedules.length > 0; else noSchedule">
+            <ul>
+              <li *ngFor="let schedule of doctor.doctorSchedules">
+>>>>>>> ac6fd5c77964ebac69c618981232966f8798795d
                 <p>{{dayMapping[schedule.day_of_week]}}: {{schedule.start_time}}-{{schedule.end_time}}</p>
               </li>
             </ul>
@@ -24,6 +34,26 @@
             <p>Nu exista program disponibil.</p>
           </ng-template>
         </div>
+<<<<<<< HEAD
+=======
+
+        <div class="medical-services">
+          <div *ngIf="doctor.medicalServices && doctor.medicalServices.length > 0; else noMedicalServices">
+          <ul>
+            <h3>Serviciile medicale oferite de doctor:</h3>
+            <li *ngFor="let medicalService of doctor.medicalServices">
+
+              <p>{{medicalService.medical_service_name}}</p>
+              <p><strong>Tip:</strong> {{medicalService.medical_service_type}}</p>
+            </li>
+
+          </ul>
+          </div>
+          <ng-template #noMedicalServices>
+            <p>Nu exista Servicii medicale pentru acest doctor</p>
+          </ng-template>
+        </div>
+>>>>>>> ac6fd5c77964ebac69c618981232966f8798795d
       </li>
 
     </ul>

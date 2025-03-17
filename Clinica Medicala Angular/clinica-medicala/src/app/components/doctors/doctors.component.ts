@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { DoctorService} from '../../services/doctor.service'
 import { DoctorModel } from '../../models/doctor.model';
+<<<<<<< HEAD
 import { DoctorScheduleModel } from '../../models/doctor-schedule.model';
 import { SpecializationService } from '../../services/specialization.service';
 import { SpecializationModel } from '../../models/specialization.model';
+=======
+import { SpecializationService } from '../../services/specialization.service';
+>>>>>>> ac6fd5c77964ebac69c618981232966f8798795d
 import { ClinicService } from '../../services/clinic.service';
 
 @Component({
@@ -27,9 +31,15 @@ export class DoctorsComponent implements OnInit{
   }
 
   constructor(
+<<<<<<< HEAD
     private doctorService: DoctorService,
     private specializationService: SpecializationService,
     private clinicService: ClinicService
+=======
+    private readonly doctorService: DoctorService,
+    private readonly specializationService: SpecializationService,
+    private readonly clinicService: ClinicService
+>>>>>>> ac6fd5c77964ebac69c618981232966f8798795d
   ){}
 
   ngOnInit(): void{
@@ -42,9 +52,16 @@ export class DoctorsComponent implements OnInit{
         this.doctors = data;
 
         this.doctors.forEach((doctor) => {
+<<<<<<< HEAD
           this.fetchDoctorSchedule(doctor);
           this.fetchSpecialization(doctor);
           this.fetchClinic(doctor);
+=======
+          //this.fetchDoctorSchedule(doctor);
+          //this.fetchSpecialization(doctor);
+          //this.fetchClinic(doctor);
+          //this.fetchMedicalServices(doctor);
+>>>>>>> ac6fd5c77964ebac69c618981232966f8798795d
         })
 
         console.log('doctori: '+this.doctors);
@@ -132,4 +149,33 @@ export class DoctorsComponent implements OnInit{
       } 
     })
   }
+<<<<<<< HEAD
+=======
+
+  fetchMedicalServices(doctor:DoctorModel){
+    this.doctorService.getDoctorMedicalServices(doctor.id_clinic).subscribe({
+      next: (medicalService) =>{
+        this.doctors = this.doctors.map(d => {
+          if(d.id_doctor === doctor.id_doctor){
+            return {...d, medical_services: medicalService}
+          }
+          else{
+            return d
+          }
+        })
+      },
+      error: (error) =>{
+        console.error(`Eroare la preluarea serviciilor medicale ale doctorului: ${doctor.id_doctor}: `, error)    
+        this.doctors = this.doctors.map(d => {
+          if(d.id_doctor === doctor.id_doctor){
+            return {...d, medical_services: []}
+          }
+          else{
+            return d;
+          }
+        })     
+      } 
+    })
+  }
+>>>>>>> ac6fd5c77964ebac69c618981232966f8798795d
 }

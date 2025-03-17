@@ -1,0 +1,13 @@
+<div class="list">
+    <h1>Lista serviciilor medicale</h1>
+    <div *ngIf="medicalServices.length === 0">
+      <p>Se încarcă datele...</p>
+      </div>
+
+    <ul *ngIf="medicalServices.length > 0">
+        <li *ngFor="let medicalService of medicalServices">
+            <h2>{{ medicalService.medical_service_name }}</h2>
+            <p><strong>Tip:</strong> {{ medicalService.medical_service_type }}</p>
+        </li>
+    </ul>
+</div>
