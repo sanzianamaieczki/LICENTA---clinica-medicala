@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "medical_services")
@@ -47,6 +49,9 @@ public class MedicalServices {
 
     @Column(nullable = false)
     private Boolean is_deleted = false;
+
+    @OneToMany(mappedBy = "medicalServices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<DoctorMedicalServices> doctorMedicalServices = new HashSet<>();
 
     public MedicalServices(MedicalServicesDTO medicalServicesDTO){
         this.medical_service_name = medicalServicesDTO.getMedical_service_name();

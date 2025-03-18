@@ -30,8 +30,8 @@
             <h3>Serviciile medicale oferite de doctor:</h3>
             <li *ngFor="let medicalService of doctor.medicalServices">
 
-              <p>{{medicalService.medical_service_name}}</p>
-              <p><strong>Tip:</strong> {{medicalService.medical_service_type}}</p>
+              <p>{{medicalService.medicalService.medical_service_name}}</p>
+              <p><strong>Pret:</strong> {{medicalService.price}}</p>
             </li>
 
           </ul>

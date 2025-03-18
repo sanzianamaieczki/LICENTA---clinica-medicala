@@ -1,8 +1,12 @@
 package com.example.ClinicaMedicala.controller.DoctorControllerComponents;
 
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
+import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorMedicalServicesDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorScheduleDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.MedicalServicesDTO;
+import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
+import com.example.ClinicaMedicala.entity.DoctorEntityComponents.DoctorMedicalServices;
+import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.DoctorRepository;
 import com.example.ClinicaMedicala.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +19,8 @@ import javax.print.Doc;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -23,6 +29,8 @@ public class DoctorController {
 
     @Autowired
     DoctorService doctorService;
+    @Autowired
+    private DoctorRepository doctorRepository;
 
     @GetMapping
     public ResponseEntity<?> getAllDoctors(
@@ -85,15 +93,17 @@ public class DoctorController {
     @GetMapping("/{id_doctor}/medical-services")
     public ResponseEntity<?> getMedicalServicesByDoctor(@PathVariable Integer id_doctor) {
         try{
-            Optional<DoctorDTO> doctorDTO = doctorService.getDoctorById(id_doctor);
-            if(doctorDTO.isPresent()){
-                List<MedicalServicesDTO> medicalServicesDTO = doctorDTO.get().getMedicalServices();
-                return ResponseEntity.status(HttpStatus.OK).body(medicalServicesDTO);
+            Optional<Doctor> doctorOptional = doctorRepository.findDoctorById(id_doctor);
+            if(!doctorOptional.isPresent()){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
             }
-            else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctorul cu id-ul: " + id_doctor + " nu a fost gasit");
 
-//            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByDoctor(id_doctor);
-//            return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
+            Doctor doctor = doctorOptional.get();
+
+            List<DoctorMedicalServicesDTO> doctorMedicalServicesDTOS = doctor.getDoctorMedicalServices().stream()
+                    .map(DoctorMedicalServicesDTO::new)
+                    .collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.OK).body(doctorMedicalServicesDTOS);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){

@@ -7,7 +7,6 @@ export interface MedicalServicesModel{
     created_at: Date;
     updated_at: Date;
     is_deleted: boolean;
-    price: number;
     // doctors: DoctorModel[];
 }
 

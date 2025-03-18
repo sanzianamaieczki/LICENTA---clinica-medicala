@@ -64,6 +64,9 @@ public class Doctor {
     private Set<MedicalServices> medicalServices = new HashSet<>();
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<DoctorMedicalServices> doctorMedicalServices = new HashSet<>();
+
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<DoctorSchedule> doctorSchedules = new HashSet<>();
 
     public Doctor(DoctorDTO doctorDTO){

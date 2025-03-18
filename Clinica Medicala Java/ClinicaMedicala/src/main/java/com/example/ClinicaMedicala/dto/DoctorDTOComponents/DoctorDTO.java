@@ -28,7 +28,7 @@ public class DoctorDTO {
     private Date updated_at;
     private Boolean is_deleted;
 
-    private List<MedicalServicesDTO> medicalServices;
+    private List<DoctorMedicalServicesDTO> medicalServices;
     private List<DoctorScheduleDTO> doctorSchedules;
 
     public DoctorDTO(Doctor doctor) {
@@ -44,8 +44,10 @@ public class DoctorDTO {
         this.is_deleted = doctor.getIs_deleted();
 
         if (doctor.getMedicalServices() != null) {
-            this.medicalServices = doctor.getMedicalServices().stream()
-                    .map(MedicalServicesDTO::new)
+            this.medicalServices = doctor.getDoctorMedicalServices().stream()
+                    // pentru a nu afisa serviciile medicale sterse
+                    .filter(doctorMedicalServices -> !doctorMedicalServices.getIs_deleted())
+                    .map(DoctorMedicalServicesDTO::new)
                     .collect(Collectors.toList());
         } else {
             this.medicalServices = new ArrayList<>();

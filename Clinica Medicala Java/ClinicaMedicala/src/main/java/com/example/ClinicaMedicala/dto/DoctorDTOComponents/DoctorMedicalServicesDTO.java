@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +23,8 @@ public class DoctorMedicalServicesDTO {
     private Date updated_at;
     private Boolean is_deleted;
 
+    private MedicalServicesDTO medicalService;
+
     public DoctorMedicalServicesDTO(DoctorMedicalServices doctorMedicalServices) {
         this.id_doctor_medical_service = doctorMedicalServices.getId_doctor_medical_service();
         this.id_doctor = doctorMedicalServices.getDoctor().getId_doctor();
@@ -30,5 +33,7 @@ public class DoctorMedicalServicesDTO {
         this.created_at = doctorMedicalServices.getCreated_at();
         this.updated_at = doctorMedicalServices.getUpdated_at();
         this.is_deleted = doctorMedicalServices.getIs_deleted();
+
+        this.medicalService= new MedicalServicesDTO(doctorMedicalServices.getMedicalServices());
     }
 }
