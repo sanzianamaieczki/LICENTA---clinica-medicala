@@ -90,11 +90,27 @@ public class DoctorController {
         }
     }
 
+    @GetMapping("/medical-services/{id_medical_service}")
+    public ResponseEntity<?> getMedicalServiceById(@PathVariable Integer id_medical_service) {
+        try{
+            Optional<MedicalServicesDTO> medicalServicesDTO = doctorService.getMedicalServicesById(id_medical_service);
+            return ResponseEntity.status(HttpStatus.OK).body(medicalServicesDTO);
+        } catch (HttpClientErrorException.UnprocessableEntity e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @GetMapping("/{id_doctor}/medical-services")
     public ResponseEntity<?> getMedicalServicesByDoctor(@PathVariable Integer id_doctor) {
         try{
             Optional<Doctor> doctorOptional = doctorRepository.findDoctorById(id_doctor);
-            if(!doctorOptional.isPresent()){
+            if(doctorOptional.isEmpty()){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
             }
 
@@ -115,21 +131,21 @@ public class DoctorController {
         }
     }
 
-    @GetMapping("/{id_doctor}/doctor-schedule")
-    public ResponseEntity<?> getDoctorScheduleByDoctor(@PathVariable Integer id_doctor) {
-        try{
-            List<DoctorScheduleDTO> doctorSchedule = doctorService.getDoctorScheduleByDoctor(id_doctor);
-            return ResponseEntity.status(HttpStatus.OK).body(doctorSchedule);
-        }catch (HttpClientErrorException.UnprocessableEntity e){
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
+//    @GetMapping("/{id_doctor}/doctor-schedule")
+//    public ResponseEntity<?> getDoctorScheduleByDoctor(@PathVariable Integer id_doctor) {
+//        try{
+//            List<DoctorScheduleDTO> doctorSchedule = doctorService.getDoctorScheduleByDoctor(id_doctor);
+//            return ResponseEntity.status(HttpStatus.OK).body(doctorSchedule);
+//        }catch (HttpClientErrorException.UnprocessableEntity e){
+//            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+//        }catch (EntityNotFoundException e){
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//        }catch (IllegalArgumentException e){
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        }catch (Exception e){
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+//        }
+//    }
 
     @PostMapping
     public ResponseEntity<?> addDoctor(@RequestBody DoctorDTO doctorDTO) {

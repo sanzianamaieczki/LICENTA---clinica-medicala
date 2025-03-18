@@ -21,10 +21,6 @@ export class ClinicsComponent implements OnInit {
     this.clinicService.getClinics().subscribe({
       next: (data) => {
         this.clinics = data;
-
-        this.clinics.forEach((clinic)=>{
-          this.fetchDoctors(clinic)
-        })
       },
       error: (err) => {
         console.error('Eroare la preluarea clinicilor', err);
@@ -32,29 +28,4 @@ export class ClinicsComponent implements OnInit {
     });
   }
 
-  fetchDoctors(clinic:ClinicModel){
-    this.clinicService.getDoctorsByClinicId(clinic.id_clinic).subscribe({
-      next: (doctors)=>{
-        this.clinics = this.clinics.map(c=>{
-          if(c.id_clinic === clinic.id_clinic){
-            return {...c, doctors: doctors}
-          }
-          else{
-            return c
-          }
-        })
-      },
-      error: (errors) =>{
-        console.error(`Eroare la preluarea doctorilor de la clinica: ${clinic.clinic_name}`, errors)
-        this.clinics = this.clinics.map(c=>{
-          if(c.id_clinic === clinic.id_clinic){
-            return {...c,doctors:[]}
-          }
-          else{
-            return c;
-          }
-        })
-      }
-    })
-  }
 }

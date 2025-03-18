@@ -1,12 +1,16 @@
 package com.example.ClinicaMedicala.dto.ClinicDTOComponents;
 
+import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
 import com.example.ClinicaMedicala.entity.ClinicEntityComponents.Clinic;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -22,6 +26,8 @@ public class ClinicDTO {
     private Date updated_at;
     private Boolean is_deleted;
 
+    private List<DoctorDTO> doctors;
+
     public ClinicDTO(Clinic clinic) {
         this.id_clinic = clinic.getId_clinic();
         this.clinic_name = clinic.getClinic_name();
@@ -30,5 +36,15 @@ public class ClinicDTO {
         this.created_at = clinic.getCreated_at();
         this.updated_at = clinic.getUpdated_at();
         this.is_deleted = clinic.getIs_deleted();
+
+        if(clinic.getDoctors() != null) {
+            this.doctors = clinic.getDoctors().stream()
+                    .filter(doctor -> !doctor.getIs_deleted())
+                    .map(DoctorDTO::new)
+                    .collect(Collectors.toList());
+        }
+        else {
+            this.doctors = new ArrayList<>();
+        }
     }
 }

@@ -15,13 +15,8 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DoctorDTO {
+public class DoctorDTO extends DoctorDetailsDTO{
 
-    private Integer id_doctor;
-    private String last_name;
-    private String first_name;
-    private String email;
-    private String phone;
     private Integer id_specialization;
     private Integer id_clinic;
     private Date created_at;
@@ -32,11 +27,8 @@ public class DoctorDTO {
     private List<DoctorScheduleDTO> doctorSchedules;
 
     public DoctorDTO(Doctor doctor) {
-        this.id_doctor = doctor.getId_doctor();
-        this.last_name = doctor.getLast_name();
-        this.first_name = doctor.getFirst_name();
-        this.email = doctor.getEmail();
-        this.phone = doctor.getPhone();
+
+        super(doctor);
         this.id_specialization = doctor.getSpecialization().getId_specialization();
         this.id_clinic = doctor.getClinic().getId_clinic();
         this.created_at = doctor.getCreated_at();

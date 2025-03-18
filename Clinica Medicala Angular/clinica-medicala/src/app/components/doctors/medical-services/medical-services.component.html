@@ -8,6 +8,20 @@
         <li *ngFor="let medicalService of medicalServices">
             <h2>{{ medicalService.medical_service_name }}</h2>
             <p><strong>Tip:</strong> {{ medicalService.medical_service_type }}</p>
+
+            <div class="doctors">
+                <h3>Doctori: </h3>
+                <div *ngIf="medicalService.doctors && medicalService.doctors.length>0 ; else noDoctors">
+                  <ul>
+                    <li *ngFor="let doctor of medicalService.doctors">
+                      <p>{{doctor.first_name}} {{doctor.last_name}}</p>
+                    </li>
+                  </ul>
+                </div>
+                <ng-template #noDoctors>
+                  <p>Nu exista doctori pe aceasta specializare.</p>
+                </ng-template>
+              </div>
         </li>
     </ul>
 </div>

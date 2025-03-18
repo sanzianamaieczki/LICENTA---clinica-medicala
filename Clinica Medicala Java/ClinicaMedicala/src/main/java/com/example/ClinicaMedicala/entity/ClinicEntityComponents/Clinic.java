@@ -1,12 +1,14 @@
 package com.example.ClinicaMedicala.entity.ClinicEntityComponents;
 
 import com.example.ClinicaMedicala.dto.ClinicDTOComponents.ClinicDTO;
+import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "clinics")
@@ -39,6 +41,9 @@ public class Clinic {
 
     @Column(nullable = false)
     private Boolean is_deleted = false;
+
+    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Doctor> doctors;
 
     public Clinic(ClinicDTO clinicDTO) {
         this.clinic_name = clinicDTO.getClinic_name();

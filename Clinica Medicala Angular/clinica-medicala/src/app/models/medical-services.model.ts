@@ -7,7 +7,7 @@ export interface MedicalServicesModel{
     created_at: Date;
     updated_at: Date;
     is_deleted: boolean;
-    // doctors: DoctorModel[];
+    doctors: DoctorModel[];
 }
 
 export enum MedicalServiceType{
