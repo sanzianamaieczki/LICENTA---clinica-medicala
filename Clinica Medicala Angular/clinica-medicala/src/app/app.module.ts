@@ -14,6 +14,7 @@ import { SpecializationsComponent } from './components/specializations/specializ
 import { DoctorsComponent } from './components/doctors/doctors.component';
 import { PatientsComponent } from './components/patients/patients.component';
 import { MedicalServicesComponent } from './components/doctors/medical-services/medical-services.component';
+import { AppointmentsComponent } from './components/appointments/appointments/appointments.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { MedicalServicesComponent } from './components/doctors/medical-services/
     DoctorsComponent,
     PatientsComponent,
     MedicalServicesComponent,
+    AppointmentsComponent,
   ],
   imports: [
     BrowserModule,

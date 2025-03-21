@@ -1,6 +1,7 @@
 package com.example.ClinicaMedicala.entity.DoctorEntityComponents;
 
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorMedicalServicesDTO;
+import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "doctor_medical_services")
@@ -41,6 +44,9 @@ public class DoctorMedicalServices {
 
     @Column(nullable = false)
     private Boolean is_deleted = false;
+
+    @OneToMany(mappedBy = "doctorMedicalServices", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Appointment> appointment = new HashSet<>();
 
     public DoctorMedicalServices(DoctorMedicalServicesDTO doctorMedicalServicesDTO){
         this.price = doctorMedicalServicesDTO.getPrice();

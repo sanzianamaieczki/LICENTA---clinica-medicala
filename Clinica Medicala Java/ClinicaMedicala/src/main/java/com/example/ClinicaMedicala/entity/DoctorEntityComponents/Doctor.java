@@ -1,6 +1,7 @@
 package com.example.ClinicaMedicala.entity.DoctorEntityComponents;
 
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
+import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
 import com.example.ClinicaMedicala.entity.ClinicEntityComponents.Clinic;
 import com.example.ClinicaMedicala.entity.SpecializationEntityComponents.Specialization;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;

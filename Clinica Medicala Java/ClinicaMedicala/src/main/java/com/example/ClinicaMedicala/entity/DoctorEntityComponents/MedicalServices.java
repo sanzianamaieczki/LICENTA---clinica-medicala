@@ -1,19 +1,20 @@
 package com.example.ClinicaMedicala.entity.DoctorEntityComponents;
 
+import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.AppointmentDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.MedicalServicesDTO;
-import com.example.ClinicaMedicala.enums.DoctorEnumComponents.MedicalServicesType;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
+import com.example.ClinicaMedicala.enums.MedicalServicesType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "medical_services")

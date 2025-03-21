@@ -1,5 +1,6 @@
 package com.example.ClinicaMedicala.dto.DoctorDTOComponents;
 
+import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.AppointmentDTO;
 import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,5 +53,6 @@ public class DoctorDTO extends DoctorDetailsDTO{
         } else {
             this.doctorSchedules = new ArrayList<>();
         }
+
     }
 }

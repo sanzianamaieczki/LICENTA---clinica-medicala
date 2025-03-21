@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PatientsService } from '../../services/patient.service';
+import { PatientModel } from '../../models/patient.model';
 
 
 @Component({
@@ -9,7 +10,7 @@ import { PatientsService } from '../../services/patient.service';
 })
 export class PatientsComponent implements OnInit {
 
-  patients: any[] = [];
+  patients: PatientModel[] = [];
 
   constructor(private patientsService: PatientsService){}
 

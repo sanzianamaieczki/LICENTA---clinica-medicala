@@ -10,6 +10,22 @@
         <p><strong>Telefon: </strong> {{patient.phone}}</p>
         <p><strong>CNP: </strong> {{patient.national_id}}</p>
         <p><strong>Data Nasterii: </strong> {{patient.birth_date}}</p>
+
+        <div class="appointments">
+          <div *ngIf="patient.appointments && patient.appointments.length > 0; else noAppointments">
+          <ul>
+            <h3>Programari:</h3>
+            <li *ngFor="let appointment of patient.appointments">
+              <p>{{appointment.appointment_date}}</p>
+
+            </li>
+
+          </ul>
+          </div>
+          <ng-template #noAppointments>
+            <p>Nu exista Servicii medicale pentru acest doctor</p>
+          </ng-template>
+        </div>
       </li>
     </ul>
   </div>

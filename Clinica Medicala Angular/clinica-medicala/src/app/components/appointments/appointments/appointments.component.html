@@ -1,0 +1,15 @@
+<div class="list">
+    <h1>Lista Programarilor</h1>
+    <div *ngIf="appointments.length === 0">
+      <p>Se încarcă datele...</p>
+      </div>
+      <ul *ngIf="appointments.length > 0">
+        <li *ngFor="let appointment of appointments">
+            <h2>{{ appointment.id_appointment}}</h2>
+            <p><strong>Pacient:</strong> {{ appointment.id_patient }}</p>
+            <p><strong>Serviciu Medical:</strong> {{ appointment.id_medical_service }}</p>
+            <p><strong>Data:</strong> {{ appointment.appointment_date }}</p>
+            <p><strong>Status:</strong> {{ appointment.appointment_status }}</p>
+        </li>
+    </ul>
+</div>

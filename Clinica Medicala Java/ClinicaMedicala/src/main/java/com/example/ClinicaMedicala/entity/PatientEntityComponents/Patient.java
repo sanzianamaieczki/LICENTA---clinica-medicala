@@ -1,6 +1,7 @@
 package com.example.ClinicaMedicala.entity.PatientEntityComponents;
 
 import com.example.ClinicaMedicala.dto.PatientDTOComponents.PatientDTO;
+import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "patients")
@@ -48,6 +51,9 @@ public class Patient {
 
     @Column(nullable = false)
     private Boolean is_deleted = false;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Appointment> appointment = new HashSet<>();
 
     public Patient(PatientDTO patientDTO){
         this.last_name = patientDTO.getLast_name();

@@ -1,5 +1,6 @@
 package com.example.ClinicaMedicala.dto.DoctorDTOComponents;
 
+import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.AppointmentDTO;
 import com.example.ClinicaMedicala.entity.DoctorEntityComponents.MedicalServices;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

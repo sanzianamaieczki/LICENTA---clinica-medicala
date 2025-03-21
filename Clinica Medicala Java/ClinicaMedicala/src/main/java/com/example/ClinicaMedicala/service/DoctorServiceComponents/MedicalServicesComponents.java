@@ -1,9 +1,8 @@
 package com.example.ClinicaMedicala.service.DoctorServiceComponents;
 
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.MedicalServicesDTO;
-import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
 import com.example.ClinicaMedicala.entity.DoctorEntityComponents.MedicalServices;
-import com.example.ClinicaMedicala.enums.DoctorEnumComponents.MedicalServicesType;
+import com.example.ClinicaMedicala.enums.MedicalServicesType;
 import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.DoctorRepository;
 import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.MedicalServicesRepository;
 import com.example.ClinicaMedicala.utils.CheckFields;

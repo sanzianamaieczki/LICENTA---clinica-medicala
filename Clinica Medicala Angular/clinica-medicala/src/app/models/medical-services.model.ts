@@ -1,3 +1,4 @@
+import { AppointmentModel } from "./appointment.model";
 import { DoctorModel } from "./doctor.model";
 
 export interface MedicalServicesModel{
@@ -7,6 +8,7 @@ export interface MedicalServicesModel{
     created_at: Date;
     updated_at: Date;
     is_deleted: boolean;
+
     doctors: DoctorModel[];
 }
 

@@ -32,14 +32,34 @@
 
               <p>{{medicalService.medicalService.medical_service_name}}</p>
               <p><strong>Pret:</strong> {{medicalService.price}}</p>
+
+              <div class="appointments">
+                <div *ngIf="medicalService.appointments && medicalService.appointments.length > 0; else noAppointments">
+                <ul>
+                  <h3>Programari:</h3>
+                  <li *ngFor="let appointment of medicalService.appointments">
+                    <p>{{appointment.appointment_date}}</p>
+      
+                  </li>
+      
+                </ul>
+                </div>
+                <ng-template #noAppointments>
+                  <p>Nu exista Servicii medicale pentru acest doctor</p>
+                </ng-template>
+              </div>
             </li>
 
+            
           </ul>
+          
           </div>
           <ng-template #noMedicalServices>
             <p>Nu exista Servicii medicale pentru acest doctor</p>
           </ng-template>
         </div>
+
+        
       </li>
 
     </ul>

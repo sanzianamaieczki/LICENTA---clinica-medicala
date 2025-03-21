@@ -1,3 +1,4 @@
+import { AppointmentModel } from "./appointment.model";
 import { DoctorModel } from "./doctor.model";
 import { MedicalServicesModel } from "./medical-services.model";
 
@@ -11,5 +12,6 @@ export interface DoctorMedicalServicesModel{
     is_deleted: boolean;
 
     medicalService: MedicalServicesModel;
+    appointments: AppointmentModel[];
     // doctors: DoctorModel[];
 }
