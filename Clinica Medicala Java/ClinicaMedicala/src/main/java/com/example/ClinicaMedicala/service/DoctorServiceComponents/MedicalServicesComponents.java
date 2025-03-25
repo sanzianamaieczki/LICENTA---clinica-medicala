@@ -24,10 +24,9 @@ public class MedicalServicesComponents {
 
     public List<MedicalServicesDTO> getMedicalServicesByFilters(
             Boolean is_deleted,
-            String medical_service_name,
-            String medical_service_type
+            String medical_service_name
     ){
-        return medicalServicesRepository.findMedicalServicesByFilters(is_deleted, medical_service_name , medical_service_type).stream()
+        return medicalServicesRepository.findMedicalServicesByFilters(is_deleted, medical_service_name).stream()
                 .map(MedicalServicesDTO::new)
                 .collect(Collectors.toList());
     }
@@ -58,7 +57,7 @@ public class MedicalServicesComponents {
         }
 
         //lista serviciilor medicale existente
-        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null, null,null);
+        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null,null);
 
         //verificare daca datele introduse nu exista deja (daca are acelasi nume, acelasi tip si acelasi medic asignat)
         if(existingMedicalServices.stream().anyMatch(ms ->
@@ -70,15 +69,6 @@ public class MedicalServicesComponents {
                     .append(System.lineSeparator());
         }
 
-        //verificare daca tipul serviciului medical este corect
-        if (CheckFields.isValidEnumValue(
-                Stream.of(MedicalServicesType.values()).map(Enum::name).toList(),
-                medicalServicesDTO.getMedical_service_type())) {
-            errors.append("Tipul serviciului medical: ")
-                    .append(medicalServicesDTO.getMedical_service_type())
-                    .append(" este invalid")
-                    .append(System.lineSeparator());
-        }
 //
 //        //verificare daca introducem o durata mai mica decat 0
 //        if(medicalServicesDTO.getDuration()!= null && medicalServicesDTO.getDuration() < 1){
@@ -119,24 +109,14 @@ public class MedicalServicesComponents {
         }
 
         //lista serviciilor medicale existenti
-        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null,null,null);
+        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null,null);
 
         updates.forEach((field,value) ->{
             switch (field){
                 case "medical_service_name":
                     medicalServices.setMedical_service_name((String) value);
                     break;
-                case "medical_service_type":
-                    if (CheckFields.isValidEnumValue(
-                            Stream.of(MedicalServicesType.values()).map(Enum::name).toList(),
-                            (String) value)) {
-                        errors.append("Tipul serviciului medical: ")
-                                .append(value)
-                                .append(" este invalid")
-                                .append(System.lineSeparator());
-                    }
-                    medicalServices.setMedical_service_type(MedicalServicesType.valueOf((String) value));
-                    break;
+
 //                case "id_doctor":
 //                    try {
 //                        Integer id_doctor = Integer.parseInt(value.toString());
@@ -168,11 +148,10 @@ public class MedicalServicesComponents {
         //verificare daca datele introduse nu exista deja (daca are acelasi nume, acelasi tip si acelasi medic asignat)
         if(existingMedicalServices.stream().anyMatch(ms ->
                 ms.getMedical_service_name().equalsIgnoreCase(medicalServices.getMedical_service_name()) &&
-                        ms.getMedical_service_type().equalsIgnoreCase(String.valueOf(medicalServices.getMedical_service_type())) &&
+
                         !ms.getIs_deleted()
         )) {
             errors.append("Exista deja acest serviciu medical: ").append(medicalServices.getMedical_service_name())
-                    .append(", de acest tip: ").append(medicalServices.getMedical_service_type())
                     .append(System.lineSeparator());
         }
 

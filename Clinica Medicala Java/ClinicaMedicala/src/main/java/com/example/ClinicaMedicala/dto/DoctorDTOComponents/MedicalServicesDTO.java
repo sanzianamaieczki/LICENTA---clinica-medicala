@@ -32,7 +32,6 @@ public class MedicalServicesDTO {
     public MedicalServicesDTO(MedicalServices medicalServices) {
         this.id_medical_service = medicalServices.getId_medical_service();
         this.medical_service_name = medicalServices.getMedical_service_name();
-        this.medical_service_type = medicalServices.getMedical_service_type().name();
         this.created_at = medicalServices.getCreated_at();
         this.updated_at = medicalServices.getUpdated_at();
         this.is_deleted = medicalServices.getIs_deleted();

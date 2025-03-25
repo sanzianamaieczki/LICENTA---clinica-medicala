@@ -1,20 +1,31 @@
 package com.example.ClinicaMedicala.service;
 
 import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.AppointmentDTO;
+import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
+import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
+import com.example.ClinicaMedicala.entity.DoctorEntityComponents.DoctorMedicalServices;
+import com.example.ClinicaMedicala.entity.PatientEntityComponents.Patient;
+import com.example.ClinicaMedicala.enums.AppointmentStatus;
 import com.example.ClinicaMedicala.repository.AppointmentRepositoryComponents.AppointmentRepository;
+import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.DoctorRepository;
+import com.example.ClinicaMedicala.repository.PatientRepositoryComponents.PatientRepository;
+import com.example.ClinicaMedicala.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.OffsetDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class AppointmentService {
     @Autowired
     AppointmentRepository appointmentRepository;
+    @Autowired
+    private DoctorRepository doctorRepository;
+    @Autowired
+    private PatientRepository patientRepository;
 
     public List<AppointmentDTO> getAppointmentsByFilters(
             Boolean is_deleted,
@@ -30,168 +41,199 @@ public class AppointmentService {
                 .map(AppointmentDTO::new);
     }
 
+    public AppointmentDTO addAppointment(AppointmentDTO appointmentDTO) {
 
+        //verificari necesare
+        StringBuilder errors = new StringBuilder();
+
+        //verificare daca datele introduse sunt nule
+        String emptyFieldsError = CheckFields.checkEmptyFields(
+                DTOConverter.convertToMap(appointmentDTO),
+                Set.of("id_appointment", "appointment_status"));
+        if (emptyFieldsError != null) {
+            errors.append(emptyFieldsError)
+                    .append(System.lineSeparator());
+        }
+
+        //lista programarilor existente
+        List<AppointmentDTO> existingAppointments = getAppointmentsByFilters(null, null,null);
+
+        Doctor doctor = doctorRepository
+                .findDoctorByDoctorMedicalServiceId((appointmentDTO.getId_doctor_medical_service()))
+                .orElseThrow(()-> new IllegalArgumentException("Nu a fost gasit doctorul pentru acest serviciu medical"));
+
+        DoctorMedicalServices doctorMedicalServices = doctor.getDoctorMedicalServices().stream()
+                .filter(doctorMedicalService -> doctorMedicalService.getId_doctor_medical_service().equals(appointmentDTO.getId_doctor_medical_service()))
+                .findFirst()
+                .orElseThrow(()-> new IllegalArgumentException("Nu a fost gasit serviciul medical pentru doctor"));
+
+        Patient patient = patientRepository.findPatientById(appointmentDTO.getId_patient())
+                .orElseThrow(()-> new IllegalArgumentException("Nu exista acest pacient"));
+
+        Date appointment_date = appointmentDTO.getAppointment_date();
+
+        String appointmentValidation = AppointmentValidator.validateAppointment(doctor,patient,appointment_date, null);
+        if(!appointmentValidation.isEmpty()){
+            errors.append(appointmentValidation);
+        }
+
+        //afisarea erorilor
+        if(!errors.isEmpty()) {
+            throw new IllegalArgumentException(errors.toString().trim());
+        }
+
+        appointmentDTO.setAppointment_status(String.valueOf(AppointmentStatus.created));
+
+        Appointment appointment = new Appointment(appointmentDTO);
+        appointment.setPatient(patient);
+        appointment.setAppointment_date(appointment_date);
+        appointment.setDoctorMedicalServices(doctorMedicalServices);
+        appointment.setCreated_at(new Date());
+        appointment.setUpdated_at(null);
+        appointment.setIs_deleted(false);
+
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        return new AppointmentDTO(savedAppointment);
+    }
+
+    public AppointmentDTO updateAppointment(Integer id_appointment, Map<String, Object> updates) {
+        //verificari necesare
+        StringBuilder errors = new StringBuilder();
+
+        Appointment appointment = appointmentRepository.findAppointmentById(id_appointment)
+                .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasita programarea cu id-ul: " + id_appointment));
+
+        //verificare daca datele introduse sunt nule
+        String emptyFieldsError = CheckFields.checkEmptyFields(
+                DTOConverter.convertToMap(updates),
+                Set.of("id_appointment", "appointment_status"));
+        if (emptyFieldsError != null) {
+            errors.append(emptyFieldsError)
+                    .append(System.lineSeparator());
+        }
+
+        updates.forEach((field, value) -> {
+            switch (field) {
+                case "id_patient":
+                    try {
+                        Integer id_patient = Integer.parseInt(value.toString());
+                        Patient patient = patientRepository.findPatientById(id_patient).orElse(null);
+                        if (patient == null) {
+                            errors.append(" Nu a fost gasit pacientul cu id-ul: ").append(id_patient)
+                                    .append(System.lineSeparator());
+                        }
+                        appointment.setPatient(patient);
+                    } catch (NumberFormatException e) {
+                        errors.append("ID-ul pacientului trebuie sa fie un numar valid.")
+                                .append(System.lineSeparator());
+                    }
+                    break;
+                case "id_medical_service":
+                    try {
+                        Integer id_medical_service = Integer.parseInt(value.toString());
+                        Doctor doctor = doctorRepository.findDoctorByDoctorMedicalServiceId(id_medical_service).orElse(null);
+                        if (doctor != null) {
+                            DoctorMedicalServices medicalServices = doctor.getDoctorMedicalServices().stream()
+                                    .filter(medicalService -> medicalService.getId_doctor_medical_service().equals(id_medical_service))
+                                    .findFirst()
+                                    .orElse(null);
+                            if (medicalServices == null) {
+                                errors.append("Nu am gasit serviciul medical cu id-ul: ").append(id_medical_service)
+                                        .append(System.lineSeparator());
+                            }
+                            appointment.setDoctorMedicalServices(medicalServices);
+                        }
+
+                    } catch (NumberFormatException e) {
+                        errors.append("ID-ul serviciului medical trebuie sa fie un numar valid.")
+                                .append(System.lineSeparator());
+                    }
+                    break;
+                case "appointment_status":
+                    if (CheckFields.isValidEnumValue(
+                            Stream.of(AppointmentStatus.values()).map(Enum::name).toList(),
+                            (String) value)) {
+                        errors.append("Statusul programarii: ")
+                                .append(value)
+                                .append(" este invalid")
+                                .append(System.lineSeparator());
+                    }
+                    appointment.setAppointment_status(AppointmentStatus.valueOf((String) value));
+                    break;
+                case "appointment_date":
+                    try{
+                        Date newDate;
+                        if(value instanceof Date){
+                            newDate = (Date) value;
+                        }
+                        else{
+                            OffsetDateTime dateTime = OffsetDateTime.parse((String) value);
+                            newDate =Date.from(dateTime.toInstant());
+                        }
+                        appointment.setAppointment_date(newDate);
+                    }catch (Exception e){
+                        errors.append("Data programarii este invalida")
+                                .append(System.lineSeparator());
+                    }
+                    break;
+                case "id_appointment":
+                case "created_at":
+                case "updated_at":
+                case "is_deleted":
+                    errors.append("Acest camp nu poate fi modificat: ").append(field);
+                    break;
+                default:
+                    errors.append("Acest camp nu exista: ").append(field);
+                    break;
+            }
+            //afisarea erorilor
+            if (!errors.isEmpty()) {
+                throw new IllegalArgumentException(errors.toString().trim());
+            }
+        });
+
+        boolean mustValidate = updates.containsKey("appointment_date")|| updates.containsKey("id_patient")
+                || updates.containsKey("id_medical_service");
+
+        Doctor doctor = appointment.getDoctorMedicalServices().getDoctor();
+        Patient patient = appointment.getPatient();
+        Date appointment_date = appointment.getAppointment_date();
+
+        if(mustValidate) {
+            if (doctor == null) {
+                errors.append("Doctorul nu este valid.").append(System.lineSeparator());
+            } else if (patient == null) {
+                errors.append("Pacientul nu este valid.").append(System.lineSeparator());
+            } else if (appointment_date == null) {
+                errors.append("Data programarii nu este valida.").append(System.lineSeparator());
+            } else {
+                String appointmentValidation = AppointmentValidator.validateAppointment(doctor, patient, appointment_date, appointment.getId_appointment());
+                if (!appointmentValidation.isEmpty()) {
+                    errors.append(appointmentValidation);
+                }
+            }
+        }
+
+        //afisarea erorilor
+        if(!errors.isEmpty()) {
+            throw new IllegalArgumentException(errors.toString().trim());
+        }
+
+        appointment.setUpdated_at(new Date());
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+        return new AppointmentDTO(savedAppointment);
+    }
+
+    public void deleteAppointment(Integer id_appointment) {
+        Appointment appointment = appointmentRepository.findAppointmentById(id_appointment)
+                .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasita programarea cu id-ul: " + id_appointment));
+
+        if(appointment.getIs_deleted()){
+            throw  new IllegalArgumentException("Aceasta programare a fost deja stearsa: " + id_appointment);
+        }
+
+        appointment.setIs_deleted(true);
+        appointment.setUpdated_at(new Date());
+        appointmentRepository.save(appointment);
+    }
 }
-
-////    public List<MedicalServicesDTO> getMedicalServicesByDoctor(int id_doctor) {
-////        return medicalServicesRepository.findMedicalServicesByDoctorId(id_doctor).stream()
-////                .map(MedicalServicesDTO::new)
-////                .collect(Collectors.toList());
-////    }
-//
-//    public MedicalServicesDTO addMedicalService(MedicalServicesDTO medicalServicesDTO) {
-//
-//        //verificari necesare
-//        StringBuilder errors = new StringBuilder();
-//
-//        //verificare daca datele introduse sunt nule
-//        String emptyFieldsError = CheckFields.checkEmptyFields(
-//                DTOConverter.convertToMap(medicalServicesDTO),
-//                Set.of("id_medical_service"));
-//        if (emptyFieldsError != null) {
-//            errors.append(emptyFieldsError)
-//                    .append(System.lineSeparator());
-//        }
-//
-//        //lista serviciilor medicale existente
-//        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null, null,null);
-//
-//        //verificare daca datele introduse nu exista deja (daca are acelasi nume, acelasi tip si acelasi medic asignat)
-//        if(existingMedicalServices.stream().anyMatch(ms ->
-//                ms.getMedical_service_name().equalsIgnoreCase(medicalServicesDTO.getMedical_service_name()) &&
-//                        ms.getMedical_service_type().equalsIgnoreCase(medicalServicesDTO.getMedical_service_type()) && !ms.getIs_deleted()
-//        )) {
-//            errors.append("Exista deja acest serviciu medical: ").append(medicalServicesDTO.getMedical_service_name())
-//                    .append(", de acest tip: ").append(medicalServicesDTO.getMedical_service_type())
-//                    .append(System.lineSeparator());
-//        }
-//
-//        //verificare daca tipul serviciului medical este corect
-//        if (CheckFields.isValidEnumValue(
-//                Stream.of(MedicalServicesType.values()).map(Enum::name).toList(),
-//                medicalServicesDTO.getMedical_service_type())) {
-//            errors.append("Tipul serviciului medical: ")
-//                    .append(medicalServicesDTO.getMedical_service_type())
-//                    .append(" este invalid")
-//                    .append(System.lineSeparator());
-//        }
-////
-////        //verificare daca introducem o durata mai mica decat 0
-////        if(medicalServicesDTO.getDuration()!= null && medicalServicesDTO.getDuration() < 1){
-////            errors.append("Durata unui serviciu medical trebuie sa aiba mai mult de 1 minut")
-////                    .append(System.lineSeparator());
-////        }
-//
-//        //afisarea erorilor
-//        if(!errors.isEmpty()) {
-//            throw new IllegalArgumentException(errors.toString().trim());
-//        }
-//
-//        MedicalServices medicalService = new MedicalServices(medicalServicesDTO);
-//        medicalService.setCreated_at(new Date());
-//        medicalService.setUpdated_at(null);
-//        medicalService.setIs_deleted(false);
-//
-//        MedicalServices savedMedicalService = medicalServicesRepository.save(medicalService);
-//        return new MedicalServicesDTO(savedMedicalService);
-//    }
-//
-//    public MedicalServicesDTO updateMedicalService(Integer id_medical_service, Map<String, Object> updates) {
-//
-//        //verificari necesare
-//        StringBuilder errors = new StringBuilder();
-//
-//        //verificare daca exista serviciul medical mentionat - daca nu exista, nu mai continuam verificarile
-//        MedicalServices medicalServices = medicalServicesRepository.findMedicalServicesById(id_medical_service)
-//                .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasit serviciul medical cu id-ul: " + id_medical_service));
-//
-//        //verificare daca nu se introduc date nule
-//        String emptyFieldsError = CheckFields.checkEmptyFields(
-//                DTOConverter.convertToMap(updates),
-//                Set.of("id_medical_service"));
-//        if (emptyFieldsError != null) {
-//            errors.append(emptyFieldsError)
-//                    .append(System.lineSeparator());
-//        }
-//
-//        //lista serviciilor medicale existenti
-//        List<MedicalServicesDTO> existingMedicalServices = getMedicalServicesByFilters(null,null,null);
-//
-//        updates.forEach((field,value) ->{
-//            switch (field){
-//                case "medical_service_name":
-//                    medicalServices.setMedical_service_name((String) value);
-//                    break;
-//                case "medical_service_type":
-//                    if (CheckFields.isValidEnumValue(
-//                            Stream.of(MedicalServicesType.values()).map(Enum::name).toList(),
-//                            (String) value)) {
-//                        errors.append("Tipul serviciului medical: ")
-//                                .append(value)
-//                                .append(" este invalid")
-//                                .append(System.lineSeparator());
-//                    }
-//                    medicalServices.setMedical_service_type(MedicalServicesType.valueOf((String) value));
-//                    break;
-////                case "id_doctor":
-////                    try {
-////                        Integer id_doctor = Integer.parseInt(value.toString());
-////                        Doctor doctor = doctorRepository.findDoctorById(id_doctor).orElse(null);
-////                        if (doctor == null) {
-////                            errors.append("Nu a fost gasit doctorul cu id-ul: ").append(id_doctor)
-////                                    .append(System.lineSeparator());
-////                        }
-////                        medicalServices.setDoctor(doctor);
-////                    } catch (NumberFormatException e) {
-////                        errors.append("ID-ul doctorului trebuie sa fie un numar valid.")
-////                                .append(System.lineSeparator());
-////                    }
-////                    break;
-//                case "id_medical_service":
-//                case "created_at":
-//                case "updated_at":
-//                case "is_deleted":
-//                    errors.append("Acest camp nu poate fi modificat: ").append(field)
-//                            .append(System.lineSeparator());
-//                    break;
-//                default:
-//                    errors.append("Acest camp nu exista: ").append(field)
-//                            .append(System.lineSeparator());
-//                    break;
-//            }
-//        });
-//
-//        //verificare daca datele introduse nu exista deja (daca are acelasi nume, acelasi tip si acelasi medic asignat)
-//        if(existingMedicalServices.stream().anyMatch(ms ->
-//                ms.getMedical_service_name().equalsIgnoreCase(medicalServices.getMedical_service_name()) &&
-//                        ms.getMedical_service_type().equalsIgnoreCase(String.valueOf(medicalServices.getMedical_service_type())) &&
-//                        !ms.getIs_deleted()
-//        )) {
-//            errors.append("Exista deja acest serviciu medical: ").append(medicalServices.getMedical_service_name())
-//                    .append(", de acest tip: ").append(medicalServices.getMedical_service_type())
-//                    .append(System.lineSeparator());
-//        }
-//
-//        //afisarea erorilor
-//        if(!errors.isEmpty()) {
-//            throw new IllegalArgumentException(errors.toString().trim());
-//        }
-//
-//        medicalServices.setUpdated_at(new Date());
-//        MedicalServices savedMedicalService = medicalServicesRepository.save(medicalServices);
-//        return new MedicalServicesDTO(savedMedicalService);
-//    }
-//
-//    public void deleteMedicalService(Integer id_medical_service) {
-//        MedicalServices medicalServices = medicalServicesRepository.findMedicalServicesById(id_medical_service)
-//                .orElseThrow(() -> new IllegalArgumentException("Nu a fost gasit serviciul medical cu id-ul: " + id_medical_service));
-//
-//        if(medicalServices.getIs_deleted()){
-//            throw  new IllegalArgumentException("Acest serviciu medical a fost deja sters: " + id_medical_service);
-//        }
-//
-//        medicalServices.setIs_deleted(true);
-//        medicalServices.setUpdated_at(new Date());
-//        medicalServicesRepository.save(medicalServices);
-//    }
-//}

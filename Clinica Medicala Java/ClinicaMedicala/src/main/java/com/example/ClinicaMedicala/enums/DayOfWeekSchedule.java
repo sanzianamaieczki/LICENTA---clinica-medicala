@@ -1,6 +1,6 @@
 package com.example.ClinicaMedicala.enums;
 
-public enum DayOfWeek {
+public enum DayOfWeekSchedule {
     monday,
     tuesday,
     wednesday,

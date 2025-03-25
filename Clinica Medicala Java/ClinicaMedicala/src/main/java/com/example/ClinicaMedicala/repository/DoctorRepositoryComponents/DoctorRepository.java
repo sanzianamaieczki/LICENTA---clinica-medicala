@@ -33,4 +33,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
 
     @Query("SELECT d from Doctor d WHERE d.clinic.id_clinic = :id_clinic")
     List<Doctor> findDoctorsByClinicId(int id_clinic);
+
+    @Query("SELECT d FROM Doctor d JOIN d.doctorMedicalServices dms WHERE dms.id_doctor_medical_service = :id_dms")
+    Optional<Doctor> findDoctorByDoctorMedicalServiceId(@Param("id_dms") Integer id_dms);
+
 }

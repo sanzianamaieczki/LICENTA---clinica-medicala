@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -59,4 +60,53 @@ public class AppointmentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    @PostMapping
+    public ResponseEntity<?> addAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+        try{
+            AppointmentDTO newAppointmentDTO = appointmentService.addAppointment(appointmentDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newAppointmentDTO);
+        }catch (HttpClientErrorException.UnprocessableEntity e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+        }catch (HttpClientErrorException.Conflict e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PatchMapping("/{id_appointment}")
+    public ResponseEntity<?> partialUpdateAppointment(@PathVariable Integer id_appointment, @RequestBody Map<String, Object> updates) {
+        try{
+            AppointmentDTO updatedAppointmentDTO = appointmentService.updateAppointment(id_appointment, updates);
+            return ResponseEntity.status(HttpStatus.CREATED).body(updatedAppointmentDTO);
+        }catch (HttpClientErrorException.UnprocessableEntity e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+        }catch (HttpClientErrorException.Conflict e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id_appointment}")
+    public ResponseEntity<?> deleteAppointment(@PathVariable Integer id_appointment) {
+        try{
+            appointmentService.deleteAppointment(id_appointment);
+            return ResponseEntity.status(HttpStatus.OK).body("Programarea cu id-ul : " + id_appointment + " a fost stearsa");
+        }catch (HttpClientErrorException.UnprocessableEntity e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+        }catch (HttpClientErrorException.Conflict e){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
 }

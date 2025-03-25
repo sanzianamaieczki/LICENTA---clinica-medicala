@@ -62,10 +62,9 @@ public class DoctorService {
 
     public List<MedicalServicesDTO> getMedicalServicesByFilters(
             Boolean is_deleted,
-            String medical_service_name,
-            String medical_service_type
+            String medical_service_name
     ){
-        return medicalServicesComponents.getMedicalServicesByFilters(is_deleted, medical_service_name, medical_service_type);
+        return medicalServicesComponents.getMedicalServicesByFilters(is_deleted, medical_service_name);
     }
 
     public Optional<MedicalServicesDTO> getMedicalServicesById(int id_medical_service) {

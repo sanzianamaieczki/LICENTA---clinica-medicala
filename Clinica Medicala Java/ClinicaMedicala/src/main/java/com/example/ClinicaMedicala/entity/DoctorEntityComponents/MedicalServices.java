@@ -38,8 +38,6 @@ public class MedicalServices {
 //    @Column(nullable = false)
 //    private Double price;
 
-    @Enumerated(EnumType.STRING)
-    private MedicalServicesType medical_service_type;
 //
 //    @Column(nullable = false)
 //    private Integer duration;
@@ -59,7 +57,6 @@ public class MedicalServices {
 
     public MedicalServices(MedicalServicesDTO medicalServicesDTO){
         this.medical_service_name = medicalServicesDTO.getMedical_service_name();
-        this.medical_service_type = MedicalServicesType.valueOf(medicalServicesDTO.getMedical_service_type());
         this.created_at = medicalServicesDTO.getCreated_at();
         this.updated_at = medicalServicesDTO.getUpdated_at();
         this.is_deleted = medicalServicesDTO.getIs_deleted();

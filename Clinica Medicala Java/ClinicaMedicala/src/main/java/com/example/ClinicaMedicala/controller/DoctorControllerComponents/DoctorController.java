@@ -73,11 +73,10 @@ public class DoctorController {
     @GetMapping("/medical-services")
     public ResponseEntity<?> getAllMedicalServices(
             @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
-            @RequestParam(value = "medical_service_name", required = false) String medicalServiceName,
-            @RequestParam(value = "medical_service_type", required = false) String medical_service_type
+            @RequestParam(value = "medical_service_name", required = false) String medicalServiceName
     ) {
         try{
-            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByFilters(is_deleted,medicalServiceName,medical_service_type);
+            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByFilters(is_deleted,medicalServiceName);
             return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
         } catch (HttpClientErrorException.UnprocessableEntity e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());

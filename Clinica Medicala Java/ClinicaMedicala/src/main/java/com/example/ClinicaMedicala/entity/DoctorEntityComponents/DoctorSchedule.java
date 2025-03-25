@@ -1,7 +1,7 @@
 package com.example.ClinicaMedicala.entity.DoctorEntityComponents;
 
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorScheduleDTO;
-import com.example.ClinicaMedicala.enums.DayOfWeek;
+import com.example.ClinicaMedicala.enums.DayOfWeekSchedule;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class DoctorSchedule {
     private Doctor doctor;
 
     @Enumerated(EnumType.STRING)
-    private DayOfWeek day_of_week;
+    private DayOfWeekSchedule day_of_week;
 
     @Column(nullable = false)
     @Temporal(TemporalType.TIME)
@@ -40,7 +40,7 @@ public class DoctorSchedule {
     private Boolean is_deleted;
 
     public DoctorSchedule(DoctorScheduleDTO doctorScheduleDTO){
-        this.day_of_week = DayOfWeek.valueOf(doctorScheduleDTO.getDay_of_week());
+        this.day_of_week = DayOfWeekSchedule.valueOf(doctorScheduleDTO.getDay_of_week());
         this.start_time = doctorScheduleDTO.getStart_time();
         this.end_time = doctorScheduleDTO.getEnd_time();
         this.is_deleted = doctorScheduleDTO.getIs_deleted();
