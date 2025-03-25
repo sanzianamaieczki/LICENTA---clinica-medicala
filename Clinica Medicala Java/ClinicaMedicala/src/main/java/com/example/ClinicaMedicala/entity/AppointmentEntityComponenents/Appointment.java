@@ -49,6 +49,9 @@ public class Appointment {
     @Column(nullable = false)
     private Boolean is_deleted = false;
 
+    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
+    private MedicalLetter medicalLetter;
+
     public Appointment(AppointmentDTO appointmentDTO) {
         this.appointment_date = appointmentDTO.getAppointment_date();
         this.appointment_status = AppointmentStatus.valueOf(appointmentDTO.getAppointment_status());

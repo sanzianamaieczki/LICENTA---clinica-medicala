@@ -1,5 +1,6 @@
 package com.example.ClinicaMedicala.dto.AppointmentDTOComponents;
 
+import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDetailsDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorMedicalServicesDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorScheduleDTO;
@@ -32,6 +33,8 @@ public class AppointmentDTO{
     private Date updated_at;
     private Boolean is_deleted;
 
+    private MedicalLetterDTO medicalLetter;
+
     public AppointmentDTO(Appointment appointment) {
         this.id_appointment = appointment.getId_appointment();
         this.id_patient = appointment.getPatient().getId_patient();
@@ -41,5 +44,9 @@ public class AppointmentDTO{
         this.created_at = appointment.getCreated_at();
         this.updated_at = appointment.getUpdated_at();
         this.is_deleted = appointment.getIs_deleted();
+
+        if(appointment.getMedicalLetter()!=null){
+            this.medicalLetter = new MedicalLetterDTO(appointment.getMedicalLetter());
+        }
     }
 }

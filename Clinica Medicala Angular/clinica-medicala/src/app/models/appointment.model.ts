@@ -1,4 +1,4 @@
-import { DoctorModel } from "./doctor.model";
+import { MedicalLetterModel } from "./medical-letter.model";
 
 export interface AppointmentModel{
     id_appointment: number;
@@ -9,7 +9,9 @@ export interface AppointmentModel{
     created_at: Date;
     updated_at: Date;
     is_deleted: boolean;
-    doctors: DoctorModel[];
+    
+    medicalLetter: MedicalLetterModel;
+
 }
 
 export enum AppointmentStatus{

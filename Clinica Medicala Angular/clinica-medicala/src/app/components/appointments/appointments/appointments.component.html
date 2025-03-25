@@ -10,6 +10,20 @@
             <p><strong>Serviciu Medical:</strong> {{ appointment.id_medical_service }}</p>
             <p><strong>Data:</strong> {{ appointment.appointment_date }}</p>
             <p><strong>Status:</strong> {{ appointment.appointment_status }}</p>
+
+            <div class="medical-letter">
+                <div *ngIf="appointment.medicalLetter; else noMedicalLetter">
+                    <ul><li>
+                        <h3>Scrisoare medicala: </h3>
+                        <p><strong>Diagnostic: </strong>{{appointment.medicalLetter.diagnosis}}</p>
+                        <p><strong>Simtome: </strong>{{appointment.medicalLetter.symptoms}}</p>
+                        <p><strong>Continut: </strong>{{appointment.medicalLetter.content}}</p>
+                    </li></ul>
+                </div>
+                <ng-template #noMedicalLetter>
+                    <p>Nu exista Scrisoare medicala pentru aceasta programare</p>
+                  </ng-template>
+            </div>
         </li>
     </ul>
 </div>
