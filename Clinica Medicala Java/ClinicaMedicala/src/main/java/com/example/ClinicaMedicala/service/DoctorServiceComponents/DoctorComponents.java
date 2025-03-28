@@ -42,18 +42,6 @@ public class DoctorComponents {
                 .map(DoctorDTO::new);
     }
 
-    public List<DoctorDTO> getDoctorsBySpecialization(int id_specialization) {
-        return doctorRepository.findDoctorsBySpecializationId(id_specialization).stream()
-                .map(DoctorDTO::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<DoctorDTO> getDoctorsByClinic(int id_clinic) {
-        return doctorRepository.findDoctorsByClinicId(id_clinic).stream()
-                .map(DoctorDTO::new)
-                .collect(Collectors.toList());
-    }
-
     public DoctorDTO addDoctor(DoctorDTO doctorDTO) {
 
         //verificari necesare

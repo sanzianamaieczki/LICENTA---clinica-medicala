@@ -1,8 +1,6 @@
 package com.example.ClinicaMedicala.entity.AppointmentEntityComponenents;
 
-import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.AppointmentDTO;
 import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.MedicalLetterDTO;
-import com.example.ClinicaMedicala.enums.AppointmentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

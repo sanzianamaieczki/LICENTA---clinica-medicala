@@ -1,12 +1,6 @@
 package com.example.ClinicaMedicala.controller.DoctorControllerComponents;
 
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorMedicalServicesDTO;
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorScheduleDTO;
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.MedicalServicesDTO;
-import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
-import com.example.ClinicaMedicala.entity.DoctorEntityComponents.DoctorMedicalServices;
-import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.DoctorRepository;
 import com.example.ClinicaMedicala.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
-import javax.print.Doc;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -29,8 +20,6 @@ public class DoctorController {
 
     @Autowired
     DoctorService doctorService;
-    @Autowired
-    private DoctorRepository doctorRepository;
 
     @GetMapping
     public ResponseEntity<?> getAllDoctors(
@@ -69,82 +58,6 @@ public class DoctorController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
-
-    @GetMapping("/medical-services")
-    public ResponseEntity<?> getAllMedicalServices(
-            @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
-            @RequestParam(value = "medical_service_name", required = false) String medicalServiceName
-    ) {
-        try{
-            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByFilters(is_deleted,medicalServiceName);
-            return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
-        } catch (HttpClientErrorException.UnprocessableEntity e) {
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/medical-services/{id_medical_service}")
-    public ResponseEntity<?> getMedicalServiceById(@PathVariable Integer id_medical_service) {
-        try{
-            Optional<MedicalServicesDTO> medicalServicesDTO = doctorService.getMedicalServicesById(id_medical_service);
-            return ResponseEntity.status(HttpStatus.OK).body(medicalServicesDTO);
-        } catch (HttpClientErrorException.UnprocessableEntity e){
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/{id_doctor}/medical-services")
-    public ResponseEntity<?> getMedicalServicesByDoctor(@PathVariable Integer id_doctor) {
-        try{
-            Optional<Doctor> doctorOptional = doctorRepository.findDoctorById(id_doctor);
-            if(doctorOptional.isEmpty()){
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Doctor not found");
-            }
-
-            Doctor doctor = doctorOptional.get();
-
-            List<DoctorMedicalServicesDTO> doctorMedicalServicesDTOS = doctor.getDoctorMedicalServices().stream()
-                    .map(DoctorMedicalServicesDTO::new)
-                    .collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.OK).body(doctorMedicalServicesDTOS);
-        }catch (HttpClientErrorException.UnprocessableEntity e){
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-//    @GetMapping("/{id_doctor}/doctor-schedule")
-//    public ResponseEntity<?> getDoctorScheduleByDoctor(@PathVariable Integer id_doctor) {
-//        try{
-//            List<DoctorScheduleDTO> doctorSchedule = doctorService.getDoctorScheduleByDoctor(id_doctor);
-//            return ResponseEntity.status(HttpStatus.OK).body(doctorSchedule);
-//        }catch (HttpClientErrorException.UnprocessableEntity e){
-//            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-//        }catch (EntityNotFoundException e){
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//        }catch (IllegalArgumentException e){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        }catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-//        }
-//    }
 
     @PostMapping
     public ResponseEntity<?> addDoctor(@RequestBody DoctorDTO doctorDTO) {

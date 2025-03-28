@@ -30,7 +30,7 @@ public class DoctorMedicalServices {
 
     @ManyToOne
     @JoinColumn(name = "id_medical_service", nullable = false)
-    private MedicalServices medicalServices;
+    private MedicalServices medicalService;
 
     @Column(nullable = false)
     private Double price;

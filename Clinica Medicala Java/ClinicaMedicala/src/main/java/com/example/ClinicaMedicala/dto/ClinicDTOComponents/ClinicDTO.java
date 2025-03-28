@@ -1,6 +1,6 @@
 package com.example.ClinicaMedicala.dto.ClinicDTOComponents;
 
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
+import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDetailsDTO;
 import com.example.ClinicaMedicala.entity.ClinicEntityComponents.Clinic;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class ClinicDTO {
     private Date updated_at;
     private Boolean is_deleted;
 
-    private List<DoctorDTO> doctors;
+    private List<DoctorDetailsDTO> doctors;
 
     public ClinicDTO(Clinic clinic) {
         this.id_clinic = clinic.getId_clinic();
@@ -40,7 +40,7 @@ public class ClinicDTO {
         if(clinic.getDoctors() != null) {
             this.doctors = clinic.getDoctors().stream()
                     .filter(doctor -> !doctor.getIs_deleted())
-                    .map(DoctorDTO::new)
+                    .map(DoctorDetailsDTO::new)
                     .collect(Collectors.toList());
         }
         else {

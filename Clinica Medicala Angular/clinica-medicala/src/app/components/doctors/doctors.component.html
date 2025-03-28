@@ -39,7 +39,19 @@
                   <h3>Programari:</h3>
                   <li *ngFor="let appointment of medicalService.appointments">
                     <p>{{appointment.appointment_date}}</p>
-      
+                    <div class="medical-letter">
+                      <div *ngIf="appointment.medicalLetter; else noMedicalLetter">
+                          <ul><li>
+                              <h3>Scrisoare medicala: </h3>
+                              <p><strong>Diagnostic: </strong>{{appointment.medicalLetter.diagnosis}}</p>
+                              <p><strong>Simtome: </strong>{{appointment.medicalLetter.symptoms}}</p>
+                              <p><strong>Continut: </strong>{{appointment.medicalLetter.content}}</p>
+                          </li></ul>
+                      </div>
+                      <ng-template #noMedicalLetter>
+                          <p>Nu exista Scrisoare medicala pentru aceasta programare</p>
+                        </ng-template>
+                  </div>
                   </li>
       
                 </ul>

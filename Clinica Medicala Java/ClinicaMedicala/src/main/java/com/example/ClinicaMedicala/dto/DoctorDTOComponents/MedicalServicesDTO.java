@@ -1,8 +1,6 @@
 package com.example.ClinicaMedicala.dto.DoctorDTOComponents;
 
-import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.AppointmentDTO;
 import com.example.ClinicaMedicala.entity.DoctorEntityComponents.MedicalServices;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +19,10 @@ public class MedicalServicesDTO {
 
     private Integer id_medical_service;
     private String medical_service_name;
-    private String medical_service_type;
     private Date created_at;
     private Date updated_at;
     private Boolean is_deleted;
 
-    //pt ca in doctors deja avem medical services
     private List<DoctorDetailsDTO> doctors;
 
     public MedicalServicesDTO(MedicalServices medicalServices) {

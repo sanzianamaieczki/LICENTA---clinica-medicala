@@ -1,6 +1,5 @@
 package com.example.ClinicaMedicala.dto.SpecializationDTOComponent;
 
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDetailsDTO;
 import com.example.ClinicaMedicala.entity.SpecializationEntityComponents.Specialization;
 import lombok.AllArgsConstructor;

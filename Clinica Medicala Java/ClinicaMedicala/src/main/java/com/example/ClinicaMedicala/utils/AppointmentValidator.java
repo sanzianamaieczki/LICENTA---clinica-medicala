@@ -3,7 +3,6 @@ package com.example.ClinicaMedicala.utils;
 import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
 import com.example.ClinicaMedicala.entity.PatientEntityComponents.Patient;
 import com.example.ClinicaMedicala.enums.AppointmentStatus;
-import java.sql.Time;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

@@ -1,25 +1,28 @@
 package com.example.ClinicaMedicala.service;
 
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
+import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorMedicalServicesDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorScheduleDTO;
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.MedicalServicesDTO;
 import com.example.ClinicaMedicala.service.DoctorServiceComponents.DoctorComponents;
-//import com.example.ClinicaMedicala.service.DoctorServiceComponents.DoctorScheduleComponents;
+import com.example.ClinicaMedicala.service.DoctorServiceComponents.DoctorMedicalServicesComponents;
+import com.example.ClinicaMedicala.service.DoctorServiceComponents.DoctorScheduleComponents;
 import com.example.ClinicaMedicala.service.DoctorServiceComponents.MedicalServicesComponents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
 import java.util.*;
 
 @Service
 public class DoctorService {
     @Autowired
     private DoctorComponents doctorComponents;
-//    @Autowired
-//    private DoctorScheduleComponents doctorScheduleComponents;
     @Autowired
     private MedicalServicesComponents medicalServicesComponents;
+    @Autowired
+    private DoctorScheduleComponents doctorScheduleComponents;
+    @Autowired
+    private DoctorMedicalServicesComponents doctorMedicalServicesComponents;
 
     // ========= Doctor Methods ===============
 
@@ -37,28 +40,18 @@ public class DoctorService {
         return doctorComponents.getDoctorById(id_doctor);
     }
 
-    public List<DoctorDTO> getDoctorsBySpecialization(int id_specialization) {
-        return doctorComponents.getDoctorsBySpecialization(id_specialization);
-    }
-
-    public List<DoctorDTO> getDoctorsByClinic(int id_clinic) {
-        return doctorComponents.getDoctorsByClinic(id_clinic);
-    }
-
     public DoctorDTO addDoctor(DoctorDTO doctorDTO) {
         return doctorComponents.addDoctor(doctorDTO);
     }
 
-    public DoctorDTO updateDoctor(Integer id_doctor, Map<String, Object> updates) {
-        return doctorComponents.updateDoctor(id_doctor, updates);
-    }
+    public DoctorDTO updateDoctor(Integer id_doctor, Map<String, Object> updates) { return doctorComponents.updateDoctor(id_doctor, updates);}
 
     public void deleteDoctor(Integer id_doctor) {
         doctorComponents.deleteDoctor(id_doctor);
     }
 
 
-    // Medical Services
+    // ========= Medical Services Methods ===============
 
     public List<MedicalServicesDTO> getMedicalServicesByFilters(
             Boolean is_deleted,
@@ -70,10 +63,6 @@ public class DoctorService {
     public Optional<MedicalServicesDTO> getMedicalServicesById(int id_medical_service) {
         return medicalServicesComponents.getMedicalServicesById(id_medical_service);
     }
-
-//    public List<MedicalServicesDTO> getMedicalServicesByDoctor(int id_doctor) {
-//        return medicalServicesComponents.getMedicalServicesByDoctor(id_doctor);
-//    }
 
     public MedicalServicesDTO addMedicalService(MedicalServicesDTO medicalServicesDTO) {
         return medicalServicesComponents.addMedicalService(medicalServicesDTO);
@@ -87,36 +76,31 @@ public class DoctorService {
         medicalServicesComponents.deleteMedicalService(id_medical_service);
     }
 
+    // ========= Doctor Medical Services Methods ===============
 
-    // Doctor Schedule
-//
-//    public List<DoctorScheduleDTO> getDoctorScheduleByFilters(
-//            Boolean is_deleted,
-//            String day_of_week,
-//            Time start_time,
-//            Time end_time
-//
-//    ){
-//        return doctorScheduleComponents.getDoctorScheduleByFilters(is_deleted, day_of_week, start_time, end_time);
-//    }
-//
-//    public Optional<DoctorScheduleDTO> getDoctorScheduleById(int id_doctor_schedule) {
-//        return doctorScheduleComponents.getDoctorScheduleById(id_doctor_schedule);
-//    }
-//
-//    public List<DoctorScheduleDTO> getDoctorScheduleByDoctor(int id_doctor) {
-//        return doctorScheduleComponents.getDoctorScheduleByDoctor(id_doctor);
-//    }
-//
-//    public DoctorScheduleDTO addDoctorSchedule(DoctorScheduleDTO doctorScheduleDTO) {
-//        return doctorScheduleComponents.addDoctorSchedule(doctorScheduleDTO);
-//    }
-//
-//    public DoctorScheduleDTO updateDoctorSchedule(Integer id_doctor_schedule, Map<String, Object> updates) {
-//        return doctorScheduleComponents.updateDoctorSchedule(id_doctor_schedule, updates);
-//    }
-//
-//    public void deleteDoctorSchedule(Integer id_doctor_schedule) {
-//        doctorScheduleComponents.deleteDoctorSchedule(id_doctor_schedule);
-//    }
+    public DoctorMedicalServicesDTO addDoctorMedicalService(DoctorMedicalServicesDTO doctorMedicalServicesDTO){
+        return doctorMedicalServicesComponents.addDoctorMedicalService(doctorMedicalServicesDTO);
+    }
+
+    public DoctorMedicalServicesDTO updateDoctorMedicalService(Integer id_doctor_medical_service, Integer id_doctor,Map<String, Object> updates){
+        return doctorMedicalServicesComponents.updateDoctorMedicalService(id_doctor_medical_service, id_doctor, updates);
+    }
+
+    public void deleteDoctorMedicalService(Integer id_doctor_medical_service, Integer id_doctor) {
+        doctorMedicalServicesComponents.deleteDoctorMedicalService(id_doctor_medical_service, id_doctor);
+    }
+
+    // ========= Doctor Schedule Methods ===============
+
+    public DoctorScheduleDTO addDoctorSchedule(DoctorScheduleDTO doctorScheduleDTO) {
+        return doctorScheduleComponents.addDoctorSchedule(doctorScheduleDTO);
+    }
+
+    public DoctorScheduleDTO updateDoctorSchedule(Integer id_doctor_schedule,Integer id_doctor, Map<String, Object> updates) {
+        return doctorScheduleComponents.updateDoctorSchedule(id_doctor_schedule,id_doctor, updates);
+    }
+
+    public void deleteDoctorSchedule(Integer id_doctor_schedule, Integer id_doctor) {
+        doctorScheduleComponents.deleteDoctorSchedule(id_doctor_schedule, id_doctor);
+    }
 }

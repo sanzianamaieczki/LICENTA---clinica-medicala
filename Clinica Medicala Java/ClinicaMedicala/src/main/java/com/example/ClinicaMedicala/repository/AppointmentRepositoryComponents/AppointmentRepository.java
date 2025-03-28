@@ -1,7 +1,6 @@
 package com.example.ClinicaMedicala.repository.AppointmentRepositoryComponents;
 
 import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
-import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -23,10 +22,4 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
     @Query("SELECT a FROM Appointment a WHERE a.id_appointment = :id_appointment")
     Optional<Appointment> findAppointmentById(int id_appointment);
-//
-//    @Query("SELECT a from Appointment a WHERE a.patient.id_patient = :id_patient")
-//    List<Appointment> findAppointmentsByPatientId(int id_patient);
-//
-//    @Query("SELECT a from Appointment a WHERE a.medicalServices.id_medical_service = :id_medical_service")
-//    List<Appointment> findAppointmentsByMedicalServiceId(int id_medical_service);
 }

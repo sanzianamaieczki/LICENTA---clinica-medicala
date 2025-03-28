@@ -1,23 +1,12 @@
 package com.example.ClinicaMedicala.dto.AppointmentDTOComponents;
 
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDetailsDTO;
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorMedicalServicesDTO;
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorScheduleDTO;
 import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
-import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
-import com.example.ClinicaMedicala.entity.PatientEntityComponents.Patient;
-import com.example.ClinicaMedicala.enums.AppointmentStatus;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter

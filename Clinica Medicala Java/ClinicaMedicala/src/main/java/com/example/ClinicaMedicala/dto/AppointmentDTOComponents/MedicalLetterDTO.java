@@ -1,6 +1,5 @@
 package com.example.ClinicaMedicala.dto.AppointmentDTOComponents;
 
-import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
 import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.MedicalLetter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

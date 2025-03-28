@@ -11,55 +11,35 @@ import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/clinica-medicala/doctors/medical-services")
+@RequestMapping("/api/clinica-medicala/doctors")
 public class MedicalServicesController {
 
     @Autowired
     DoctorService doctorService;
 
-//    @GetMapping
-//    public ResponseEntity<?> getAllMedicalServices(
-//            @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
-//            @RequestParam(value = "medical_service_name", required = false) String medicalServiceName,
-//            @RequestParam(value = "price", required = false) Double price,
-//            @RequestParam(value = "medical_service_type", required = false) String medical_service_type,
-//            @RequestParam(value = "duration", required = false) Integer duration
-//    ) {
-//        try{
-//            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByFilters(is_deleted,medicalServiceName, price,medical_service_type, duration);
-//            return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
-//        } catch (HttpClientErrorException.UnprocessableEntity e) {
-//            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-//        } catch (EntityNotFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//        } catch (IllegalArgumentException e) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-//        }
-//    }
+    @GetMapping("/medical-services")
+    public ResponseEntity<?> getAllMedicalServices(
+            @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
+            @RequestParam(value = "medical_service_name", required = false) String medicalServiceName
+    ) {
+        try{
+            List<MedicalServicesDTO> medicalServices = doctorService.getMedicalServicesByFilters(is_deleted,medicalServiceName);
+            return ResponseEntity.status(HttpStatus.OK).body(medicalServices);
+        } catch (HttpClientErrorException.UnprocessableEntity e) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
-//    @GetMapping("/{id_medical_service}")
-//    public ResponseEntity<?> getMedicalServiceById(@PathVariable Integer id_medical_service) {
-//        try{
-//            Optional<MedicalServicesDTO> medicalServicesDTO = doctorService.getMedicalServicesById(id_medical_service);
-//            return ResponseEntity.status(HttpStatus.OK).body(medicalServicesDTO);
-//        } catch (HttpClientErrorException.UnprocessableEntity e){
-//            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-//        }catch (EntityNotFoundException e){
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-//        }catch (IllegalArgumentException e){
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-//        }catch (Exception e){
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-//        }
-//    }
-
-    @PostMapping
+    @PostMapping("/medical-services")
     public ResponseEntity<?> addMedicalService(@RequestBody MedicalServicesDTO medicalServicesDTO) {
         try{
             MedicalServicesDTO medicalService = doctorService.addMedicalService(medicalServicesDTO);
@@ -75,11 +55,11 @@ public class MedicalServicesController {
         }
     }
 
-    @PatchMapping("/{id_medical_service}")
+    @PatchMapping("/medical-services/{id_medical_service}")
     public ResponseEntity<?> updateMedicalService(@PathVariable Integer id_medical_service, @RequestBody Map<String, Object> updates) {
         try{
-            MedicalServicesDTO medicalServicesDTO = doctorService.updateMedicalService(id_medical_service, updates);
-            return ResponseEntity.status(HttpStatus.OK).body(medicalServicesDTO);
+            MedicalServicesDTO medicalService = doctorService.updateMedicalService(id_medical_service,updates);
+            return ResponseEntity.status(HttpStatus.CREATED).body(medicalService);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -91,7 +71,7 @@ public class MedicalServicesController {
         }
     }
 
-    @DeleteMapping("/{id_medical_service}")
+    @DeleteMapping("/medical-services/{id_medical_service}")
     public ResponseEntity<?> deleteMedicalService(@PathVariable Integer id_medical_service) {
         try{
             doctorService.deleteMedicalService(id_medical_service);

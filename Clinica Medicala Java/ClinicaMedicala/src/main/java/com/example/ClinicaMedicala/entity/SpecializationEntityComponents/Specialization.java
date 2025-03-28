@@ -37,9 +37,6 @@ public class Specialization {
     @Column(nullable = false)
     private Boolean is_deleted = false;
 
-    //pentru ca doctor tine cheia straina, specialization nu gestioneaza direct relatia
-    //lazy - pt a incarca datele doar cand e nevoie, nu mereu
-    //cascade all-pt ca atunci cand modific specializarile sa se modifice si doctorii
     @OneToMany(mappedBy = "specialization", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Doctor> doctors;
 

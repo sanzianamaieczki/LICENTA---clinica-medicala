@@ -2,8 +2,6 @@ package com.example.ClinicaMedicala.service.DoctorServiceComponents;
 
 import com.example.ClinicaMedicala.dto.DoctorDTOComponents.MedicalServicesDTO;
 import com.example.ClinicaMedicala.entity.DoctorEntityComponents.MedicalServices;
-import com.example.ClinicaMedicala.enums.MedicalServicesType;
-import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.DoctorRepository;
 import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.MedicalServicesRepository;
 import com.example.ClinicaMedicala.utils.CheckFields;
 import com.example.ClinicaMedicala.utils.DTOConverter;
@@ -12,15 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class MedicalServicesComponents {
     @Autowired
     private MedicalServicesRepository medicalServicesRepository;
-
-    @Autowired
-    private DoctorRepository doctorRepository;
 
     public List<MedicalServicesDTO> getMedicalServicesByFilters(
             Boolean is_deleted,
@@ -36,12 +30,6 @@ public class MedicalServicesComponents {
                 .map(MedicalServicesDTO::new);
     }
 
-//    public List<MedicalServicesDTO> getMedicalServicesByDoctor(int id_doctor) {
-//        return medicalServicesRepository.findMedicalServicesByDoctorId(id_doctor).stream()
-//                .map(MedicalServicesDTO::new)
-//                .collect(Collectors.toList());
-//    }
-
     public MedicalServicesDTO addMedicalService(MedicalServicesDTO medicalServicesDTO) {
 
         //verificari necesare
@@ -50,7 +38,7 @@ public class MedicalServicesComponents {
         //verificare daca datele introduse sunt nule
         String emptyFieldsError = CheckFields.checkEmptyFields(
                 DTOConverter.convertToMap(medicalServicesDTO),
-                Set.of("id_medical_service"));
+                Set.of("id_medical_service", "doctors"));
         if (emptyFieldsError != null) {
             errors.append(emptyFieldsError)
                     .append(System.lineSeparator());
@@ -61,20 +49,11 @@ public class MedicalServicesComponents {
 
         //verificare daca datele introduse nu exista deja (daca are acelasi nume, acelasi tip si acelasi medic asignat)
         if(existingMedicalServices.stream().anyMatch(ms ->
-                ms.getMedical_service_name().equalsIgnoreCase(medicalServicesDTO.getMedical_service_name()) &&
-                        ms.getMedical_service_type().equalsIgnoreCase(medicalServicesDTO.getMedical_service_type()) && !ms.getIs_deleted()
+                ms.getMedical_service_name().equalsIgnoreCase(medicalServicesDTO.getMedical_service_name())
         )) {
             errors.append("Exista deja acest serviciu medical: ").append(medicalServicesDTO.getMedical_service_name())
-                    .append(", de acest tip: ").append(medicalServicesDTO.getMedical_service_type())
                     .append(System.lineSeparator());
         }
-
-//
-//        //verificare daca introducem o durata mai mica decat 0
-//        if(medicalServicesDTO.getDuration()!= null && medicalServicesDTO.getDuration() < 1){
-//            errors.append("Durata unui serviciu medical trebuie sa aiba mai mult de 1 minut")
-//                    .append(System.lineSeparator());
-//        }
 
         //afisarea erorilor
         if(!errors.isEmpty()) {
@@ -102,7 +81,7 @@ public class MedicalServicesComponents {
         //verificare daca nu se introduc date nule
         String emptyFieldsError = CheckFields.checkEmptyFields(
                 DTOConverter.convertToMap(updates),
-                Set.of("id_medical_service"));
+                Set.of("id_medical_service", "doctors"));
         if (emptyFieldsError != null) {
             errors.append(emptyFieldsError)
                     .append(System.lineSeparator());
@@ -116,21 +95,6 @@ public class MedicalServicesComponents {
                 case "medical_service_name":
                     medicalServices.setMedical_service_name((String) value);
                     break;
-
-//                case "id_doctor":
-//                    try {
-//                        Integer id_doctor = Integer.parseInt(value.toString());
-//                        Doctor doctor = doctorRepository.findDoctorById(id_doctor).orElse(null);
-//                        if (doctor == null) {
-//                            errors.append("Nu a fost gasit doctorul cu id-ul: ").append(id_doctor)
-//                                    .append(System.lineSeparator());
-//                        }
-//                        medicalServices.setDoctor(doctor);
-//                    } catch (NumberFormatException e) {
-//                        errors.append("ID-ul doctorului trebuie sa fie un numar valid.")
-//                                .append(System.lineSeparator());
-//                    }
-//                    break;
                 case "id_medical_service":
                 case "created_at":
                 case "updated_at":
@@ -148,7 +112,6 @@ public class MedicalServicesComponents {
         //verificare daca datele introduse nu exista deja (daca are acelasi nume, acelasi tip si acelasi medic asignat)
         if(existingMedicalServices.stream().anyMatch(ms ->
                 ms.getMedical_service_name().equalsIgnoreCase(medicalServices.getMedical_service_name()) &&
-
                         !ms.getIs_deleted()
         )) {
             errors.append("Exista deja acest serviciu medical: ").append(medicalServices.getMedical_service_name())

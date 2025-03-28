@@ -1,7 +1,6 @@
 package com.example.ClinicaMedicala.controller.ClinicControllerComponents;
 
 import com.example.ClinicaMedicala.dto.ClinicDTOComponents.ClinicDTO;
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
 import com.example.ClinicaMedicala.service.ClinicService;
 import com.example.ClinicaMedicala.service.DoctorService;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,9 +25,7 @@ public class ClinicController {
     @Autowired
     private DoctorService doctorService;
 
-    // GET - pentru a afisa toate clinicile
-    // Daca dorim sa vedem si clinicile care au fost sterse, adaugam un parametru "is_deleted"
-    @GetMapping
+   @GetMapping
     public ResponseEntity<?> getAllClinics(
             @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
             @RequestParam(value = "clinic_name", required = false) String clinic_name,
@@ -56,22 +53,6 @@ public class ClinicController {
             Optional<ClinicDTO> clinicDTO = clinicService.getClinicById(id_clinic);
             return ResponseEntity.status(HttpStatus.OK).body(clinicDTO);
         } catch (HttpClientErrorException.UnprocessableEntity e){
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/{id_clinic}/doctors")
-    public ResponseEntity<?> getDoctorsByClinic(@PathVariable Integer id_clinic) {
-        try{
-            List<DoctorDTO> doctors = doctorService.getDoctorsByClinic(id_clinic);
-            return ResponseEntity.status(HttpStatus.OK).body(doctors);
-        }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

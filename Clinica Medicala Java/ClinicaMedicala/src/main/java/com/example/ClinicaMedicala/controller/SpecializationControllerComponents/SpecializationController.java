@@ -1,8 +1,6 @@
 package com.example.ClinicaMedicala.controller.SpecializationControllerComponents;
 
-import com.example.ClinicaMedicala.dto.DoctorDTOComponents.DoctorDTO;
 import com.example.ClinicaMedicala.dto.SpecializationDTOComponent.SpecializationDTO;
-import com.example.ClinicaMedicala.service.DoctorService;
 import com.example.ClinicaMedicala.service.SpecializationService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +20,6 @@ public class SpecializationController {
 
     @Autowired
     private SpecializationService specializationService;
-
-    @Autowired
-    private DoctorService doctorService;
 
     @GetMapping
     public ResponseEntity<?> getSpecializationsByFilters(
@@ -50,22 +45,6 @@ public class SpecializationController {
         try{
             Optional<SpecializationDTO> specialization = specializationService.getSpecializationById(id_specialization);
             return ResponseEntity.status(HttpStatus.OK).body(specialization);
-        }catch (HttpClientErrorException.UnprocessableEntity e){
-            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }catch (EntityNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/{id_specialization}/doctors")
-    public ResponseEntity<?> getDoctorsBySpecialization(@PathVariable Integer id_specialization) {
-        try {
-            List<DoctorDTO> doctors = doctorService.getDoctorsBySpecialization(id_specialization);
-            return ResponseEntity.status(HttpStatus.OK).body(doctors);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){

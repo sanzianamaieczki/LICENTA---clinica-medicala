@@ -21,7 +21,4 @@ public interface MedicalServicesRepository extends JpaRepository<MedicalServices
 
     @Query("SELECT ms FROM MedicalServices ms WHERE ms.id_medical_service = :id_medical_service")
     Optional<MedicalServices> findMedicalServicesById(int id_medical_service);
-//
-//    @Query("SELECT ms FROM MedicalServices ms WHERE ms.doctor.id_doctor = :id_doctor")
-//    List<MedicalServices> findMedicalServicesByDoctorId(int id_doctor);
 }
