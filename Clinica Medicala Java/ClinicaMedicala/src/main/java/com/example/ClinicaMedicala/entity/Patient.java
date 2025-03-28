@@ -1,6 +1,6 @@
-package com.example.ClinicaMedicala.entity.PatientEntityComponents;
+package com.example.ClinicaMedicala.entity;
 
-import com.example.ClinicaMedicala.dto.PatientDTOComponents.PatientDTO;
+import com.example.ClinicaMedicala.dto.PatientDTO;
 import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

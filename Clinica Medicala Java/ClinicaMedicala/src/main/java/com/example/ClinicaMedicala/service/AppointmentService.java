@@ -1,30 +1,22 @@
 package com.example.ClinicaMedicala.service;
 
 import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.AppointmentDTO;
-import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
-import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
-import com.example.ClinicaMedicala.entity.DoctorEntityComponents.DoctorMedicalServices;
-import com.example.ClinicaMedicala.entity.PatientEntityComponents.Patient;
-import com.example.ClinicaMedicala.enums.AppointmentStatus;
-import com.example.ClinicaMedicala.repository.AppointmentRepositoryComponents.AppointmentRepository;
-import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.DoctorRepository;
-import com.example.ClinicaMedicala.repository.PatientRepositoryComponents.PatientRepository;
+import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.MedicalLetterDTO;
 import com.example.ClinicaMedicala.service.AppointmentServiceComponents.AppointmentComponent;
-import com.example.ClinicaMedicala.utils.AppointmentValidator;
-import com.example.ClinicaMedicala.utils.CheckFields;
-import com.example.ClinicaMedicala.utils.DTOConverter;
+import com.example.ClinicaMedicala.service.AppointmentServiceComponents.MedicalLetterComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class AppointmentService {
     @Autowired
     private AppointmentComponent appointmentComponent;
+    @Autowired
+    private MedicalLetterComponent medicalLetterComponent;
+
+    // ========= Appointment Methods ===============
 
     public List<AppointmentDTO> getAppointmentsByFilters(
             Boolean is_deleted,
@@ -47,5 +39,19 @@ public class AppointmentService {
 
     public void deleteAppointment(Integer id_appointment) {
         appointmentComponent.deleteAppointment(id_appointment);
+    }
+
+    // ========= Medical Letter Methods ===============
+
+    public MedicalLetterDTO addMedicalLetter(MedicalLetterDTO medicalLetterDTO) {
+        return medicalLetterComponent.addMedicalLetter(medicalLetterDTO);
+    }
+
+    public MedicalLetterDTO updateMedicalLetter(Integer id_appointment, Integer id_medical_letter, Map<String, Object> updates) {
+        return medicalLetterComponent.updateMedicalLetter(id_appointment,id_medical_letter, updates);
+    }
+
+    public void deleteMedicalLetter(Integer id_appointment, Integer id_medical_letter) {
+        medicalLetterComponent.deleteMedicalLetter(id_appointment, id_medical_letter);
     }
 }

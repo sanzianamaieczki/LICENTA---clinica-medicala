@@ -4,11 +4,11 @@ import com.example.ClinicaMedicala.dto.AppointmentDTOComponents.AppointmentDTO;
 import com.example.ClinicaMedicala.entity.AppointmentEntityComponenents.Appointment;
 import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
 import com.example.ClinicaMedicala.entity.DoctorEntityComponents.DoctorMedicalServices;
-import com.example.ClinicaMedicala.entity.PatientEntityComponents.Patient;
+import com.example.ClinicaMedicala.entity.Patient;
 import com.example.ClinicaMedicala.enums.AppointmentStatus;
 import com.example.ClinicaMedicala.repository.AppointmentRepositoryComponents.AppointmentRepository;
 import com.example.ClinicaMedicala.repository.DoctorRepositoryComponents.DoctorRepository;
-import com.example.ClinicaMedicala.repository.PatientRepositoryComponents.PatientRepository;
+import com.example.ClinicaMedicala.repository.PatientRepository;
 import com.example.ClinicaMedicala.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class AppointmentComponent {
@@ -149,17 +148,6 @@ public class AppointmentComponent {
                                 .append(System.lineSeparator());
                     }
                     break;
-                case "appointment_status":
-                    if (CheckFields.isValidEnumValue(
-                            Stream.of(AppointmentStatus.values()).map(Enum::name).toList(),
-                            (String) value)) {
-                        errors.append("Statusul programarii: ")
-                                .append(value)
-                                .append(" este invalid")
-                                .append(System.lineSeparator());
-                    }
-                    appointment.setAppointment_status(AppointmentStatus.valueOf((String) value));
-                    break;
                 case "appointment_date":
                     try{
                         Date newDate;
@@ -177,6 +165,7 @@ public class AppointmentComponent {
                     }
                     break;
                 case "id_appointment":
+                case "appointment_status":
                 case "created_at":
                 case "updated_at":
                 case "is_deleted":
@@ -232,7 +221,7 @@ public class AppointmentComponent {
             throw  new IllegalArgumentException("Aceasta programare a fost deja stearsa: " + id_appointment);
         }
 
-        appointment.setIs_deleted(true);
+        appointment.setAppointment_status(AppointmentStatus.canceled);
         appointment.setUpdated_at(new Date());
         appointmentRepository.save(appointment);
     }

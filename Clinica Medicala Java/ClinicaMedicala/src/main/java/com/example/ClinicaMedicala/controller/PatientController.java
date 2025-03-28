@@ -1,51 +1,59 @@
-package com.example.ClinicaMedicala.controller.SpecializationControllerComponents;
+package com.example.ClinicaMedicala.controller;
 
-import com.example.ClinicaMedicala.dto.SpecializationDTOComponent.SpecializationDTO;
-import com.example.ClinicaMedicala.service.SpecializationService;
+import com.example.ClinicaMedicala.dto.PatientDTO;
+import com.example.ClinicaMedicala.service.PatientService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping("/api/clinica-medicala/specializations")
-public class SpecializationController {
+@RequestMapping("/api/clinica-medicala/patients")
+public class PatientController {
 
     @Autowired
-    private SpecializationService specializationService;
+    PatientService patientService;
 
     @GetMapping
-    public ResponseEntity<?> getSpecializationsByFilters(
+    public ResponseEntity<?> getAllPatients(
             @RequestParam(value = "is_deleted", required = false, defaultValue = "false") Boolean is_deleted,
-            @RequestParam(value = "specialization_name", required = false) String specialization_name
+            @RequestParam(value = "first_name", required = false) String first_name,
+            @RequestParam(value = "last_name", required = false) String last_name,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "phone", required = false) String phone,
+            @RequestParam(value = "national_id", required = false) String national_id,
+            @RequestParam(value = "birth_date_start", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date birth_date_start,
+            @RequestParam(value = "birth_date_end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date birth_date_end
     ) {
         try{
-            List<SpecializationDTO> specializations = specializationService.getSpecializationsByFilters(is_deleted, specialization_name);
-            return new ResponseEntity<>(specializations, HttpStatus.OK);
-        }catch (HttpClientErrorException.UnprocessableEntity e){
+            List<PatientDTO> patients = patientService.getPatientsByFilters(is_deleted, first_name, last_name, email,phone,national_id,birth_date_start,birth_date_end);
+            return ResponseEntity.status(HttpStatus.OK).body(patients);
+        } catch (HttpClientErrorException.UnprocessableEntity e) {
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
-        }catch (EntityNotFoundException e){
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
-    @GetMapping("/{id_specialization}")
-    public ResponseEntity<?> getSpecializationById(@PathVariable Integer id_specialization) {
+    @GetMapping("/{id_patient}")
+    public ResponseEntity<?> getPatientById(@PathVariable Integer id_patient) {
         try{
-            Optional<SpecializationDTO> specialization = specializationService.getSpecializationById(id_specialization);
-            return ResponseEntity.status(HttpStatus.OK).body(specialization);
-        }catch (HttpClientErrorException.UnprocessableEntity e){
+            Optional<PatientDTO> patientDTO = patientService.getPatientById(id_patient);
+            return ResponseEntity.status(HttpStatus.OK).body(patientDTO);
+        } catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -57,10 +65,10 @@ public class SpecializationController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addSpecialization(@RequestBody SpecializationDTO specializationDTO) {
+    public ResponseEntity<?> addPatient(@RequestBody PatientDTO patientDTO) {
         try{
-            SpecializationDTO newSpecializationDTO = specializationService.addSpecialization(specializationDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(newSpecializationDTO);
+            PatientDTO patient = patientService.addPatient(patientDTO);
+            return ResponseEntity.status(HttpStatus.CREATED).body(patient);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -72,11 +80,11 @@ public class SpecializationController {
         }
     }
 
-    @PatchMapping("/{id_specialization}")
-    public ResponseEntity<?> updateSpecialization(@PathVariable Integer id_specialization, @RequestBody Map<String, Object> updates) {
+    @PatchMapping("/{id_patient}")
+    public ResponseEntity<?> updatePatient(@PathVariable Integer id_patient, @RequestBody Map<String, Object> updates) {
         try{
-            SpecializationDTO updatedSpecializationDTO = specializationService.updateSpecialization(id_specialization, updates);
-            return ResponseEntity.status(HttpStatus.CREATED).body(updatedSpecializationDTO);
+            PatientDTO patientDTO = patientService.updatePatient(id_patient, updates);
+            return ResponseEntity.status(HttpStatus.OK).body(patientDTO);
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){
@@ -88,11 +96,11 @@ public class SpecializationController {
         }
     }
 
-    @DeleteMapping("/{id_specialization}")
-    public ResponseEntity<?> deleteSpecialization(@PathVariable Integer id_specialization) {
+    @DeleteMapping("/{id_patient}")
+    public ResponseEntity<?> deletePatient(@PathVariable Integer id_patient) {
         try{
-            specializationService.deleteSpecialization(id_specialization);
-            return ResponseEntity.status(HttpStatus.OK).body("Specializarea cu id-ul : " + id_specialization + " a fost stearsa");
+            patientService.deletePatient(id_patient);
+            return ResponseEntity.status(HttpStatus.OK).body("Pacientul cu id-ul: " + id_patient + " a fost sters.");
         }catch (HttpClientErrorException.UnprocessableEntity e){
             return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
         }catch (HttpClientErrorException.Conflict e){

@@ -1,7 +1,7 @@
 package com.example.ClinicaMedicala.utils;
 
 import com.example.ClinicaMedicala.entity.DoctorEntityComponents.Doctor;
-import com.example.ClinicaMedicala.entity.PatientEntityComponents.Patient;
+import com.example.ClinicaMedicala.entity.Patient;
 import com.example.ClinicaMedicala.enums.AppointmentStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
