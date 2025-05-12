@@ -1,13 +1,140 @@
 <header>
     <div class="header-container">
-      <nav>
-        <a routerLink="/clinics" routerLinkActive="active">Clinici</a>
-        <a routerLink="/doctors" routerLinkActive="active">Medici</a>
-        <a routerLink="/specializations" routerLinkActive="active">Specializări</a>
-        <a routerLink="/patients" routerLinkActive="active">Pacienti</a>
-        <a routerLink="/medical-services" routerLinkActive="active">Servicii Medicale</a>
-        <a routerLink="/appointments" routerLinkActive="active">Programari</a>
-      </nav>
+      <div class="header-primary">
+        <div class="logo">
+          <!-- img logo -->
+          <h1>Clinica Medicala</h1>
+        </div>
+        <div class="header-actions">
+          <a class="btn">Programeaza-te</a>
+          <!-- Nume + Iesi din cont / Intra in cont -->
+          <a class="btn">Intra in cont</a>
+        </div>
+      </div>
+      <div class="header-secondary">
+        <nav role="navigation" class="navigation">
+          <!-- clinici -->
+         <div class="dropdown"
+            (mouseenter)="showClinicsDropdown = true"
+            (mouseleave)="showClinicsDropdown = false"
+            [class.show]="showClinicsDropdown">
+
+            <a class="btn"
+              aria-haspopup="true"
+              [attr.aria-expanded]="showClinicsDropdown"
+              routerLink="/clinics" routerLinkActive="active">
+              Clinici
+            </a>
+
+            <ul
+              class="dropdown-menu"
+              [class.show]="showClinicsDropdown">
+              <li *ngFor="let clinic of clinics">
+                <a class="dropdown-item"
+                  [routerLink]="['/clinics', clinic.id_clinic]"
+                  (click)="showClinicsDropdown = false">
+                  {{ clinic.clinic_name }}
+                </a>
+              </li>
+              <li *ngIf="!clinics.length">
+                <span class="dropdown-item-text">Nu exista clinici disponibile!</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- medici -->
+
+          <div class="dropdown"
+            (mouseenter)="showDoctorsDropdown = true"
+            (mouseleave)="showDoctorsDropdown = false"
+
+            [class.show]="showDoctorsDropdown">
+
+            <a class="btn"
+              aria-haspopup="true"
+              [attr.aria-expanded]="showDoctorsDropdown"
+              routerLink="/doctors" routerLinkActive="active">
+              Medici
+            </a>
+
+            <ul
+              class="dropdown-menu"
+              [class.show]="showDoctorsDropdown">
+              <li *ngFor="let doctor of doctors">
+                <a class="dropdown-item"
+                  [routerLink]="['/doctors', doctor.id_doctor]"
+                  (click)="showDoctorsDropdown = false">
+                  {{ doctor.first_name }} {{ doctor.last_name }}
+                </a>
+              </li>
+              <li *ngIf="!doctors.length">
+                <span class="dropdown-item-text">Nu exista medici disponibile!</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- specializari -->
+          <div class="dropdown"
+            (mouseenter)="showSpecializationsDropdown = true"
+            (mouseleave)="showSpecializationsDropdown = false"
+            [class.show]="showSpecializationsDropdown">
+
+            <a class="btn"
+              aria-haspopup="true"
+              [attr.aria-expanded]="showSpecializationsDropdown"
+              routerLink="/specializations" routerLinkActive="active">
+              Specializari
+            </a>
+
+            <ul
+              class="dropdown-menu"
+              [class.show]="showSpecializationsDropdown">
+              <li *ngFor="let specialization of specializations">
+                <a class="dropdown-item"
+                  [routerLink]="['/specializations', specialization.id_specialization]"
+                  (click)="showSpecializationsDropdown = false">
+                  {{ specialization.specialization_name }}
+                </a>
+              </li>
+              <li *ngIf="!specializations.length">
+                <span class="dropdown-item-text">Nu exista specializari disponibile!</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- medical services -->
+          <div class="dropdown"
+            (mouseenter)="showServicesDropdown = true"
+            (mouseleave)="showServicesDropdown = false"
+            [class.show]="showServicesDropdown">
+
+            <a class="btn"
+              aria-haspopup="true"
+              [attr.aria-expanded]="showServicesDropdown"
+              routerLink="/medical-services" routerLinkActive="active">
+              Servicii medicale
+            </a>
+
+            <ul
+              class="dropdown-menu"
+              [class.show]="showServicesDropdown">
+              <li *ngFor="let service of services">
+                <a class="dropdown-item"
+                  [routerLink]="['/services', service.id_medical_service]"
+                  (click)="showServicesDropdown = false">
+                  {{ service.medical_service_name }}
+                </a>
+              </li>
+              <li *ngIf="!specializations.length">
+                <span class="dropdown-item-text">Nu exista specializari disponibile!</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- <a routerLink="/patients" routerLinkActive="active">Pacienti</a> -->
+          <!-- <a routerLink="/appointments" routerLinkActive="active">Programari</a> -->
+        </nav>
+      </div>
     </div>
   </header>
   

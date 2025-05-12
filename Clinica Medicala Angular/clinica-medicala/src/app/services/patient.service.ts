@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, retry } from 'rxjs';
+import { PatientModel } from '../models/patient.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,11 +11,11 @@ export class PatientsService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getPatients(filters? : any): Observable<any> {
+  getPatients(filters? : any): Observable<PatientModel[]> {
     return this.http.get<any>(this.apiUrl, {params: filters});
   }
 
-  getPatientById(id: number): Observable<any>{
+  getPatientById(id: number): Observable<PatientModel>{
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 

@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DoctorDTO extends DoctorDetailsDTO{
 
-    private Integer id_specialization;
     private Integer id_clinic;
     private Date created_at;
     private Date updated_at;
@@ -29,7 +28,6 @@ public class DoctorDTO extends DoctorDetailsDTO{
     public DoctorDTO(Doctor doctor) {
 
         super(doctor);
-        this.id_specialization = doctor.getSpecialization().getId_specialization();
         this.id_clinic = doctor.getClinic().getId_clinic();
         this.created_at = doctor.getCreated_at();
         this.updated_at = doctor.getUpdated_at();

@@ -1,15 +1,36 @@
 <div class="list">
     <h1>Lista Clinicilor</h1>
     <div *ngIf="clinics.length === 0">
-      <p>Se încarcă datele...</p>
+      <p>Se incarca datele...</p>
     </div>
     <ul *ngIf="clinics.length > 0">
       <li *ngFor="let clinic of clinics">
-        <h2>{{ clinic.clinic_name }}</h2>
+        <h2><a [routerLink]="['/clinics', clinic.id_clinic]">
+          {{ clinic.clinic_name }}</a></h2>
         <p><strong>Telefon:</strong> {{ clinic.clinic_phone }}</p>
         <p><strong>Adresă:</strong> {{ clinic.clinic_address }}</p>
 
-        <div class="doctors">
+        <div>
+          <button
+          class="btn btn-outline-primary me-2"
+          [routerLink]="['/doctors']"
+          [queryParams]="{ clinic: clinic.id_clinic }">
+          Vezi doctori
+        </button>
+        <button
+          class="btn btn-outline-secondary me-2"
+          [routerLink]="['/specializations']"
+          [queryParams]="{ clinic: clinic.id_clinic }">
+          Vezi specializari
+        </button>
+        <button
+          class="btn btn-primary"
+          [routerLink]="['/clinics', clinic.id_clinic]">
+          Detalii
+        </button>
+        </div>
+
+        <!-- <div class="doctors">
           <h3>Doctori: </h3>
           <div *ngIf="clinic.doctors && clinic.doctors.length>0 ; else noDoctors">
             <ul>
@@ -21,7 +42,7 @@
           <ng-template #noDoctors>
             <p>Nu exista doctori pe aceasta clinica.</p>
           </ng-template>
-        </div>
+        </div> -->
       </li>
     </ul>
     <button class="btn btn-primary mt-3" routerLink="add-clinic">Adaugă Clinică</button>

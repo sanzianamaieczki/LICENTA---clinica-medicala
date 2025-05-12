@@ -16,6 +16,7 @@ public class DoctorDetailsDTO {
     private String first_name;
     private String email;
     private String phone;
+    private Integer id_specialization;
 
     public DoctorDetailsDTO(Doctor doctor) {
         this.id_doctor = doctor.getId_doctor();
@@ -23,5 +24,6 @@ public class DoctorDetailsDTO {
         this.first_name = doctor.getFirst_name();
         this.email = doctor.getEmail();
         this.phone = doctor.getPhone();
+        this.id_specialization = doctor.getSpecialization().getId_specialization();
     }
 }

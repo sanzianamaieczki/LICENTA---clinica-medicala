@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { DoctorModel } from '../models/doctor.model';
+import { MedicalServicesModel } from '../models/medical-services.model';
+import { DoctorScheduleModel } from '../models/doctor-schedule.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,23 +14,23 @@ export class DoctorService {
     
     constructor(private readonly http: HttpClient) {}
   
-    getDoctors(filters? : any): Observable<any> {
+    getDoctors(filters? : any): Observable<DoctorModel[]> {
       return this.http.get<any>(this.apiUrl, {params: filters});
     }
   
-    getDoctorById(id: number): Observable<any>{
+    getDoctorById(id: number): Observable<DoctorModel>{
       return this.http.get<any>(`${this.apiUrl}/${id}`);
     }
 
-    getMedicalServices(): Observable<any>{
+    getMedicalServices(): Observable<MedicalServicesModel[]>{
       return this.http.get<any>(`${this.apiUrl}/medical-services`);    
     }
 
-    getDoctorMedicalServices(id: number): Observable<any>{
+    getDoctorMedicalServices(id: number): Observable<MedicalServicesModel[]>{
       return this.http.get<any>(`${this.apiUrl}/${id}/medical-services`);
     }
     
-    getDoctorSchedule(id: number): Observable<any>
+    getDoctorSchedule(id: number): Observable<DoctorScheduleModel[]>
     {
       return this.http.get<any>(`${this.apiUrl}/${id}/doctor-schedule`)
     } 

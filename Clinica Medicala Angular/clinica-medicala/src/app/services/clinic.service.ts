@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, retry } from 'rxjs';
+import { ClinicModel } from '../models/clinic.model';
+import { DoctorModel } from '../models/doctor.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,15 +12,15 @@ export class ClinicService {
 
   constructor(private readonly http: HttpClient) {}
 
-  getClinics(filters? : any): Observable<any> {
+  getClinics(filters? : any): Observable<ClinicModel[]> {
     return this.http.get<any>(this.apiUrl, {params: filters});
   }
 
-  getClinicById(id: number): Observable<any>{
+  getClinicById(id: number): Observable<ClinicModel>{
     return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
-  getDoctorsByClinicId(id: number):Observable<any>{
+  getDoctorsByClinicId(id: number):Observable<DoctorModel[]>{
     return this.http.get<any>(`${this.apiUrl}/${id}/doctors`);
   }
 
