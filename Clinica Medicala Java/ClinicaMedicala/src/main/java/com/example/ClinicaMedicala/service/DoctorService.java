@@ -40,8 +40,6 @@ public class DoctorService {
         return doctorComponents.getDoctorById(id_doctor);
     }
 
-    public List<DoctorDTO> getDoctorsByClinicId(int id_clinic, boolean is_deleted) { return doctorComponents.getDoctorsByClinicId(id_clinic, is_deleted); }
-
     public DoctorDTO addDoctor(DoctorDTO doctorDTO) {
         return doctorComponents.addDoctor(doctorDTO);
     }

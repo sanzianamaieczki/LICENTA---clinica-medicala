@@ -42,12 +42,6 @@ public class DoctorComponents {
                 .map(DoctorDTO::new);
     }
 
-    public List<DoctorDTO> getDoctorsByClinicId(int clinic_id, boolean is_deleted) {
-        return doctorRepository.findDoctorsByClinicId(clinic_id, is_deleted).stream()
-                .map(DoctorDTO::new)
-                .collect(Collectors.toList());
-    }
-
     public DoctorDTO addDoctor(DoctorDTO doctorDTO) {
 
         //verificari necesare
