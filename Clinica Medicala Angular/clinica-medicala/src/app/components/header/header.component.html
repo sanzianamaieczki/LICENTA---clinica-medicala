@@ -30,8 +30,8 @@
               class="dropdown-menu"
               [class.show]="showClinicsDropdown">
               <li *ngFor="let clinic of clinics">
-                <a class="dropdown-item"
-                  [routerLink]="['/clinics', clinic.id_clinic]"
+                <a class="dropdown-item btn"
+                  [routerLink]="['/clinics', clinic.id_clinic]" routerLinkActive="active"
                   (click)="showClinicsDropdown = false">
                   {{ clinic.clinic_name }}
                 </a>
@@ -61,7 +61,7 @@
               class="dropdown-menu"
               [class.show]="showDoctorsDropdown">
               <li *ngFor="let doctor of doctors">
-                <a class="dropdown-item"
+                <a class="dropdown-item btn"
                   [routerLink]="['/doctors', doctor.id_doctor]"
                   (click)="showDoctorsDropdown = false">
                   {{ doctor.first_name }} {{ doctor.last_name }}
@@ -90,7 +90,7 @@
               class="dropdown-menu"
               [class.show]="showSpecializationsDropdown">
               <li *ngFor="let specialization of specializations">
-                <a class="dropdown-item"
+                <a class="dropdown-item btn"
                   [routerLink]="['/specializations', specialization.id_specialization]"
                   (click)="showSpecializationsDropdown = false">
                   {{ specialization.specialization_name }}
@@ -119,8 +119,8 @@
               class="dropdown-menu"
               [class.show]="showServicesDropdown">
               <li *ngFor="let service of services">
-                <a class="dropdown-item"
-                  [routerLink]="['/services', service.id_medical_service]"
+                <a class="dropdown-item btn"
+                  [routerLink]="['/medical-services', service.id_medical_service]"
                   (click)="showServicesDropdown = false">
                   {{ service.medical_service_name }}
                 </a>

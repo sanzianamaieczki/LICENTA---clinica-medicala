@@ -18,7 +18,7 @@ const routes: Routes = [
     component: ClinicsComponent,
     children: [
       { path: 'add-clinic', component: AddClinicComponent },
-      { path: 'clinic-details/:id', component: ClinicDetailsComponent},
+      { path: ':id', component: ClinicDetailsComponent},
     ]
   },
   {path: 'doctors', component: DoctorsComponent,

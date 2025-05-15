@@ -31,4 +31,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Integer> {
     @Query("SELECT d FROM Doctor d JOIN d.doctorMedicalServices dms WHERE dms.id_doctor_medical_service = :id_dms")
     Optional<Doctor> findDoctorByDoctorMedicalServiceId(@Param("id_dms") Integer id_dms);
 
+    @Query("SELECT d FROM Doctor d WHERE d.clinic.id_clinic = :id_clinic " +
+            "AND (:is_deleted IS NULL OR d.is_deleted = :is_deleted)")
+    List<Doctor> findDoctorsByClinicId(@Param("id_clinic") Integer id_clinic, @Param("is_deleted") Boolean is_deleted);
 }
