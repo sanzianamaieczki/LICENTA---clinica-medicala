@@ -25,9 +25,9 @@ export class HeaderComponent implements OnInit {
   services: MedicalServicesModel[] = [];
   showServicesDropdown = false;
 
-  constructor(private clinicService: ClinicService,
-    private doctorService: DoctorService,
-    private specializationService: SpecializationService
+  constructor(private readonly clinicService: ClinicService,
+    private readonly doctorService: DoctorService,
+    private readonly specializationService: SpecializationService
   ) {}
 
   ngOnInit(): void {

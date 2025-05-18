@@ -29,6 +29,10 @@ public class AppointmentService {
         return appointmentComponent.getAppointmentById(id_appointment);
     }
 
+    public List<AppointmentDTO> getAppointmentsByDoctorId(int id_doctor) {
+        return appointmentComponent.getAppointmentsByDoctorId(id_doctor);
+    }
+
     public AppointmentDTO addAppointment(AppointmentDTO appointmentDTO) {
         return appointmentComponent.addAppointment(appointmentDTO);
     }

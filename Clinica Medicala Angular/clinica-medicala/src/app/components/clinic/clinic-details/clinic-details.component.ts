@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ClinicModel } from '../../../models/clinic.model';
 import { DoctorModel } from '../../../models/doctor.model';
 import { SpecializationModel } from '../../../models/specialization.model';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { ClinicService } from '../../../services/clinic.service';
 import { DoctorService } from '../../../services/doctor.service';
 import { SpecializationService } from '../../../services/specialization.service';
@@ -24,7 +24,8 @@ export class ClinicDetailsComponent implements OnInit {
   showDoctors = false;
   showSpecializations = false;
 
-  constructor(private route: ActivatedRoute,
+  constructor(private readonly route: ActivatedRoute,
+    private readonly router: Router,
     private readonly clinicService: ClinicService,
     private readonly doctorService: DoctorService,
     private readonly specializationService: SpecializationService
@@ -34,18 +35,22 @@ export class ClinicDetailsComponent implements OnInit {
     this.route.paramMap
     .subscribe((params: ParamMap) => {
       const id = Number(params.get('id'));
+      this.clinicId = id;
       this.fetchClinicDetails(id);
-      this.showDoctors = false;
-      this.showSpecializations = false;
+    });
+
+    this.route.queryParams.subscribe((params) => {
+      this.showDoctors = params['doctors'] === 'true';
+      this.showSpecializations = params['specializations'] === 'true';
     });
   }
 
   fetchClinicDetails(clinicId: number) {
 
     forkJoin({
-      clinic:   this.clinicService.getClinicById(clinicId),
-      doctors:  this.doctorService.getDoctors({ is_deleted: 'false' }),
-      specs:    this.specializationService.getSpecializations({ is_deleted: 'false' })
+      clinic: this.clinicService.getClinicById(clinicId),
+      doctors:this.doctorService.getDoctors({ is_deleted: 'false' }),
+      specs:this.specializationService.getSpecializations({ is_deleted: 'false' })
     }).subscribe({
       next: ({ clinic, doctors, specs }) => {
         this.clinic = clinic;
@@ -59,16 +64,14 @@ export class ClinicDetailsComponent implements OnInit {
     });
   }
 
-  toggleDoctors() {
-    this.showDoctors = !this.showDoctors;
-    if (this.showDoctors) {
-      this.showSpecializations = false;
-    }
+  toogleDoctors() {
+    this.router.navigate(['/clinics', this.clinicId], {
+      queryParams: { doctors: !this.showDoctors },  
+    });
   }
-  toggleSpecializations() {
-    this.showSpecializations = !this.showSpecializations;
-    if (this.showSpecializations) {
-      this.showDoctors = false;
-    }
+  toogleSpecializations() {
+    this.router.navigate(['/clinics', this.clinicId], {
+      queryParams: { specializations: !this.showSpecializations },  
+    });
   }
 }

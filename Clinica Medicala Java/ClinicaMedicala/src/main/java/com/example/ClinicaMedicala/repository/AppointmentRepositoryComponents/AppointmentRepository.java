@@ -22,4 +22,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
 
     @Query("SELECT a FROM Appointment a WHERE a.id_appointment = :id_appointment")
     Optional<Appointment> findAppointmentById(int id_appointment);
+
+    @Query("SELECT a FROM Appointment a WHERE a.doctorMedicalServices.doctor.id_doctor = :id_doctor")
+    List<Appointment> findAppointmentByDoctorId(int id_doctor);
 }

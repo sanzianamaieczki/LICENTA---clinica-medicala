@@ -9,6 +9,7 @@ import { PatientsComponent } from './components/patients/patients.component';
 import { MedicalServicesComponent } from './components/doctors/medical-services/medical-services.component';
 import { AppointmentsComponent } from './components/appointments/appointments/appointments.component';
 import { ClinicDetailsComponent } from './components/clinic/clinic-details/clinic-details.component';
+import { DoctorDetailsComponent } from './components/doctors/doctor-details/doctor-details.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' }, 
@@ -22,6 +23,9 @@ const routes: Routes = [
     ]
   },
   {path: 'doctors', component: DoctorsComponent,
+    children: [
+      {path: ":id", component: DoctorDetailsComponent}
+    ]
   },
   {path: 'specializations', component: SpecializationsComponent},
   {path: 'patients', component: PatientsComponent},

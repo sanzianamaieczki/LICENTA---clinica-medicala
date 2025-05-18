@@ -10,20 +10,15 @@
       <li *ngFor="let clinic of clinics">
         <h2><a [routerLink]="[clinic.id_clinic]" routerLinkActive="active">
           {{ clinic.clinic_name }}</a></h2>
-        <p><strong>Telefon:</strong> {{ clinic.clinic_phone }}</p>
-        <p><strong>Adresă:</strong> {{ clinic.clinic_address }}</p>
-
         <div>
           <button
           class="btn btn-outline-primary me-2"
-          [routerLink]="['/doctors']"
-          [queryParams]="{ clinic: clinic.id_clinic }">
+          (click)="showDoctors(clinic.id_clinic)">
           Vezi doctori
         </button>
         <button
           class="btn btn-outline-secondary me-2"
-          [routerLink]="['/specializations']"
-          [queryParams]="{ clinic: clinic.id_clinic }">
+          (click)="showSpecializations(clinic.id_clinic)">
           Vezi specializari
         </button>
         <button

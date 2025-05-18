@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DoctorService} from '../../services/doctor.service'
 import { DoctorModel } from '../../models/doctor.model';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-doctors',
@@ -12,7 +12,6 @@ export class DoctorsComponent implements OnInit{
 
   doctors: DoctorModel[] = [];
   clinicId: number = 0;
-  //doctorSchedule: DoctorScheduleModel[] = [];
 
   dayMapping: {[key: string]: string} = {
     monday: 'Luni',
@@ -26,13 +25,13 @@ export class DoctorsComponent implements OnInit{
 
   constructor(
     private readonly doctorService: DoctorService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ){}
 
   ngOnInit(): void{
     this.route.queryParams.subscribe(params => {
       this.clinicId = params['clinic'] ? +params['clinic'] : 0;
-      console.log('Clinic ID:', this.clinicId);
       this.fetchDoctors();
     });
   }
@@ -47,4 +46,16 @@ export class DoctorsComponent implements OnInit{
       }
     })
   }
+  showSchedule(doctorId: number) {
+    this.router.navigate(['/doctors',doctorId], {
+      queryParams: {schedule: true },
+    });
+  }
+
+  showServices(doctorId: number) {
+    this.router.navigate(['/doctors', doctorId], {
+      queryParams: { services: true},
+    });
+  }
+
 }

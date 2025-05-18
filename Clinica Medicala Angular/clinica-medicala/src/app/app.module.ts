@@ -16,6 +16,8 @@ import { PatientsComponent } from './components/patients/patients.component';
 import { MedicalServicesComponent } from './components/doctors/medical-services/medical-services.component';
 import { AppointmentsComponent } from './components/appointments/appointments/appointments.component';
 import { ClinicDetailsComponent } from './components/clinic/clinic-details/clinic-details.component';
+import { DoctorDetailsComponent } from './components/doctors/doctor-details/doctor-details.component';
+import { FullCalendarModule } from '@fullcalendar/angular'; 
 
 @NgModule({
   declarations: [
@@ -31,12 +33,15 @@ import { ClinicDetailsComponent } from './components/clinic/clinic-details/clini
     MedicalServicesComponent,
     AppointmentsComponent,
     ClinicDetailsComponent,
+    DoctorDetailsComponent,
+    AddClinicComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    FullCalendarModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

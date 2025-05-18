@@ -39,6 +39,11 @@ public class AppointmentComponent {
         return appointmentRepository.findAppointmentById(id_appointment)
                 .map(AppointmentDTO::new);
     }
+    public List<AppointmentDTO> getAppointmentsByDoctorId(int id_doctor) {
+        return appointmentRepository.findAppointmentByDoctorId(id_doctor)
+                .stream().map(AppointmentDTO::new)
+                .collect(Collectors.toList());
+    }
 
     public AppointmentDTO addAppointment(AppointmentDTO appointmentDTO) {
 

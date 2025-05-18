@@ -60,6 +60,22 @@ public class AppointmentController {
         }
     }
 
+    @GetMapping("/doctor/{id_doctor}")
+    public ResponseEntity<?> getAppointmentByDoctor(@PathVariable Integer id_doctor) {
+        try{
+            List<AppointmentDTO> appointmentDTO = appointmentService.getAppointmentsByDoctorId(id_doctor);
+            return ResponseEntity.status(HttpStatus.OK).body(appointmentDTO);
+        } catch (HttpClientErrorException.UnprocessableEntity e){
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(e.getMessage());
+        }catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }catch (IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
     @PostMapping
     public ResponseEntity<?> addAppointment(@RequestBody AppointmentDTO appointmentDTO) {
         try{

@@ -1,62 +1,25 @@
-<router-outlet #childOutlet="outlet"></router-outlet>
+<ng-container *ngIf="doctor">
+  <h2>{{ doctor.first_name }} {{ doctor.last_name }}</h2>
+  <!-- <p><strong>Clinica:</strong> {{ clinicName }}</p> -->
+  <p><strong>Telefon:</strong> {{ doctor.phone }}</p>
+  <p><strong>Email:</strong> {{ doctor.email }}</p>
 
-<ng-container *ngIf="!childOutlet.isActivated">
-  <div class="list">
-    <h1>Lista Medicilor</h1>
-    <div *ngIf="doctors.length === 0">
-      <p>Se incarca datele...</p>
-    </div>
-    <ul *ngIf="doctors.length > 0" class="list-unstyled">
-      <li *ngFor="let doctor of doctors" class="mb-4 border-bottom pb-3">
-        <h2><a [routerLink]="[doctor.id_doctor]" routerLinkActive="active">
-            {{ doctor.first_name }} {{ doctor.last_name }}</a></h2>
-
-        <div>
-          <button
-            class="btn btn-outline-primary me-2"
-            (click)="showSchedule(doctor.id_doctor)"
-          >
-            Vezi program
-          </button>
-          <button
-            class="btn btn-outline-secondary me-2"
-            (click)="showServices(doctor.id_doctor)"
-          >
-            Vezi servicii
-          </button>
-          <button class="btn btn-primary"
-            [routerLink]="[doctor.id_doctor]" routerLinkActive="active">
-            Detalii
-          </button>
-        </div>
-      </li>
-    </ul>
+  <div class="mt-3">
+    <button class="btn btn-outline-primary me-2" (click)="toogleSchedule()">
+      Program
+    </button>
+    <button class="btn btn-outline-secondary" (click)="toogleServices()">
+      Servicii
+    </button>
   </div>
-</ng-container>
 
-<!-- <div class="list">
-    <h1>Lista Medicilor</h1>
-    <div *ngIf="doctors.length === 0">
-      <p>Se încarcă datele...</p>
-    </div>
-    <ul *ngIf="doctors.length > 0">
-      <li *ngFor="let doctor of doctors">
-        <h2>{{ doctor.first_name }} {{ doctor.last_name }}</h2>
-        
-        <p><strong>Email:</strong> {{ doctor.email }}</p>
-        <p><strong>Telefon:</strong> {{ doctor.phone }}</p>
+  <div *ngIf="showSchedule && calendarOptions" class="mt-4">
+    <h3>Disponibilitate & Slot-uri</h3>
+    <full-calendar [options]="calendarOptions"></full-calendar>
+  </div>
 
-        <div>
-          <button
-          class="btn btn-outline-primary me-2"
-          >
-          Vezi program
-        </button>
-        </div>
-
-        
-        <div class="schedule">
-          <h3>Program: </h3>
+  <!-- <div *ngIf="showSchedule" class="schedule">
+    <h3>Program: </h3>
           <div *ngIf="doctor.doctorSchedules && doctor.doctorSchedules.length > 0; else noSchedule">
             <ul>
               <li *ngFor="let schedule of doctor.doctorSchedules">
@@ -67,9 +30,36 @@
           <ng-template #noSchedule>
             <p>Nu exista program disponibil.</p>
           </ng-template>
-        </div>
 
-        <div class="medical-services">
+          <table class="table table-bordered text-center">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col"></th>
+      <th
+        *ngFor="let day of weekDays"
+        scope="col"
+      >
+        {{ dayMapping[day] }}
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let hour of hours">
+      <th scope="row">
+        {{ hour < 10 ? '0' + hour : hour }}:00
+      </th>
+      <td
+        *ngFor="let day of weekDays"
+        style="min-width: 100px; height: 50px;"
+      >
+        aici poţi injecta programme-ul pentru {{day}} și {{hour}} 
+      </td>
+    </tr>
+  </tbody>
+</table>
+  </div> -->
+
+  <div *ngIf="showServices" class="medical-services">
           <div *ngIf="doctor.medicalServices && doctor.medicalServices.length > 0; else noMedicalServices">
           <ul>
             <h3>Serviciile medicale oferite de doctor:</h3>
@@ -78,7 +68,7 @@
               <p>{{medicalService.medicalService.medical_service_name}}</p>
               <p><strong>Pret:</strong> {{medicalService.price}}</p>
 
-              <div class="appointments">
+              <!-- <div class="appointments">
                 <div *ngIf="medicalService.appointments && medicalService.appointments.length > 0; else noAppointments">
                 <ul>
                   <h3>Programari:</h3>
@@ -104,7 +94,7 @@
                 <ng-template #noAppointments>
                   <p>Nu exista Servicii medicale pentru acest doctor</p>
                 </ng-template>
-              </div>
+              </div> -->
             </li>
 
             
@@ -115,10 +105,4 @@
             <p>Nu exista Servicii medicale pentru acest doctor</p>
           </ng-template>
         </div>
-
-        
-      </li>
-
-    </ul>
-  </div>
-   -->
+</ng-container>
