@@ -30,29 +30,6 @@ export class DoctorDetailsComponent implements OnInit {
 
   calendarOptions!: CalendarOptions;
 
-
-  // weekDays:DayOfWeek[] = [
-  //   DayOfWeek.Monday,
-  //   DayOfWeek.Tuesday,
-  //   DayOfWeek.Wednesday,
-  //   DayOfWeek.Thursday,
-  //   DayOfWeek.Friday,
-  //   DayOfWeek.Saturday,
-  //   DayOfWeek.Sunday
-  // ];
-
-  // dayMapping: {[key: string]: string} = {
-  //   monday: 'Luni',
-  //   tuesday: 'Marti',
-  //   wednesday: 'Miercuri',
-  //   thursday: 'Joi',
-  //   friday: 'Vineri',
-  //   saturday: 'Sambata',
-  //   sunday: 'Duminica'
-  // }
-  // hours: number[] = Array.from({ length: 13 }, (_, i) => i + 8);
-
-
   constructor(private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly doctorService: DoctorService,
@@ -109,62 +86,54 @@ export class DoctorDetailsComponent implements OnInit {
 
   private buildCalendar(): void {
   this.calendarOptions = {
-    plugins:      [ dayGridPlugin, timeGridPlugin ],
-    initialView:  'dayGridMonth',
+    plugins:[ dayGridPlugin, timeGridPlugin ],
+    initialView: 'dayGridMonth',
     headerToolbar:{
-      left:  'prev,next today',
+      left:'prev next',
       center:'title',
-      right: ''
+      right: 'today'
     },
-    height: 650,
-
-    events: (fetchInfo, successCallback, failureCallback) => {
+    eventTimeFormat: {
+      hour: '2-digit',
+      minute: '2-digit',
+      meridiem: false,
+      hour12: false
+    },
+    
+    events: (info, successCallback, failureCallback) => {
       try {
-        const events: EventInput[] = [];
-        const slotLen = 30 * 60_000;
+        const events: any[] = [];
+        const slotLen = 30 * 60000;
 
-        for (
-          let d = new Date(fetchInfo.start);
-          d < new Date(fetchInfo.end);
-          d.setDate(d.getDate() + 1)
-        ) {
-          const dow = d
-            .toLocaleDateString('en-US', { weekday: 'long' })
-            .toLowerCase();
+        for (let day = new Date(info.start); day < new Date(info.end); day.setDate(day.getDate() + 1)) {
+          const dow = day.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
 
           const schedules = this.doctorSchedule.filter(
-            sch => sch.day_of_week.toLowerCase() === dow
+            schedule => schedule.day_of_week.toLowerCase() === dow
           );
 
-          for (const sch of schedules) {
-            const startTimeStr = sch.start_time instanceof Date
-              ? sch.start_time.toTimeString().slice(0, 5)
-              : sch.start_time;
-            const endTimeStr = sch.end_time instanceof Date
-              ? sch.end_time.toTimeString().slice(0, 5)
-              : sch.end_time;
-            const [sh, sm] = startTimeStr.split(':').map(n => +n);
-            const [eh, em] = endTimeStr.split(':').map(n => +n);
+          for (const schedule of schedules) {
+            const startTime = schedule.start_time.slice(0, 5);
+            const endTime = schedule.end_time.slice(0, 5);
 
-            const startDate = new Date(d);
-            startDate.setHours(sh, sm, 0, 0);
-            const endDate = new Date(d);
-            endDate.setHours(eh, em, 0, 0);
+            const [startHour, startMinute] = startTime.split(':').map(n => +n);
+            const [endHour, endMinute] = endTime.split(':').map(n => +n);
 
-            for (
-              let t = startDate.getTime();
-              t + slotLen <= endDate.getTime();
-              t += slotLen
-            ) {
-              const slotStart = new Date(t);
+            const startDate = new Date(day);
+            startDate.setHours(startHour, startMinute, 0, 0);
+
+            const endDate = new Date(day);
+            endDate.setHours(endHour, endMinute, 0, 0);
+
+            for (let time = startDate.getTime(); time + slotLen <= endDate.getTime(); time += slotLen) {
+              const slotStart = new Date(time);
               if (!this.isOccupied(slotStart)) {
-                const slotEnd = new Date(t + slotLen);
+                const slotEnd = new Date(time + slotLen);
                 events.push({
-                  title: `${this.formatTime(slotStart)}–${this.formatTime(slotEnd)}`,
                   start: slotStart.toISOString(),
-                  end:   slotEnd .toISOString(),
-                  display: 'block',
-                  color: 'crimson'
+                  end: slotEnd .toISOString(),
+                  display: 'block'
+                  // color: 'crimson'
                 });
               }
             }
@@ -175,19 +144,20 @@ export class DoctorDetailsComponent implements OnInit {
       } catch (err) {
         failureCallback(err as Error);
       }
+    },
+    eventClick: (info) => {
+      this.addAppointment(info.event.start);
     }
   };
 }
 
   private isOccupied(slot: Date): boolean {
-    return this.appoinments.some(appt =>
-      new Date(appt.appointment_date).getTime() === slot.getTime()
+    return this.appoinments.some(appoinment =>
+      new Date(appoinment.appointment_date).getTime() === slot.getTime()
     );
   }
 
-  private formatTime(dt: Date): string {
-    const hh = ('0' + dt.getHours()).slice(-2);
-    const mm = ('0' + dt.getMinutes()).slice(-2);
-    return `${hh}:${mm}`;
+  addAppointment(date: Date | null) {
+     if (date) {this.router.navigate(['/appointments', 'add-appointment']);}
   }
 }

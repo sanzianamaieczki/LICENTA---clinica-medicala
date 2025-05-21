@@ -45,6 +45,7 @@ public class DoctorDTO extends DoctorDetailsDTO{
 
         if(doctor.getDoctorSchedules() != null) {
             this.doctorSchedules = doctor.getDoctorSchedules().stream()
+                    .filter(doctorSchedule -> !doctorSchedule.getIs_deleted())
                     .map(DoctorScheduleDTO::new)
                     .collect(Collectors.toList());
         } else {

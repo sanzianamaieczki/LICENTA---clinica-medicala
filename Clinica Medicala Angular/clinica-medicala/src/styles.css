@@ -56,3 +56,24 @@ a{
 a:hover {
   text-decoration: underline !important;
 }
+
+.fc-daygrid-day-events{
+  display: flex;
+  flex-wrap: wrap;
+  cursor: pointer;
+}
+.fc-daygrid-day-events a{
+  text-decoration: none !important;
+}
+
+.fc-event-title{
+    display: none !important;
+}
+
+.fc-daygrid-event-harness a{
+    width: max-content;
+}
+
+.fc-daygrid-event-harness{
+  font-size: 15px;
+}

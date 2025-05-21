@@ -1,8 +1,8 @@
 export interface DoctorScheduleModel{
     id_doctor: number,
     day_of_week: DayOfWeek,
-    start_time: Date,
-    end_time: Date,
+    start_time: string,
+    end_time: string,
     is_deleted: boolean
 }
 

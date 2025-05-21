@@ -18,88 +18,15 @@
     <full-calendar [options]="calendarOptions"></full-calendar>
   </div>
 
-  <!-- <div *ngIf="showSchedule" class="schedule">
-    <h3>Program: </h3>
-          <div *ngIf="doctor.doctorSchedules && doctor.doctorSchedules.length > 0; else noSchedule">
-            <ul>
-              <li *ngFor="let schedule of doctor.doctorSchedules">
-                <p>{{dayMapping[schedule.day_of_week]}}: {{schedule.start_time}}-{{schedule.end_time}}</p>
-              </li>
-            </ul>
-          </div>
-          <ng-template #noSchedule>
-            <p>Nu exista program disponibil.</p>
-          </ng-template>
-
-          <table class="table table-bordered text-center">
-  <thead class="thead-light">
-    <tr>
-      <th scope="col"></th>
-      <th
-        *ngFor="let day of weekDays"
-        scope="col"
-      >
-        {{ dayMapping[day] }}
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let hour of hours">
-      <th scope="row">
-        {{ hour < 10 ? '0' + hour : hour }}:00
-      </th>
-      <td
-        *ngFor="let day of weekDays"
-        style="min-width: 100px; height: 50px;"
-      >
-        aici poţi injecta programme-ul pentru {{day}} și {{hour}} 
-      </td>
-    </tr>
-  </tbody>
-</table>
-  </div> -->
-
   <div *ngIf="showServices" class="medical-services">
           <div *ngIf="doctor.medicalServices && doctor.medicalServices.length > 0; else noMedicalServices">
           <ul>
             <h3>Serviciile medicale oferite de doctor:</h3>
             <li *ngFor="let medicalService of doctor.medicalServices">
-
               <p>{{medicalService.medicalService.medical_service_name}}</p>
               <p><strong>Pret:</strong> {{medicalService.price}}</p>
-
-              <!-- <div class="appointments">
-                <div *ngIf="medicalService.appointments && medicalService.appointments.length > 0; else noAppointments">
-                <ul>
-                  <h3>Programari:</h3>
-                  <li *ngFor="let appointment of medicalService.appointments">
-                    <p>{{appointment.appointment_date}}</p>
-                    <div class="medical-letter">
-                      <div *ngIf="appointment.medicalLetter; else noMedicalLetter">
-                          <ul><li>
-                              <h3>Scrisoare medicala: </h3>
-                              <p><strong>Diagnostic: </strong>{{appointment.medicalLetter.diagnosis}}</p>
-                              <p><strong>Simtome: </strong>{{appointment.medicalLetter.symptoms}}</p>
-                              <p><strong>Continut: </strong>{{appointment.medicalLetter.content}}</p>
-                          </li></ul>
-                      </div>
-                      <ng-template #noMedicalLetter>
-                          <p>Nu exista Scrisoare medicala pentru aceasta programare</p>
-                        </ng-template>
-                  </div>
-                  </li>
-      
-                </ul>
-                </div>
-                <ng-template #noAppointments>
-                  <p>Nu exista Servicii medicale pentru acest doctor</p>
-                </ng-template>
-              </div> -->
             </li>
-
-            
           </ul>
-          
           </div>
           <ng-template #noMedicalServices>
             <p>Nu exista Servicii medicale pentru acest doctor</p>

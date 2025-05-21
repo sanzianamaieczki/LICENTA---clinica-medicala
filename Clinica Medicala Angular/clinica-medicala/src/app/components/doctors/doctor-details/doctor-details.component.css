@@ -1,0 +1,8 @@
+
+.fc-event-title{
+    display: none !important;
+}
+
+.fc-daygrid-event-harness a{
+    width: max-content !important;
+}

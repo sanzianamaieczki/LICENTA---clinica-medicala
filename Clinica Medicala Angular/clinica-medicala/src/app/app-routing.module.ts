@@ -10,6 +10,7 @@ import { MedicalServicesComponent } from './components/doctors/medical-services/
 import { AppointmentsComponent } from './components/appointments/appointments/appointments.component';
 import { ClinicDetailsComponent } from './components/clinic/clinic-details/clinic-details.component';
 import { DoctorDetailsComponent } from './components/doctors/doctor-details/doctor-details.component';
+import { AddAppointmentComponent } from './components/appointments/add-appointment/add-appointment.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' }, 
@@ -30,7 +31,11 @@ const routes: Routes = [
   {path: 'specializations', component: SpecializationsComponent},
   {path: 'patients', component: PatientsComponent},
   {path: 'medical-services', component: MedicalServicesComponent},
-  {path: 'appointments', component: AppointmentsComponent},
+  {path: 'appointments', component: AppointmentsComponent,
+    children: [
+      {path: 'add-appointment', component: AddAppointmentComponent}
+    ]
+  },
 ];
 
 @NgModule({
